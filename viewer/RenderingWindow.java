@@ -805,12 +805,9 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     //view point operation ends
 
     //pick
-    if(isAtomSelecting && (
-       vconf.isSelectionMode ||
-       vconf.isSelectionLength  ||
-       vconf.isSelectionAngle  ||
-       vconf.isSelectionTorsion  ||
-       vconf.isDeletionMode)){
+    if(isAtomSelecting && (vconf.isSelectionMode ||vconf.isSelectionLength  ||
+                           vconf.isSelectionAngle  ||vconf.isSelectionTorsion  ||
+                           vconf.isDeletionMode)){
 
       pickedAtomID = selector.getID(gl,glu,glut,atoms,vp,
                                         pressedMouseX, pressedMouseY );
@@ -898,7 +895,8 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     }
 
     //lines
-    if(vconf.isSelectionMode) sq.show();
+    if(vconf.isSelectionMode ||vconf.isSelectionLength  ||
+       vconf.isSelectionAngle  ||vconf.isSelectionTorsion  ||vconf.isDeletionMode)sq.show();
 
     //atoms
     if(visibleAtoms && tmpVisibleAtoms) {

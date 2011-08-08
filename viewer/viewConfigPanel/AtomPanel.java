@@ -43,7 +43,6 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     vconf.isSelectionLength=cbLength.isSelected();
     vconf.isSelectionAngle=cbAngle.isSelected();
     vconf.isSelectionTorsion=cbTorsion.isSelected();
-    //ctrl.RWinRefresh();
   }
 
   // called when the event happens

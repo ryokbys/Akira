@@ -175,7 +175,7 @@ public class PairList{
             int jz=iz+idz;
             if(isConsiderPBC){
               if(jz<0)jz=nz-1;
-              if(jz>=nx)jz=0;;
+              if(jz>=nz)jz=0;;
             }else{
               if(jz<0 || jz>=nz)continue;
             }
