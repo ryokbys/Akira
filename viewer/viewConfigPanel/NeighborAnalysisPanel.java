@@ -302,15 +302,17 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
   /**
    * average length, angle between nearest-neighbors
    */
+  int filenum=0;
   private void average(){
 
     try {
-      FileWriter fw = new FileWriter( "aveLength.d");
+      filenum++;
+      FileWriter fw = new FileWriter(String.format("%03d-aveLength.d",filenum));
       BufferedWriter bw = new BufferedWriter( fw );
       PrintWriter pw = new PrintWriter( bw );
       pw.println( "#length");
 
-      FileWriter fw2 = new FileWriter( "aveAngle.d");
+      FileWriter fw2 = new FileWriter(String.format("%03d-aveAngle.d",filenum));
       BufferedWriter bw2 = new BufferedWriter( fw2 );
       PrintWriter pw2 = new PrintWriter( bw2 );
       pw2.println( "#species of angle center, angle[deg]");
