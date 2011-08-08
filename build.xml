@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Last Modified <2011-08-07 19:36:16 by NAKAMURA Takahide> -->
+
+  <project name="AKIRA" default="runall" basedir=".">
+
+
+    <!-- environment -->
+    <property environment="env" />
+    <property name="dbg" value="on" />
+    <property name="java"      value="${JAVA_HOME}/bin/java" />
+    <property name="jar"       value="${JAVA_HOME}/bin/jar" />
+    <property name="jarsigner" value="${JAVA_HOME}/bin/jarsigner" />
+
+    <property name="javadoc.dir" value="javadoc" />
+    <property name="doctarget" value="converter:data:tools:viewer" />
+
+
+    <property name="jogl_dir"  value="${env.JOGL_LIB}" />
+    <property name="jogl_lib1" value="${jogl_dir}/gluegen-rt.jar" />
+    <property name="jogl_lib2" value="${jogl_dir}/jogl.all.jar" />
+    <property name="jogl_lib3" value="${jogl_dir}/nativewindow.all.jar" />
+    <property name="layout_lib" value="jar-libs/TableLayout.jar" />
+    <property name="layout_lib2" value="jar-libs/forms-1.2.1.jar" />
+    <property name="ant_lib" value="jar-libs/ant.jar" />
+    <property name="browser_lib" value="jar-libs/BareBonesBrowserLaunch.jar" />
+    <property name="eps_lib" value="jar-libs/jlibeps.jar" />
+    <property name="qhull_lib" value="jar-libs/quickhull3d.jar" />
+
+
+    <!-- set classpath -->
+    <path id="libpath_ref">
+      <pathelement path="." />
+    </path>
+    <path id="ant_libpath_ref">
+      <pathelement path="${ant_lib}" />
+    </path>
+    <path id="jogl_libpath_ref">
+      <pathelement path="${jogl_lib1}" />
+      <pathelement path="${jogl_lib2}" />
+      <pathelement path="${jogl_lib3}" />
+      <pathelement path="${layout_lib}" />
+      <pathelement path="${layout_lib2}" />
+      <pathelement path="${browser_lib}" />
+      <pathelement path="${eps_lib}" />
+      <pathelement path="${qhull_lib}" />
+      <pathelement path="." />
+    </path>
+
+
+
+    <!-- alias -->
+    <target name="runall" depends="conv,view" />
+    <target name="make" depends="make_conv,make_view" />
+    <target name="compile" depends="clean,make" />
+    <target name="jar" depends="jar_akira" />
+
+    <!-- make conv-->
+    <target name="make_conv" description="compile akiraconv">
+      <javac includeAntRuntime="true" encoding="UTF-8" srcdir="." deprecation="on" debug="${dbg}" source="1.5" target="1.5">
+        <include name="AkiraConverter.java" />
+        <include name="tools/*.java" />
+        <include name="tools/*/*.java" />
+        <include name="data/*.java" />
+        <include name="converter/*.java" />
+        <include name="converter/reader/*.java" />
+      </javac>
+    </target>
+
+    <!-- run conv-->
+    <target name="conv" depends="make_conv" description="run conv">
+      <java classname="converter/AkiraConverter" classpath="." fork="yes" maxmemory="1024m"  >
+        <classpath refid="ant_libpath_ref" />
+      </java>
+    </target>
+
+
+
+    <!-- make view-->
+    <target name="make_view" description="compile akiraconv">
+      <javac includeAntRuntime="true" encoding="UTF-8" srcdir="." deprecation="on" debug="${dbg}" source="1.5" target="1.5">
+        <!-- <compilerarg line="-Xlint" /> -->
+        <include name="tools/*.java" />
+        <include name="tools/*/*.java" />
+        <include name="data/*.java" />
+        <include name="viewer/*.java" />
+        <include name="viewer/**/*.java" />
+        <classpath refid="jogl_libpath_ref" />
+        <classpath refid="libpath_ref" />
+        <classpath refid="ant_libpath_ref" />
+        <!-- <classpath refid="jbullet_libpath_ref" /> -->
+      </javac>
+    </target>
+
+    <!-- run view-->
+    <!-- running switch -->
+    <condition property="os" value="win">
+      <os family="windows" />
+    </condition>
+    <condition property="os" value="mac">
+      <os family="mac" />
+    </condition>
+    <condition property="os" value="unix">
+      <os family="unix" />
+    </condition>
+
+    <target name="view">
+      <antcall target="${os}view" />
+    </target>
+
+    <!-- MAC -->
+    <target name="macview" depends="make_view" description="run viewer">
+      <java classname="viewer/AkiraViewer" classpath="." fork="yes" maxmemory="1024m"  >
+        <classpath refid="jogl_libpath_ref" />
+        <!-- <jvmarg line="-Xdock:icon=img/Akira.icns -Xdock:name=Akira -Djogl.debug.GLProfile=true" /> -->
+        <jvmarg line="-Xdock:icon=img/Akira.icns -Xdock:name=Akira" />
+        <arg line="-enjoy sample.Akira" />
+      </java>
+    </target>
+    <!-- WIN -->
+    <target name="winview" depends="make_view">
+      <java classname="viewer/AkiraViewer" classpath="viewer" fork="yes" maxmemory="1024m"  >
+        <classpath refid="jogl_libpath_ref" />
+      </java>
+    </target>
+    <!-- UNIX -->
+    <target name="unixview" depends="make_view">
+      <java classname="viewer/AkiraViewer" classpath="viewer" fork="yes" maxmemory="1024m"  >
+        <classpath refid="jogl_libpath_ref" />
+      </java>
+    </target>
+
+
+    <!-- jar -->
+    <!-- usage: >java -Xms1024m -Xmx1024m -jar AKIRA.jar  -->
+    <target name="jar_akira" depends="make_conv,make_view" >
+      <jar destfile="Akira.jar" basedir=".">
+        <include name="viewer/*.html" />
+        <include name="viewer/*.class" />
+        <include name="viewer/*.AkiraCmb" />
+        <include name="viewer/**/*.class" />
+        <include name="viewer/renderer/src/toon_rk.vp" />
+        <include name="viewer/renderer/src/toon_rk.fp" />
+        <include name="data/*.class" />
+        <include name="tools/*.class" />
+        <include name="tools/**/*.class" />
+        <include name="img/**" />
+        <include name="converter/*.class" />
+        <include name="converter/**/*.class" />
+        <include name="converter/*.conf" />
+        <zipfileset src="${layout_lib}" />
+        <zipfileset src="${layout_lib2}" />
+        <zipfileset src="${ant_lib}" />
+        <zipfileset src="${browser_lib}" />
+        <zipfileset src="${eps_lib}" />
+        <zipfileset src="${qhull_lib}" />
+        <manifest>
+          <attribute name="Main-Class" value="viewer/AkiraViewer" />
+          <attribute name="Class-Path" value="." />
+          <attribute name="Implementation-Title" value="Akira" />
+          <attribute name="Implementation-Version" value="1" />
+          <attribute name="Implementation-Vender" value="Ogata Lab.(NIT)" />
+        </manifest>
+      </jar>
+    </target>
+
+
+    <target name="doc">
+      <mkdir dir="${javadoc.dir}" />
+      <javadoc
+        packagenames="AKIRA*"
+        destdir="${javadoc.dir}"
+        author="true"
+        Private="true"
+        encoding="UTF-8" charset="UTF-8">
+        <fileset dir=".">
+          <include name="**/*.java"/>
+        </fileset>
+        <classpath refid="libpath_ref" />
+        <classpath refid="jogl_libpath_ref" />
+        <classpath refid="ant_libpath_ref" />
+      </javadoc>
+    </target>
+
+    <!-- Clean -->
+    <target name="clean" >
+      <delete>
+        <fileset dir="." >
+          <include name="*.zip" />
+          <include name="*.pov" />
+          <include name="*.png" />
+          <include name="*.Akira" />
+          <include name="*.jar" />
+          <include name="AKIRA*.tgz" />
+        </fileset>
+        <fileset dir="." includes="**/*.class" />
+        <fileset dir="." includes="**/*.orig" />
+      </delete>
+    </target>
+
+
+  </project>

@@ -1,0 +1,12 @@
+varying vec3 normal;
+varying vec3 light;
+varying vec4 view4;
+
+void main(void)
+{
+  light = normalize( vec3( gl_LightSource[0].position) );
+  normal= normalize( gl_NormalMatrix * gl_Normal );
+  view4 = normalize( gl_Vertex - gl_ModelViewMatrix[3] );
+  gl_Position = ftransform();
+}
+

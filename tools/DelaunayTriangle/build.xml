@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Last Modified <2011-01-21 10:13:55 by NAKAMURA Takahide> -->
+
+  <project name="AKIRA" default="runall" basedir=".">
+
+
+    <!-- environment -->
+    <property environment="env" />
+    <property name="dbg" value="on" />
+    <property name="java"      value="${JAVA_HOME}/bin/java" />
+    <property name="jar"       value="${JAVA_HOME}/bin/jar" />
+    <property name="jarsigner" value="${JAVA_HOME}/bin/jarsigner" />
+
+    <!-- set classpath -->
+    <path id="libpath_ref">
+      <pathelement path="." />
+    </path>
+
+
+    <!-- alias -->
+    <target name="make" depends="make_view" />
+    <target name="compile" depends="clean,make" />
+    <target name="jar" depends="jar_akira" />
+
+
+    <!-- make view-->
+    <target name="make_view" description="compile akiraconv">
+      <javac includeAntRuntime="true" encoding="UTF-8" srcdir="." deprecation="on" debug="${dbg}" source="1.5" target="1.5">
+        <!--
+        <compilerarg line="-Xlint" />
+        -->
+        <include name="./**/*.java" />
+      </javac>
+    </target>
+
+    <!-- jar -->
+    <!-- usage: >java -Xms1024m -Xmx1024m -jar AKIRA.jar  -->
+    <target name="jar_akira" depends="make_view" >
+      <jar destfile="DelaunayTriangle.jar" basedir=".">
+        <include name="**/*.class" />
+        <manifest>
+          <attribute name="Class-Path" value="." />
+          <attribute name="Implementation-Title" value="DelaynayTriangle" />
+          <attribute name="Implementation-Version" value="1" />
+          <attribute name="Implementation-Vender" value="" />
+        </manifest>
+      </jar>
+    </target>
+
+
+
+    <!-- Clean -->
+    <target name="clean" >
+      <delete>
+        <fileset dir="." >
+          <include name="*.pov" />
+          <include name="*.png" />
+          <include name="*.Akira" />
+          <include name="*.jar" />
+          <include name="AKIRA*.tgz" />
+        </fileset>
+        <fileset dir="." includes="**/*.class" />
+      </delete>
+    </target>
+
+
+  </project>

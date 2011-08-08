@@ -1,0 +1,5 @@
+forms-1.2.1.jar: status bar
+TableLayout.jar: layout
+ant.jar: for tgz,tbz2
+CRComponents-110.jar: update checker
+BareBonesBrowserLaunch.jar: browser lancher

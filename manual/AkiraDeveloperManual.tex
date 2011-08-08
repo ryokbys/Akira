@@ -1,0 +1,754 @@
+\documentclass[a4j,openany]{jbook}
+\usepackage{ascmac}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage[dvipdfm,bookmarkstype=toc=true,colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue,linktocpage=true,bookmarks=false]{hyperref}
+
+\usepackage{color}
+%\usepackage{graphicx}
+
+\usepackage{verbatim}
+\usepackage{itembkbx}
+\usepackage{longtable}
+
+
+\title{{\Huge \textbf{Akira 虎の巻}}\\ }
+\author{中村貴英}
+\date{\today}
+
+\setcounter{tocdepth}{2}
+
+\begin{document}
+\maketitle
+\frontmatter
+\chapter{はじめに}
+この文章は可視化ソフトAkiraを開発，改良する人向けのマニュアルです．
+また中村貴英が書いているので，一切の文責は私にあります．
+
+\tableofcontents
+\mainmatter
+
+
+\chapter{方針}
+開発者の心得を記述します．
+ \section{開発方針}
+  \begin{description}
+   \item[皆で利用・開発するものだ！] \mbox{} \\
+              既に原子の可視化ソフトは世にたくさんあります．
+              にも関わらず独自の可視化ソフトを開発することの意義は，
+              「こういう風に見せたい」と思った時に自分で少しコードを
+              改変することで思った事を実現できることにあります．
+              そのためには：
+              \begin{itemize}
+               \item 利用者がコードの中身を知っていること，
+                     または利用者が容易にコードの中身を理解できることが大事である．
+               \item 各自が機能の追加を行うのことを出来る限り容易にするため，
+                     オブジェクト指向のJavaを利用し，
+                     カプセル化されたコードとするよう心掛ける．
+               \item 高機能よりは，容易かつ高い拡張性を求める．
+              \end{itemize}
+   \item[オブジェクト指向らしく，なるべくカプセル化する] \mbox{} \\
+              オブジェクト指向の概念に関しては，ウェブ上にも多くの資料があるので
+              各自で勉強してください．
+              Javaは典型的なオブジェクト指向言語なので，可能な限り，
+              オブジェクト（物）にはその物の持っている性質（property）と，
+              その物が提供する機能（function）を過不足なく実装することを心掛ける．
+              そうすることで，カプセル化されたオブジェクトを作ることができ，
+              使い回しの効くプログラムとなる．
+   \item[可能ならば，MVCモデルに準拠する] \mbox{} \\
+              Model-View-Controllerモデルに準拠して，
+              この３つが独立した形に書いておくとカプセル化の度合いが強くなり，
+              再利用性が増す．
+              AkiraにおいてはModelとは原子の集まりであり，
+              理想としては原子の集まりがViewからは独立しており，
+              他のオブジェクトによりOpenGLを用いて描かれるようになっていて欲しい．
+   \item[プラットホームに依存しないコードを書く] \mbox{} \\
+              Javaを用いる利点の一つは，一度コードを書いたら
+              どのプラットホーム（Unix, Linux, Mac, Windows）でも
+              動作することである．
+              特定のプラットホームでしか動作しないコードを含めるのは，
+              この思想に反するので極力避けるべきである．
+   \item[設計で迷ったら「Simplicity」を重視する] \mbox{} \\
+              Java言語の設計原理はKISS (Keep It Small and Simple) らしい．
+              メンテナンスの際にもSimpleな方がやり易く，バグを減らすことに繋がる．
+   \item[使い方の大幅変更を要する場合はdeveloper全員に相談すべし] \mbox{} \\
+              一般に，マイナー・バージョン・チェンジで使い方の変更が
+              あるようなソフトはユーザーが使いたがらない．
+              しかし，変更の種類に依っては入力ファイルの変更が必要だったり，
+              configファイルの変更が必要であったりと，
+              使い方そのものに影響を及ぼすことも考えられる．
+              そのような場合には，自分のブランチを用意して自分専用として変更する．
+              その変更が皆のためになるものであると思ったら，
+              developer全員（もしくはmailing list）に相談してから変更すべし．
+              さらに，使い方の変更はupdateしたユーザに的確に伝わるように努力すべし．
+   \item[GUIの要素にfocusが合わないようにする] \mbox{} \\
+              ボタンなどのGUI要素にfocusが合っていると，
+              キーボード入力がそこに取られてしまい，
+              キー操作が効かなくなってしまうため，
+              focusは常にframeに合わせるようにしたい．
+              \begin{screen}
+\begin{verbatim}
+hoge.setFocusable( false );
+\end{verbatim}
+              \end{screen}
+              とすることで，hogeというGUI要素にfocusを合わせないように設定できる．
+   \item[基本的にクラスの変数には外部からアクセスしない] \mbox{} \\
+              インスタンス変数をprivateもしくはprotectedにする，
+              method経由で変数をゲット・セットするのがJavaの流儀らしい
+              （getter，setterまたはaccessor?と呼ばれる）．
+              インスタンス変数をpublicにする基準として，以下の条件を設ける：
+              \begin{itemize}
+               \item 他のインスタンス変数から独立していて，
+                     単独で変更されても内部の整合性を乱さない．
+               \item どちらにしろ，get/setのmethodを書く必要がある．
+               \item そのインスタンス変数の実装が将来も変更されないと予想される．
+              \end{itemize}
+
+              この条件が満たされない場合でも，
+              速度を気にする変数の場合にはpublicにした方が良い場合があるらしい．
+   \item[高速なコードとするために...] \mbox{} \\
+              パフォーマンスは大事だが，
+              初めからパフォーマンスを気にしてコーディングをするのは避ける．
+              視認性，保守の容易さを優先する．
+              パフォーマンス向上はアプリケーション全体の測定を行い，
+              ホットスポットに対して行なう．
+              （頑張って高速化したつもりでも，つまらない事をしていた，
+              なんてことのないように．）
+              ちなみにJavaの場合，
+              \begin{itemize}
+               \item new は時間が掛かるので，ループの中では使うのを避けた方が
+                     良いらしい．
+               \item オブジェクトの解放はgarbage collectionが行なってくれるが，
+                     それを助けるために， 使わなくなったオブジェクトに
+                     null を代入するとよいらしい．
+              \end{itemize}
+  \end{description}
+
+  \section{コーディングルール}
+  個人で開発する訳ではないので，Akira開発に際してのコーディングのルールを定めておく．
+  このルールに則ってコーディングを行うことを強く推奨する．
+  しかし，100\%準拠するする必要はない．
+  十分な理由があってルールから外れることはままあることなので．
+
+  \begin{description}
+   \item[publicクラスはそのクラス名の１ファイルにする] \mbox{} \\
+              これはJavaの規則かな？
+              publicでないクラスは，そのクラスを最も多く利用する
+              publicクラスのファイルに含めてよい．
+   \item[インデントは空白２文字] \mbox{} \\
+              一般には空白４文字の場合が多いが，４文字は空けすぎと思う．(by R.K.)
+              エディタとしてemacsを利用している人は，
+              以下を.emacsに書くとインデントを２文字にしてくれる．
+
+              \begin{breakitembox}<parindent=0zw>[l]{emacsの設定}
+\begin{verbatim}
+(autoload 'c++-mode  "cc-mode" "C++ Editing Mode" t)
+(autoload 'c-mode    "cc-mode" "C Editing Mode" t)
+(autoload 'java-mode "cc-mode" "Java Editing Mode" t)
+(add-hook 'c-mode-common-hook
+'(lambda ()
+(setq c-indent-level 2)
+(setq c-brace-imaginary-offset 0)
+(setq c-argdecl-indent 2)
+(setq c-continued-statement-offset 2)
+(setq c-label-offset -2)
+(setq c-brace-offset 0)
+(setq tab-width 2)
+(setq c-basic-offset 2)
+(setq comment-style 'extra-line)
+(setq comment-start "/*")
+(setq comment-end "*/")
+))
+\end{verbatim}
+              \end{breakitembox}
+   \item[１行は８０文字程度とする] \mbox{} \\
+              Javaの場合は変数名が長いため右に伸びる傾向があるが，
+              ソースコードをプリントアウトする時などを考えると
+              ８０文字程度で折り返す方が良いだろう．
+   \item[コメントを書く] \mbox{} \\
+              このプログラムは複数人で開発しているので，
+              他の人があなたが書いたコードを読んだ際に理解に時間が掛かると思ったら，
+              理解し易いようにコメントを書くこと．
+              コメントはコードの理解を助け，バグを減らすと期待できるので，
+              面倒でも書くこと．
+              またJavaには，ある書式に従って書いたコメントを
+              そのままドキュメント化するJavadocという機能があるので，
+              上手くコメントを書けばそれがそのソースコードの仕様書(API)となる．
+              日本語でも良い．ただし，文字コードはUTF-8 no BOMとする．
+              no BOMで書かないと，コンパイルができない(OSX Tiger/Leopard)．
+   \item[クラスの名前は物とする] \mbox{} \\
+              オブジェクト指向なので，各クラスはオブジェクト（物）である．
+              故にクラスの名前は物であるべきであろう．
+              名詞であれば良いのでなく物の名前とすべき（事とすべきではない）．
+              例えば，貨幣の単位換算をするクラスを作りたいとしたら，
+              ConvertingMoneyというクラスではなく，MoneyConverterとすべき．
+   \item[クラス名は大文字から始め，変数名とメソッド名は小文字から始める] \mbox{} \\
+              クラス名は大文字から始めるのがJavaの流儀．
+              かつ，その名前がいくつかのwordからなる場合は，
+              それぞれのwordの先頭を大文字にする．(アンダースコアは使わない)
+              （例えば，SuperGreatGoalKeeper．）
+              変数名とメソッド名は最初の文字は小文字とする．
+              いくつかのwordから成る場合は２つめのwordからは先頭を大文字とする．
+              （例えば，doSomethingWithSomebody()．）
+              このコーディング規則は，大文字が「らくだのこぶ」の様に
+              見える事から， CamelCaseと呼ばれる．
+   \item[定数は全て大文字とする] \mbox{} \\
+              この場合単語の区切りがわかりにくいので，
+              アンダースコアを特例として使用する．
+              （例えば，MAX\_NUM\_OF\_ATOMS．）
+   \item[変数名は長くても良いから意味が分かるようにする] \mbox{} \\
+              Java言語では変数名は説明がなくても意味が通じるようなものが推奨される．
+              例えば，ある原子が表示されるかされないかの判定に
+              使うboolean型の変数に名前を付けるとしたら，isVisibleのようになるだろう．
+   \item[importの際の*を避ける] \mbox{} \\
+              importの*は読む人には，何のimportを必要としているのか分かり難い．
+              ただし，同一パッケージから３つ以上importする場合は
+              冗長性を避けるために*を使う．
+  \end{description}
+
+  \section{リビジョン管理}
+  Akiraのリビジョン（バージョン）管理にはMercurialを利用している．
+  使い方はウェブ上にたくさん資料があるので，各自勉強すること．
+  おそらく，これまでリビジョン管理などはしたことがないと思うので，
+  いくつかのルールを決めておく．
+  \begin{description}
+   \item[コミット・コメントは簡潔かつ意味のあるものを書く] \mbox{} \\
+              コミットの際には必ずコメントを書くこと．
+              リポジトリ・ウェブを見ると分かるが，コミット・ログにはコメントは
+              一行しか表示されない．
+              そのため，コメントは簡潔に何を変更したのかを他人に伝えるように書くこと．
+   \item[バグがない事を確認してからコミットする] \mbox{} \\
+              リポジトリへのコミットは変更のセーブではないので，
+              頻繁に行う必要はない．
+              自分が行おうとした変更が完成し，
+              変更したことによるバグがないことを確認した後にコミットすること．
+              あまり意味のないコミットが増えないように心掛けよう．
+   \item[タグは自由に付けて良い（ただしルールあり）] \mbox{} \\
+              タグを付けておくと，そのリビジョンを取り出したり，
+              そこに戻ったりが容易なので，自由にタグを付けてよい．
+              ただし，各自で自由に付けるタグの名前はその人の決まった
+              prefixから始まるものでなければならない（例えば，kobayashi-1）．
+              他に，version-??やrelease-2010.??.??のようなタグが
+              付けられるものと思われる．
+  \end{description}
+
+
+
+\chapter{開発方法}
+自分でAkiraをコンパイルする方法を述べます．
+ \section{Mercurialの使い方}
+  \subsection{事始め}
+  ソースコード一式は，Mercurialで
+ \begin{screen}
+\begin{verbatim}
+hg clone https://project-akira.googlecode.com/hg/ project-akira
+\end{verbatim}
+ \end{screen}
+ として，手に入れます．
+
+  \subsection{最新版に}
+\begin{screen}
+\begin{verbatim}
+hg pull
+hg update
+\end{verbatim}
+\end{screen}
+
+反映
+\begin{screen}
+\begin{verbatim}
+ant clean
+cp Akira.jar ~/myLocal/AKira
+\end{verbatim}
+\end{screen}
+
+  \subsection{状況を確認する}
+\begin{screen}
+\begin{verbatim}
+hg status
+\end{verbatim}
+\end{screen}
+Mはmodified，
+Rはremoved，
+!は追跡不能，
+?は未追跡，
+を意味する．
+
+  \subsection{追加}
+新しくファイルを追加した場合は，Mercurialに登録します．
+\begin{screen}
+\begin{verbatim}
+hg add SOME_FILE.java
+\end{verbatim}
+\end{screen}
+
+  \subsection{コミット}
+セーブ点を作る．
+\begin{screen}
+\begin{verbatim}
+hg commit
+\end{verbatim}
+\end{screen}
+コミットを行う前に，\verb|hg status|を行って，
+追跡漏れしているファイルが無いか調べましょう．
+新しくファイルを追加した場合は，そのファイルをMercurialに追跡させるのを忘れがちです．
+
+  \subsection{パッチの作り方}
+ Mercurialでは，以下のようにしてパッチを作ります．
+ \begin{screen}
+\begin{verbatim}
+hg export -o a.patch tip
+\end{verbatim}
+ \end{screen}
+ 出来たパッチを中村宛に送ってください．
+
+コミット権限は，オーナーである小林と中村しかもっていません．
+多くの貢献をしてくれる方にはcommit権限を差し上げます．
+
+
+  \subsection{変更をサーバーへ上げる(commiter only)}
+\begin{screen}
+\begin{verbatim}
+hg push
+\end{verbatim}
+\end{screen}
+この際のユーザーはgmailアドレス，パスワードはwebページに記載されているものかgmailのアドレスです．
+
+ \section{コンパイル方法}
+  \subsection{OSX/Linuxでのコンパイル}
+   \subsubsection{設定}
+  \verb|JOGL_LIB|という環境変数にjoglのライブラリを置いた場所を指定して下さい．
+  例えば，
+  \begin{screen}
+\begin{verbatim}
+export JOGL_LIB=~/myLocal/javalib/jogl
+export DYLD_LIBRARY_PATH=$JOGL_LIB:$DYLD_LIBRARY_PATH
+\end{verbatim}
+  \end{screen}
+    を.bashrcか.bash\_profileに追記するということです．
+
+   \subsubsection{コンパイルテスト}
+    build.xmlのあるディレクトリで
+    \begin{screen}
+\begin{verbatim}
+ant
+\end{verbatim}
+    \end{screen}
+    とすると，Akiraがコンパイルされ，実行されます．
+    \verb|JOGL_LIB|の設定が失敗している場合，実行されません．
+    もう一度\verb|JOGL_LIB|の設定を見直してください．
+    \footnote{antとはjava用のmakeです}
+
+   \subsubsection{実行形式の生成}
+    \begin{screen}
+\begin{verbatim}
+ant jar
+\end{verbatim}
+    \end{screen}
+    としてjarファイルを作ります．
+
+
+
+  \subsection{windowsでのコンパイル}
+   \subsubsection{JDKのインストール}
+    JDKをインストールします．(JREではありません)
+    コントロールパネル-システム-詳細設定-環境変数にて
+    JAVA\_HOMEの値を
+    \begin{screen}
+\begin{verbatim}
+C:Program Files\Java\jdk******** (←インストールされた場所)
+\end{verbatim}
+    \end{screen}
+    として自分で設定します
+    さらにPathにJAVA\_HOME\verb|\|binを追加
+    (なぜこのくらいの設定をインストーラーでやってくれないのか．．．)
+   \subsubsection{ant}
+    antをダウンロードして，内容物をすべて
+    \begin{screen}
+\begin{verbatim}
+C:Program Files\ant (どこでも良いが私はこうした)
+\end{verbatim}
+    \end{screen}
+    に入れます．
+    更にコントロールパネル- システム-詳細設定-環境変数にて
+    ANT\_HOMEの値を
+    \begin{screen}
+\begin{verbatim}
+C:Program Files\ant
+\end{verbatim}
+    \end{screen}
+    として自分で設定します
+    さらにPathに\%ANT\_HOME\% \verb|\|binを追加
+
+   \subsubsection{build.xmlの書き換え}
+    環境変数\verb|JOGL_LIB|を設定しても，antでうまく処理してくれないので，
+    build.xmlを直接変更します．
+    build.xmlの先頭にある
+    \begin{screen}
+\begin{verbatim}
+<property name="jogl_dir"  value="\${env.JOGL_LIB}" />
+\end{verbatim}
+    \end{screen}
+    を
+    \begin{screen}
+\begin{verbatim}
+<property name="jogl\_dir"  value="\jogl2" />
+\end{verbatim}
+    \end{screen}
+    に書き換えます．
+
+
+\chapter{Akiraの構造}
+AkiraはAkiraConverterとAkiraViewerで構成されます．
+主要な構成ファイルの特徴を述べます．
+これにより，Akiraの全体像を把握しやすくなることを期待します．
+AkiraConverter.javaとAkiraViewer.javaがメインファイルです．
+
+さて，以下のコマンドでAkiraのソースコード一式がコピーされます．
+\begin{screen}
+\begin{verbatim}
+hg clone https://project-akira.googlecode.com/hg/ project-akira
+\end{verbatim}
+\end{screen}
+以下では，project-akira以下のファイルについて説明します．
+
+ \section{project-akira/の構成}
+ cloneして出来たディレクトリの内容は以下です．
+
+  \begin{description}
+   \item[AkiraConverter.conf ] \mbox{} \\
+              開発用のAkiraConverter設定ファイル
+   \item[build.xml] \mbox{} \\
+              ant用のファイル．makefileみたいなもの．
+   \item[\htmlref{converter/}{table:converter}] \mbox{} \\
+              AkiraConverter用のファイルが格納されている
+   \item[\htmlref{data/}{table:data}] \mbox{} \\
+              基本データのクラスが格納されている
+   \item[img/] \mbox{} \\
+              Akiraで使うimageファイルが格納されている
+   \item[input-samples/] \mbox{} \\
+              開発用のサンプルファイル
+   \item[\htmlref{jar-libs/}{table:jar-libs}] \mbox{} \\
+              Akiraで用いるライブラリファイルが格納されている
+   \item[make-package.sh] \mbox{} \\
+              公開用のファイルを作るスクリプト
+   \item[manual/] \mbox{} \\
+              このマニュアルを生成するtexファイルが格納されている
+   \item[rotation.AkiraCmb] \mbox{} \\
+              コンボモードのサンプルファイル
+   \item[\htmlref{tools/}{table:tools}] \mbox{} \\
+              AkiraConverterとAkiraViewerで共通して使うクラスが格納されている
+   \item[utils/] \mbox{} \\
+              プラットホーム別のスクリプト
+   \item[\htmlref{viewer/}{table:viewer}] \mbox{} \\
+              AkiraViewer用のクラスが格納されている
+  \end{description}
+  AkiraConverterで使うクラスはconverter/に，
+  AkiraViewerで使うクラスはviewer/に格納されています．
+  共通して使うクラスはdata/やtools/に格納されています．
+
+  \begin{longtable}{l|l}
+   \caption{data/の構成}\label{table:data}
+   \\
+   \hline
+   \textbf{ファイル名} & \textbf{内容}
+   \endfirsthead
+   \multicolumn{2}{l}{\small\slshape continued from previous page} \\
+   \hline
+   \textbf{ファイル名} & \textbf{内容} \\
+   \hline
+   \endhead
+   \hline
+   \multicolumn{2}{r}{\small\sl table continued on next page}
+   \\
+   \endfoot
+   \hline
+   \endlastfoot
+   \hline
+   Atoms.java & 原子のクラスファイル \\
+   Bond.java & ボンドのクラスファイル \\
+   Bonds.java & ボンドをまとめるためのクラスファイル \\
+   Const.java & 定数を定義してあるファイル \\
+  \end{longtable}
+
+
+
+
+  \begin{longtable}{l|l}
+   \caption{converter/の内容}\label{table:converter}
+   \\
+   \hline
+   \textbf{ファイル名} & \textbf{内容}
+   \endfirsthead
+   \multicolumn{2}{l}{\small\slshape continued from previous page} \\
+   \hline
+   \textbf{ファイル名} & \textbf{内容} \\
+   \hline
+   \endhead
+   \hline
+   \multicolumn{2}{r}{\small\sl table continued on next page}
+   \\
+   \endfoot
+   \hline
+   \endlastfoot
+   \hline
+   AkiraConverter.conf &
+   AkiraConverter用の設定ファイル \\
+   AkiraConverter.java &
+   AkiraConverterのメインクラス \\
+   ConfCreater.java &
+   AkiraConverter用の設定ファイルを生成するクラス \\
+   ConvConfig.java &
+   AkiraConverter.confを読み込んで，値を保存するクラス \\
+   Tool.java &
+   AkiraConverterで使う関数 \\
+   reader/ &
+   各種データフォーマット別の読み込み関数 \\
+  \end{longtable}
+
+  \begin{longtable}{l|l}
+   \caption{viewer/の内容}\label{table:viewer}
+   \\
+   \hline
+   \textbf{ファイル名} & \textbf{内容}
+   \endfirsthead
+   \multicolumn{2}{l}{\small\slshape continued from previous page} \\
+   \hline
+   \textbf{ファイル名} & \textbf{内容} \\
+   \hline
+   \endhead
+   \hline
+   \multicolumn{2}{r}{\small\sl table continued on next page}
+   \\
+   \endfoot
+   \hline
+   \endlastfoot
+   \hline
+   AkiraViewer.java &
+   main関数があるクラス．Look\&Feelも設定する． \\
+   BackRenderingWindow.java &
+   後ろからの描画を行うクラス．
+   enjoyモードで使用． \\
+   Controller.java &
+   実質的なmainクラス．このクラスが全クラスを保持している． \\
+   KeyController.java &
+   キーボード操作を統括する \\
+   LF/ &
+   Look\&Feel関係のクラスが置いてある． \\
+   RenderingWindow.java &
+   描画が行われるメインウインドウ． \\
+   RenderingWindowMenuController.java &
+   RenderingWindowのメニューを管理． \\
+   SplashWindow.java &
+   AkiraViewerが起動する時のスプラッシュウインドウ． \\
+   UpdateManager.java &
+   Updateを管理する． \\
+   ViewConfig.java &
+   AkiraViewerの設定が保持されるクラス． \\
+   ViewConfigWindow.java &
+   AkiraViewerの設定を変更するためのウインドウ \\
+   ViewConfigWindowMenuController.java &
+   ViewConfigWindowのメニュー \\
+   informationPanel/ &
+   InformationWindowの各パネル． \\
+   keys.html &
+   keyのヘルプファイル \\
+   renderer/ &
+   機能別のrenderingクラスが格納されている \\
+   viewConfigPanel/ &
+   設定を変更する為の各種パネル \\
+
+  \end{longtable}
+
+  \begin{longtable}{l|l}
+   \caption{tools/の構成}\label{table:tools}
+   \\
+   \hline
+   \textbf{ファイル名} & \textbf{内容}
+   \endfirsthead
+   \multicolumn{2}{l}{\small\slshape continued from previous page} \\
+   \hline
+   \textbf{ファイル名} & \textbf{内容} \\
+   \hline
+   \endhead
+   \hline
+   \multicolumn{2}{r}{\small\sl table continued on next page}
+   \\
+   \endfoot
+   \hline
+   \endlastfoot
+   \hline
+   BondCreator.java &
+   ボンドを生成するクラス \\
+   Coordinate.java &
+   xyz座標から曲座標系への返還 \\
+   Exponent.java & \\
+   InvMat.java &
+   逆行列計算 \\
+   LUDecomposition.java &
+   逆行列計算 \\
+   MyColorEditor.java & \\
+   MyColorRenderer.java &  \\
+   MyFileIO.java &
+   Akiraファイル用のFile IO \\
+   MyFilter.java &
+   Openダイアログ用のフィルタ \\
+   MyOpen.java &
+   AkiraViewerでのOpenダイアログ \\
+   PairList.java &
+   リストを生成する \\
+   SlideInNotification.java &
+   スライドインする警告を実装している \\
+   Tokens.java &
+   文字列分解用のクラス \\
+   colorpicker/ &
+   colorpicker用のクラス \\
+  \end{longtable}
+
+  \begin{longtable}{l|l}
+   \caption{jar-lib/の構成}\label{table:jar-libs}
+   \\
+   \hline
+   \textbf{ファイル名} & \textbf{内容}
+   \endfirsthead
+   \multicolumn{2}{l}{\small\slshape continued from previous page} \\
+   \hline
+   \textbf{ファイル名} & \textbf{内容} \\
+   \hline
+   \endhead
+   \hline
+   \multicolumn{2}{r}{\small\sl table continued on next page}
+   \\
+   \endfoot
+   \hline
+   \endlastfoot
+   \hline
+   BareBonesBrowserLaunch.jar &
+   webブラウザを立ち上げる為に必要なライブラリ \\
+   TableLayout.jar &
+   レイアウト用のライブラリ \\
+   ant.jar &
+   アーカイブされたファイルを読み込む為に必要なもの \\
+   forms-1.2.1.jar &
+   RenderingWindowで使うステータスバー用のライブラリ \\
+   jlibeps.jar &
+   epsファイルを出力する為のファイル \\
+  \end{longtable}
+
+
+ \section{AkiraConverter}
+  mainクラスはAkiraConverter.javaです．
+  ここに書いてある流れをよく理解して欲しい．
+  このAkiraConverterクラスでは，データを読み込み，Akiraファイルに書き出します．
+  新たなデータフォーマットに対応するには，converter/reader以下に追加します．
+
+  Atomsクラスに値をセットする事です．
+  具体的には，h-matirx，原子種，座標，補助データをセットします．
+  \textbf{座標は実座標なので注意してください．}
+
+  \subsection{AkiraConverter.java}
+  設定ファイルを応じて，読み込み関数を切り替えます．
+  \subsection{converter/reader}
+  各種データフォーマットに対応した読み込みクラスが集まっています．
+  AkiraAscii.javaがスタンダードな読み込みクラスなので，新たに追加する場合はこれを参考にしてください．
+
+ \section{AkiraViewer}
+  これもメインクラスはAkiraViewer.javaです．
+  起動順は
+  \begin{enumerate}
+   \item AkiraViewer
+   \item Controler
+   \item ViewConfigWindow
+   \item RenderingWindow
+  \end{enumerate}
+  です．この順に読んでください．これらの昨日は
+
+  \begin{description}
+   \item[AkiraViewer] \mbox{} \\
+              Look\&Feelや，コマンドラインオプションを解析
+   \item[Controler] \mbox{} \\
+              実質的なメイン
+   \item[RenderingWindow] \mbox{} \\
+              描画
+   \item[ViewConfigWindow] \mbox {} \\
+              設定ファイルを編集
+  \end{description}
+  以下のセクションで，重要なファイルに対してコメントします．
+
+  \subsection{Controler.java}
+  各クラスはこのControllerクラスを経由して他のクラスの変数やメソッドを利用します．
+
+  \subsection{ViewConfig.java}
+  Viewerの設定変数が格納されているクラス．
+  これは丸ごと保存されます．
+  この値はViewerConfigWindowで編集されます．
+
+  \subsection{RenderingWindow.java}
+  OpenGLのセットアップを始め，実際に描画するメソッド(display)を持ちます．
+  新たに描画メソッドを追加したら，このクラスも修正しなければ反映されません．
+  各種描画メソッドの詳細はJavaDocを参照してください．
+
+  \begin{enumerate}
+   \item RenderingWindow() (コンストラクタ)
+   \item initialize()
+   \item init()
+   \item display()
+  \end{enumerate}
+  の順で読むとよいでしょう．
+
+
+ \appendix
+\chapter{antの使い方}
+javaのmakeです．build.xmlがmakefileに対応します．
+\chapter{Mercurialの使い方}
+mercurialは水銀なので，元素記号のhgがコマンド．
+なんて素敵なセンスなのでしょう．
+
+\section{設定ファイル}
+\subsection{.hgrc}
+これが無ければ，コミット出来ないようです．
+ \begin{screen}
+\begin{verbatim}
+[ui]
+username = YOUR_NAME <YOUR_EMAIL>
+verbose = True
+\end{verbatim}
+ \end{screen}
+
+\subsection{.hgignore}
+追跡を無視するファイルを書いておく．
+ \begin{screen}
+\begin{verbatim}
+syntax: glob
+*.class
+*.jar
+\end{verbatim}
+ \end{screen}
+
+\section{基本操作}
+最もよく使われると思われるコマンドについて説明する．
+\begin{description}
+ \item[hg pull] \mbox\\
+            サーバーに変更を問い合わせる．
+ \item[hg update] \mbox\\
+            pullしてきた変更を適用する．
+ \item[hg status] \mbox\\
+            現在の状況を確認する．
+ \item[hg commit] \mbox\\
+            コミット点を作る
+ \item[hg push] \mbox\\
+            変更をサーバーへ上げる．
+\end{description}
+
+
+
+
+%\chapter{JOGLについて}
+
+% \backmatter
+% \chapter{貢献者}
+% \begin{itemize}
+%  \item 小林亮
+%  \item 河野貴久
+% \end{itemize}
+
+\end{document}
