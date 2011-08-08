@@ -61,6 +61,7 @@ public class Atoms extends data.Atoms implements Renderer{
 
 
   private void addSTag(int i,int val){
+    if(i<0 || i>n)System.out.println("wowowow!");
     //val=1: delete
     //val=2: special color
     specialTag.put(i,val);

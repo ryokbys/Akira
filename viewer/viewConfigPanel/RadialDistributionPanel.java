@@ -313,11 +313,13 @@ public class RadialDistributionPanel extends JPanel implements ActionListener,
 
 
 
+  int filenum=0;
   private void write(){
     FileWriter fw;
     BufferedWriter bw;
     PrintWriter pw;
-    String filename=ctrl.getActiveRW().getFileDirectory()+"/RD.dat";
+    String filename=ctrl.getActiveRW().getFileDirectory()+String.format("%03dRD.d",filenum);
+    filenum++;
 
     try {
       //open

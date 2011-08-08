@@ -59,6 +59,7 @@ public class ViewConfig implements Serializable{
   public boolean isSelectionAngle;
   public boolean isSelectionTorsion;
   public boolean isDeletionMode;
+
   public boolean isRegionSelectMode;
   public boolean isRectangleSelectMode;
 
