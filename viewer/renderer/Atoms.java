@@ -377,7 +377,7 @@ public class Atoms extends data.Atoms implements Renderer{
                         pcolor, 0 );
     rw.gl.glPushMatrix();
     rw.gl.glTranslatef( r[id][0],r[id][1],r[id][2] );
-    rw.glut.glutWireSphere( vconf.tagRadius[vtag[id]]*1.08, 6, 6 );
+    rw.glut.glutWireSphere( vconf.tagRadius[tag[id]-1]*1.1, 10, 10 );
     rw.gl.glPopMatrix();
     rw.gl.glEndList();
   }

@@ -362,7 +362,7 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
 
           //added by Mizukoshi
           if(vconf.isPBC){
-            float[] sdrij=mulH(atoms.hinv,drij);              
+            float[] sdrij=mulH(atoms.hinv,drij);
             for(int l=0;l<3;l++){
               if(sdrij[l]>0.5f) sdrij[l]=sdrij[l]-1.0f;
               if(sdrij[l]<-0.5f) sdrij[l]=sdrij[l]+1.0f;
@@ -387,7 +387,7 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
 
             //added by Mizukoshi
             if(vconf.isPBC){
-              float[] sdrik=mulH(atoms.hinv,drik);              
+              float[] sdrik=mulH(atoms.hinv,drik);
               for(int l=0;l<3;l++){
                 if(sdrik[l]>0.5f) sdrik[l]-=1.0f;
                 if(sdrik[l]<-0.5f) sdrik[l]+=1.0f;
