@@ -53,7 +53,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   static final public int renderingAtomDataIndexMAX=Const.DATA;//tag + data coloring
   public int renderingAtomDataIndex=0;//this means data index
 
-  private boolean isAtomSelecting=false;
+  //private boolean isAtomSelecting=false;
   private int pickedAtomID=-1;
 
   public boolean visibleBonds=false;
@@ -805,12 +805,14 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     //view point operation ends
 
     //pick
-    if(isAtomSelecting && (vconf.isSelectionInfo ||vconf.isSelectionLength  ||
-                           vconf.isSelectionAngle  ||vconf.isSelectionTorsion  ||
-                           vconf.isDeletionMode)){
+
+    if(//isAtomSelecting&&
+       (vconf.isSelectionInfo ||vconf.isSelectionLength  ||
+        vconf.isSelectionAngle  ||vconf.isSelectionTorsion  ||
+        vconf.isDeletionMode)){
 
       pickedAtomID = selector.getID(gl,glu,glut,atoms,vp,
-                                        pressedMouseX, pressedMouseY );
+                                    pressedMouseX, pressedMouseY );
 
       if(pickedAtomID>=0){
         System.out.println(String.format("picked id: %d",pickedAtomID));
@@ -837,7 +839,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
         if(vconf.isSelectionTorsion)System.out.println(sq.showTorsion());
       }
     }
-    isAtomSelecting=false;
+    //isAtomSelecting=false;
 
 
     //------draw objects
@@ -915,7 +917,9 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     if(vconf.isShowRing)ring.show();
 
     //picked atom
-    if(vconf.isSelectionInfo) atoms.showPickedAtom();
+    if(vconf.isSelectionInfo ||vconf.isSelectionLength  || vconf.isSelectionAngle  ||
+       vconf.isSelectionTorsion  ||vconf.isDeletionMode
+       ) atoms.showPickedAtom();
 
     //trj
     if(vconf.isTrjMode)atoms.trajectoryShow();
@@ -1199,7 +1203,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   }//mouseReleased
 
   public void mouseClicked( MouseEvent me ){
-    isAtomSelecting=true;
+    //isAtomSelecting=true;
   }//mouseClicked
 
   public void mouseDragged( MouseEvent me ){
