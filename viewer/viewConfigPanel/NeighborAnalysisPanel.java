@@ -35,11 +35,23 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
   private JCheckBox cbShowRing;
   private JSpinner spRingRangeMax;
   private JComboBox cmbRingType;
+  private JCheckBox cbPBC;
+
+  private static float[] mulH( float[][] h,float[] in ){
+    float[] out = new float[3];
+    for(int k=0; k<3; k++)
+      out[k] = (h[k][0]*in[0] +h[k][1]*in[1] +h[k][2]*in[2]);
+    return out;
+  }
 
   private void createPanel(){
     cbShowRing =new JCheckBox("Show Ring",vconf.isShowRing);
     cbShowRing.setFocusable(false);
     cbShowRing.addActionListener( this );
+
+    cbPBC =new JCheckBox("PBC?",vconf.isPBC);
+    cbPBC.setFocusable(false);
+    cbPBC.addActionListener( this );
 
     spRingRangeMax=new JSpinner(new SpinnerNumberModel(vconf.ringRangeMax, 3, null, 1));
     spRingRangeMax.setFocusable(false);
@@ -101,6 +113,9 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
     layout.putConstraint( SpringLayout.NORTH, cmbRingType, 0,SpringLayout.NORTH, ringCalLabel);
     layout.putConstraint( SpringLayout.WEST,  cmbRingType, 0,SpringLayout.EAST, ringCalLabel);
 
+    //PBC
+    layout.putConstraint( SpringLayout.NORTH, cbPBC, 5,SpringLayout.SOUTH, cmbRingType);
+    layout.putConstraint( SpringLayout.WEST,  cbPBC, 0,SpringLayout.WEST,ringCalLabel);
 
     //cna
     layout.putConstraint( SpringLayout.NORTH, cnaButton, 10,SpringLayout.NORTH, this);
@@ -150,6 +165,7 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
     add(cbShowRing);
     add(spRingRangeMax);
     add(ringRangeMaxLabel);
+    add(cbPBC);
 
     requestFocusInWindow();
   }
@@ -160,6 +176,7 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
     vconf.isShowRing=cbShowRing.isSelected();
     vconf.ringRangeMax=((Integer)spRingRangeMax.getValue()).intValue();
     vconf.ringCalType=cmbRingType.getSelectedIndex();
+    vconf.isPBC=cbPBC.isSelected();
 
     if( e.getSource() == cnaButton ){
       CNAStatistic();
@@ -193,7 +210,7 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
     if(ctrl.getActiveRW()==null)return;
     viewer.renderer.Atoms atoms =ctrl.getActiveRW().getAtoms();
     ArrayList<ArrayList<Integer>> lspr
-      = PairList.makePairList(atoms,ctrl.vconf.neighborAnalysisRcut,true,false);
+      = PairList.makePairList(atoms,ctrl.vconf.neighborAnalysisRcut,true,vconf.isPBC);
 
     ////
     int neighborMax=20;
@@ -304,7 +321,6 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
    */
   int filenum=0;
   private void average(){
-
     try {
       filenum++;
       FileWriter fw = new FileWriter(String.format("%03d-aveLength.d",filenum));
@@ -323,7 +339,7 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
       int maxNeighbor=4;//because of Si
 
       ArrayList<ArrayList<Integer>> lspr=
-        PairList.makeKthNearestPairList(atoms,ctrl.vconf.neighborAnalysisRcut,maxNeighbor,true,false);
+        PairList.makeKthNearestPairList(atoms,ctrl.vconf.neighborAnalysisRcut,maxNeighbor,true,vconf.isPBC);
 
       double aveLength=0.;
       int nLength=0;
@@ -341,12 +357,21 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
           int j=iList.get(jj);
           if(vconf.ringCalType==1 && atoms.tag[i]==atoms.tag[j])continue;
           //length
-          double drij[]=new double[3];
-          double rij2=0.0;
-          for(int l=0;l<3;l++){
-            drij[l]=atoms.r[j][l]-atoms.r[i][l];
-            rij2+=drij[l]*drij[l];
+          float drij[]=new float[3];
+          for(int l=0;l<3;l++)drij[l]=atoms.r[j][l]-atoms.r[i][l];
+
+          //added by Mizukoshi
+          if(vconf.isPBC){
+            float[] sdrij=mulH(atoms.hinv,drij);              
+            for(int l=0;l<3;l++){
+              if(sdrij[l]>0.5f) sdrij[l]=sdrij[l]-1.0f;
+              if(sdrij[l]<-0.5f) sdrij[l]=sdrij[l]+1.0f;
+            }
+            drij=mulH(atoms.h,sdrij);
           }
+          //
+          double rij2=drij[0]*drij[0]+drij[1]*drij[1]+drij[2]*drij[2];
+
           double rij=Math.sqrt(rij2);
           nLength++;
           aveLength+=rij;
@@ -357,12 +382,21 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
             if(k<=j)continue;
             if(atoms.tag[i]==atoms.tag[k])continue;
 
-            double drik[]=new double[3];
-            double rik2=0.0;
-            for(int l=0;l<3;l++){
-              drik[l]=atoms.r[k][l]-atoms.r[i][l];
-              rik2+=drik[l]*drik[l];
+            float drik[]=new float[3];
+            for(int l=0;l<3;l++)drik[l]=atoms.r[k][l]-atoms.r[i][l];
+
+            //added by Mizukoshi
+            if(vconf.isPBC){
+              float[] sdrik=mulH(atoms.hinv,drik);              
+              for(int l=0;l<3;l++){
+                if(sdrik[l]>0.5f) sdrik[l]-=1.0f;
+                if(sdrik[l]<-0.5f) sdrik[l]+=1.0f;
+              }
+              drik=mulH(atoms.h,sdrik);
             }
+            //
+            double rik2=drik[0]*drik[0]+drik[1]*drik[1]+drik[2]*drik[2];
+
             double rik=Math.sqrt(rik2);
 
             //angle
@@ -500,7 +534,7 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
 
     int maxNeighbor=4;//because of Si
     ArrayList<ArrayList<Integer>> lspr
-      = PairList.makeKthNearestPairList(atoms,ctrl.vconf.neighborAnalysisRcut,maxNeighbor,true,false);
+      = PairList.makeKthNearestPairList(atoms,ctrl.vconf.neighborAnalysisRcut,maxNeighbor,true,vconf.isPBC);
 
     int searchMaxLength=vconf.ringRangeMax;
     ArrayList<Integer> tracedList= new ArrayList<Integer>();
@@ -611,7 +645,7 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
 
     int maxNeighbor=4;//because of Si
     ArrayList<ArrayList<Integer>> lspr
-      = PairList.makeKthNearestPairList(atoms,ctrl.vconf.neighborAnalysisRcut,maxNeighbor,true,false);
+      = PairList.makeKthNearestPairList(atoms,ctrl.vconf.neighborAnalysisRcut,maxNeighbor,true,vconf.isPBC);
 
 
 

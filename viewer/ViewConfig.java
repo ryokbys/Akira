@@ -158,6 +158,7 @@ public class ViewConfig implements Serializable{
   //neighbor
   public float neighborAnalysisRcut;
   public boolean isShowRing;
+  public boolean isPBC;
   public int ringCalType;
   public int ringRangeMax;
 
@@ -228,6 +229,7 @@ public class ViewConfig implements Serializable{
   public void resetNeighbor(){
     neighborAnalysisRcut=1.8f;
     isShowRing=true;
+    isPBC=false;
     ringCalType=1;
     ringRangeMax=6;
   }
