@@ -166,8 +166,6 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     resetButton.setFocusable(false);
     resetButton.addActionListener( this );
 
-
-
     ///
     cbSelectionMode =new JCheckBox("Select Info",vconf.isSelectionInfo);
     cbSelectionMode.setFocusable(false);
@@ -184,11 +182,6 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     cbTorsion =new JCheckBox("Select Torsion",vconf.isSelectionTorsion);
     cbTorsion.setFocusable(false);
     cbTorsion.addChangeListener(this);
-
-
-
-
-
 
 
     tableModel = new MyTableModel( colNames, 0 );

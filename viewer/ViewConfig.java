@@ -60,8 +60,6 @@ public class ViewConfig implements Serializable{
   public boolean isSelectionTorsion;
   public boolean isDeletionMode;
 
-  public boolean isRegionSelectMode;
-  public boolean isRectangleSelectMode;
 
   //data
   public float  dataRange[][]  = new float[Const.DATA][2];
@@ -99,6 +97,8 @@ public class ViewConfig implements Serializable{
   public float   spherecutPos[]            = new float[3];
   public float   spherecutRadius;
   public boolean isSphereCut;
+  public boolean isRegionSelectMode;
+  public boolean isRectangleSelectMode;
 
   //volume rendering
   public int     volDataMesh[]          = new int[3];
