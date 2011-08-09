@@ -167,7 +167,7 @@ public class PairList{
           int jy=iy+idy;
           if(isConsiderPBC){
             if(jy<0)jy=ny-1;
-            if(jy>=nx)jy=0;;
+            if(jy>=ny)jy=0;;
           }else{
             if(jy<0 || jy>=ny)continue;
           }
