@@ -388,10 +388,12 @@ public class Atoms extends data.Atoms implements Renderer{
   public void deletePickedAtom(int id){
     System.out.println(String.format("deleted id: %d",id));
     addSTag(id,1);
+    setVisualTag();
     make();
   }
   public void changePickedAtomColor(int id){
     addSTag(id,2);
+    setVisualTag();
     make();
   }
 
