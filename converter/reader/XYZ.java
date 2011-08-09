@@ -32,6 +32,17 @@ public class XYZ{
     pTable.put("O", new Integer(8));
     pTable.put("F", new Integer(9));
     pTable.put("Ne",new Integer(10));
+    pTable.put("Na",new Integer(11));
+    pTable.put("Mg",new Integer(12));
+    pTable.put("Al",new Integer(13));
+    pTable.put("Si",new Integer(14));
+    pTable.put("P",new Integer(15));
+    pTable.put("S",new Integer(16));
+    pTable.put("Cl",new Integer(17));
+    pTable.put("Ar",new Integer(18));
+    pTable.put("K",new Integer(19));
+    pTable.put("Ca",new Integer(20));
+
 
     try {
       FileReader fr = new FileReader( fileName );
