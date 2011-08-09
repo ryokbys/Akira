@@ -54,7 +54,7 @@ public class ViewConfig implements Serializable{
   public float   atomAmb[]               = new float[4];
   public float   atomEmmission[]         = new float[4];
   public int     atomShineness;
-  public boolean isSelectionMode;
+  public boolean isSelectionInfo;
   public boolean isSelectionLength;
   public boolean isSelectionAngle;
   public boolean isSelectionTorsion;
@@ -1193,7 +1193,7 @@ public class ViewConfig implements Serializable{
     atomEmmission[0]=atomEmmission[1]=atomEmmission[2]=0.f;
     atomEmmission[3]=1.f;
     atomShineness=100;
-    isSelectionMode    = false;
+    isSelectionInfo    = false;
     isSelectionLength  = false;
     isSelectionAngle   = false;
     isSelectionTorsion = false;

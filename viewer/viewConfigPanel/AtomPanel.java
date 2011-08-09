@@ -39,7 +39,7 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
 
 
   public void stateChanged(ChangeEvent ce){
-    vconf.isSelectionMode=cbSelectionMode.isSelected();
+    vconf.isSelectionInfo=cbSelectionMode.isSelected();
     vconf.isSelectionLength=cbLength.isSelected();
     vconf.isSelectionAngle=cbAngle.isSelected();
     vconf.isSelectionTorsion=cbTorsion.isSelected();
@@ -169,19 +169,19 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
 
 
     ///
-    cbSelectionMode =new JCheckBox("Atom selection mode",vconf.isSelectionMode);
+    cbSelectionMode =new JCheckBox("Select Info",vconf.isSelectionInfo);
     cbSelectionMode.setFocusable(false);
     cbSelectionMode.addChangeListener(this);
 
-    cbLength =new JCheckBox("Length",vconf.isSelectionLength);
+    cbLength =new JCheckBox("Select Length",vconf.isSelectionLength);
     cbLength.setFocusable(false);
     cbLength.addChangeListener(this);
 
-    cbAngle =new JCheckBox("Angle",vconf.isSelectionAngle);
+    cbAngle =new JCheckBox("Select Angle",vconf.isSelectionAngle);
     cbAngle.setFocusable(false);
     cbAngle.addChangeListener(this);
 
-    cbTorsion =new JCheckBox("Torsion",vconf.isSelectionTorsion);
+    cbTorsion =new JCheckBox("Select Torsion",vconf.isSelectionTorsion);
     cbTorsion.setFocusable(false);
     cbTorsion.addChangeListener(this);
 
@@ -271,7 +271,7 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
                           SpringLayout.EAST, labelType);
     layout.putConstraint( SpringLayout.NORTH, cbLength, 0,
                           SpringLayout.SOUTH, cbSelectionMode);
-    layout.putConstraint( SpringLayout.WEST, cbLength, 20,
+    layout.putConstraint( SpringLayout.WEST, cbLength, 0,
                           SpringLayout.WEST, cbSelectionMode);
     layout.putConstraint( SpringLayout.NORTH, cbAngle, 0,
                           SpringLayout.SOUTH, cbLength);

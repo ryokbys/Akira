@@ -293,7 +293,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
       str+=String.format("data type: %d, ",renderingVolumeDataIndex);
     }
 
-    if(vconf.isSelectionMode) str+="atom selection mode, ";
+    if(vconf.isSelectionInfo) str+="atom selection mode, ";
     if(ctrl!=null && vconf.isTrjMode) str+="trajectory on, ";
     if(sequentialImageSave) str+="Sequential Shoting ";
 
@@ -373,7 +373,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     this.repaint();
   }
   public void setPickMode(){
-    vconf.isSelectionMode=!vconf.isSelectionMode;
+    vconf.isSelectionInfo=!vconf.isSelectionInfo;
     this.repaint();
   }
 
@@ -805,7 +805,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     //view point operation ends
 
     //pick
-    if(isAtomSelecting && (vconf.isSelectionMode ||vconf.isSelectionLength  ||
+    if(isAtomSelecting && (vconf.isSelectionInfo ||vconf.isSelectionLength  ||
                            vconf.isSelectionAngle  ||vconf.isSelectionTorsion  ||
                            vconf.isDeletionMode)){
 
@@ -872,7 +872,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
           }
         }
       }
-      if(pickedAtomID>=0 && (vconf.isSelectionMode ||
+      if(pickedAtomID>=0 && (vconf.isSelectionInfo ||
                              vconf.isSelectionLength  ||
                              vconf.isSelectionAngle  ||
                              vconf.isSelectionTorsion  ||
@@ -895,7 +895,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     }
 
     //lines
-    if(vconf.isSelectionMode ||vconf.isSelectionLength  ||
+    if(vconf.isSelectionInfo ||vconf.isSelectionLength  ||
        vconf.isSelectionAngle  ||vconf.isSelectionTorsion  ||vconf.isDeletionMode)sq.show();
 
     //atoms
@@ -915,7 +915,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     if(vconf.isShowRing)ring.show();
 
     //picked atom
-    if(vconf.isSelectionMode) atoms.showPickedAtom();
+    if(vconf.isSelectionInfo) atoms.showPickedAtom();
 
     //trj
     if(vconf.isTrjMode)atoms.trajectoryShow();

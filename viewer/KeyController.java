@@ -464,7 +464,7 @@ class KeyController extends KeyAdapter{
       }else if( ke.isMetaDown() ){
       }else if( ke.isAltDown() ){
       }else if( ke.isShiftDown() ){
-        ctrl.vconf.isSelectionMode=!ctrl.vconf.isSelectionMode;
+        ctrl.vconf.isSelectionInfo=!ctrl.vconf.isSelectionInfo;
       }else{
         rw.decrementFrame();
       }
