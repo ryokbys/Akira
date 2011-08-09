@@ -9,9 +9,9 @@ import converter.*;
 
 
 /**
- * XYZ-format file reader
+ * Chem3D-format file reader
  */
-public class XYZ{
+public class Chem3D{
   public static void conv(MyFileIO atomFileIO,ConvConfig cconf,
                           int itarget,int ithFrame){
 
@@ -63,11 +63,10 @@ public class XYZ{
 
 
         ithFrame++;
-        System.out.println(String.format(" Frame: %d/%d (%s:%s)",
+        System.out.println(String.format(" Frame: %d/%d (%s)",
                                          ithFrame,
                                          cconf.getTotalFrame(),
-                                         cconf.readFilePath.get(itarget),
-                                         cconf.readFileName.get(itarget)));
+                                         fileName));
         //-----1st line: # of atoms
         line = br.readLine();
         tokens.setString( line );
@@ -75,10 +74,6 @@ public class XYZ{
         elem = tokens.getTokens();
         epnum.setString( elem[0] );
         int natm=(int)epnum.getNumber();
-
-        //-----2nd line: maybe comment line?
-        line = br.readLine();
-
         //-----3rd to the end: species, x, y, z
         atoms.n=natm;
         atoms.nData=1;
@@ -91,26 +86,17 @@ public class XYZ{
           line = br.readLine();
           tokens.setString( line );
           elem = tokens.getTokens();
-          //atomic num.
+
           int is= ((Integer)pTable.get(elem[0])).intValue();
-          //epnum.setString( elem[0] );
-          // int is=(int)(epnum.getNumber());
           atoms.tag[i]=(byte)is;
 
           for(int j=0;j<3;j++){
-            epnum.setString( elem[j+1] );
+            epnum.setString( elem[j+2] );
             float tmp= (float)(epnum.getNumber());
             if(rmax<tmp) rmax=tmp;
             if(rmin>tmp) rmin=tmp;
             atoms.r[i][j]= tmp;
           }
-          /*
-           * System.out.println(String.format(" %d, %10.2f %10.2f %10.2f"
-           *                                  ,atoms.tag[i]
-           *                                  ,atoms.r[i][0]
-           *                                  ,atoms.r[i][1]
-           *                                  ,atoms.r[i][2]));
-           */
           atoms.data[i][0]= 1.f;
         }
         //Assumeing system box is cubic and large enough

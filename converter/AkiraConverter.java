@@ -92,6 +92,8 @@ public class AkiraConverter{
         Coord.conv(atomFileIO,cconf,itarget,ithFrame);
       }else if(format.equalsIgnoreCase("xyz")){
         XYZ.conv(atomFileIO,cconf,itarget,ithFrame);
+      }else if(format.equalsIgnoreCase("chem3d")){
+        Chem3D.conv(atomFileIO,cconf,itarget,ithFrame);
       }else if(format.equalsIgnoreCase("kvs")){
         KVS.conv(atomFileIO,cconf,itarget,ithFrame);
       }else if(format.equalsIgnoreCase("xcrysden")){
