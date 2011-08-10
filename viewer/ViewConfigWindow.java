@@ -58,23 +58,18 @@ public class ViewConfigWindow extends JFrame{
 
   JTabbedPane tabbedPane;
   private StatusPanel statusPanel;
+  private ManipulationPanel maniPanel;
   private AtomPanel atom;
   private DataPanel data;
   private BondPanel bond;
   private VectorPanel vec;
   private BoundaryPanel boundary;
-  private PlanePanel plane;
   private VolumeRenderPanel volumerender;
-  private LightPanel light;
-  private ColorTablePanel ctable;
-  private AnnotationPanel annotaionPanel;
-  private ViewPointPanel vpPanel;
+  private PlotterPanel plotterPanel;
   private ComboPanel combo;
   private TrajectoryPanel trj;
   private RadialDistributionPanel rdst;
-  private ExportPanel export;
-  private ManipulationPanel maniPanel;
-  private PlotterPanel plotterPanel;
+
 
 
   private void createTabbedPane(){
@@ -123,13 +118,13 @@ public class ViewConfigWindow extends JFrame{
                       new ImageIcon(this.getClass().getResource("/img/tab/bond.png")),
                       bond);
     //color table
-    ctable =new ColorTablePanel(ctrl);
+    ColorTablePanel ctable =new ColorTablePanel(ctrl);
     ctable.setFocusable(false);
     tabbedPane.addTab(null,
                       new ImageIcon(this.getClass().getResource("/img/tab/color.png")),
                       ctable);
     //annotaion
-    annotaionPanel=new AnnotationPanel(ctrl);
+    AnnotationPanel annotaionPanel=new AnnotationPanel(ctrl);
     annotaionPanel.setFocusable(false);
     tabbedPane.addTab(null,
                       new ImageIcon(this.getClass().getResource("/img/tab/annotation.png")),
@@ -161,7 +156,7 @@ public class ViewConfigWindow extends JFrame{
 
     if(ctrl.isEnjoyMode){
       //plane panel
-      plane=new PlanePanel(ctrl);
+      PlanePanel plane=new PlanePanel(ctrl);
       plane.setFocusable(false);
       tabbedPane.addTab(null,
                         new ImageIcon(this.getClass().getResource("/img/tab/plane.png")),
@@ -184,23 +179,29 @@ public class ViewConfigWindow extends JFrame{
                         new ImageIcon(this.getClass().getResource("/img/tab/neighbor.png")),
                         na);
       //export
-      export=new ExportPanel(ctrl);
+      ExportPanel export=new ExportPanel(ctrl);
       export.setFocusable(false);
       tabbedPane.addTab(null,
                         new ImageIcon(this.getClass().getResource("/img/tab/export.png")),
                         export);
       //light
-      light= new LightPanel(ctrl);
+      LightPanel light= new LightPanel(ctrl);
       light.setFocusable(false);
       tabbedPane.addTab(null,
                         new ImageIcon(this.getClass().getResource("/img/tab/light.png")),
                         light);
       //viewpoint
-      vpPanel=new ViewPointPanel(ctrl);
+      ViewPointPanel vpPanel=new ViewPointPanel(ctrl);
       vpPanel.setFocusable(false);
       tabbedPane.addTab(null,
                         new ImageIcon(this.getClass().getResource("/img/tab/viewpoint.png")),
                         vpPanel);
+      //MD
+      MDPanel md=new MDPanel(ctrl);
+      md.setFocusable(false);
+      tabbedPane.addTab(null,
+                        new ImageIcon(this.getClass().getResource("/img/tab/md.png")),
+                        md);
     }
 
 
