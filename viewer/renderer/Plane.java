@@ -56,7 +56,7 @@ public class Plane {
   }
 
   public void calAllVoronoi(){
-    ArrayList<ArrayList<Integer>> lspr= PairList.makePairList(atoms,vconf.planeRcut,true,false);
+    ArrayList<ArrayList<Integer>> lspr= PairList.makePairList(atoms,vconf.planeRcut,true,true);
     HashMap<Integer,Integer> count = new HashMap<Integer,Integer>();
 
     int face=0;

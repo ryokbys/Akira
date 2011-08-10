@@ -155,15 +155,17 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
     sphereRadius.setPreferredSize(new Dimension(60, 25));
     sphereRadius.addChangeListener(this);
 
-
+    vconf.isDeletionMode=false;
     cbDelete =new JCheckBox("Delete",vconf.isDeletionMode);
     cbDelete.setFocusable(false);
     cbDelete.addChangeListener(this);
 
+    vconf.isRegionSelectMode=false;
     cbRegionSelect =new JCheckBox("Region Select",vconf.isRegionSelectMode);
     cbRegionSelect.setFocusable(false);
     cbRegionSelect.addChangeListener(this);
 
+    vconf.isRectangleSelectMode=false;
     cbRectangleSelect =new JCheckBox("Rectangle Select",vconf.isRectangleSelectMode);
     cbRectangleSelect.setFocusable(false);
     cbRectangleSelect.addChangeListener(this);

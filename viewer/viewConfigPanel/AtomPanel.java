@@ -167,18 +167,22 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     resetButton.addActionListener( this );
 
     ///
+    vconf.isSelectionInfo=false;
     cbSelectionMode =new JCheckBox("Select Info",vconf.isSelectionInfo);
     cbSelectionMode.setFocusable(false);
     cbSelectionMode.addChangeListener(this);
 
+    vconf.isSelectionLength=false;
     cbLength =new JCheckBox("Select Length",vconf.isSelectionLength);
     cbLength.setFocusable(false);
     cbLength.addChangeListener(this);
 
+    vconf.isSelectionAngle=false;
     cbAngle =new JCheckBox("Select Angle",vconf.isSelectionAngle);
     cbAngle.setFocusable(false);
     cbAngle.addChangeListener(this);
 
+    vconf.isSelectionTorsion=false;
     cbTorsion =new JCheckBox("Select Torsion",vconf.isSelectionTorsion);
     cbTorsion.setFocusable(false);
     cbTorsion.addChangeListener(this);
