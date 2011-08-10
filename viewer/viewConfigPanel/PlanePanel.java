@@ -48,6 +48,7 @@ public class PlanePanel extends JPanel implements ActionListener{
   JCheckBox cbVoronoi;
   JCheckBox cbDelaunay;
   JCheckBox cbTetrahedron;
+  JButton calAllVoronoiButton;
 
   final String[] colNames = { "On/Off", "Nx", "Ny", "Nz",
                               "Px","Py","Pz",
@@ -100,11 +101,17 @@ public class PlanePanel extends JPanel implements ActionListener{
     applyButton.setFocusable(false);
     applyButton.addActionListener( this );
 
+    calAllVoronoiButton=new JButton("Cal. All Voronoi");
+    calAllVoronoiButton.setFocusable(false);
+    calAllVoronoiButton.addActionListener( this );
+
+
+
     //check box
     cbPickPlane =new JCheckBox("Pick Plane Mode",vconf.isSelectionPlaneMode);
     cbPickPlane.setFocusable(false);
 
-    cbVoronoi =new JCheckBox("Voronoi Mode",vconf.isVoronoiMode);
+    cbVoronoi =new JCheckBox("Pick Voronoi",vconf.isVoronoiMode);
     cbVoronoi.setFocusable(false);
 
     cbDelaunay =new JCheckBox("Delaunay Mode",vconf.isDelaunayMode);
@@ -169,6 +176,13 @@ public class PlanePanel extends JPanel implements ActionListener{
                           SpringLayout.NORTH, this);
     layout.putConstraint( SpringLayout.WEST, cbVoronoi, 10,
                           SpringLayout.EAST, resetButton);
+
+    layout.putConstraint( SpringLayout.NORTH, calAllVoronoiButton, 0,
+                          SpringLayout.NORTH, cbVoronoi);
+    layout.putConstraint( SpringLayout.WEST, calAllVoronoiButton, 10,
+                          SpringLayout.EAST, cbVoronoi);
+
+
     //tetrahedron mode
     layout.putConstraint( SpringLayout.NORTH, cbTetrahedron, 10,
                           SpringLayout.SOUTH,  cbVoronoi);
@@ -223,7 +237,7 @@ public class PlanePanel extends JPanel implements ActionListener{
     add(singlePlaneColorButton);
     add(tetraSpeciesLabel);
     add(rcutLabel);
-
+    add(calAllVoronoiButton);
   }
 
   boolean visiblePlane=false;
@@ -232,6 +246,10 @@ public class PlanePanel extends JPanel implements ActionListener{
       //resetparameters();
       setVars();
       setTable();
+    }else if( e.getSource() == calAllVoronoiButton){
+      if(ctrl.getActiveRW()!=null){
+        ctrl.getActiveRW().plane.calAllVoronoi();
+      }
     }else if( e.getSource() == applyButton ){
       updateList();
       ctrl.RWinRefresh();

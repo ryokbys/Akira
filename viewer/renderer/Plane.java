@@ -24,9 +24,9 @@ import viewer.*;
 import data.*;
 import viewer.renderer.*;
 
-  /**
-   * 平面を表示
-   */
+/**
+ * 平面を表示
+ */
 public class Plane {
 
   private final double SMALL=1e-2;
@@ -55,6 +55,45 @@ public class Plane {
 
   }
 
+  public void calAllVoronoi(){
+    ArrayList<ArrayList<Integer>> lspr= PairList.makePairList(atoms,vconf.planeRcut,true,false);
+    HashMap<Integer,Integer> count = new HashMap<Integer,Integer>();
+
+    int face=0;
+    for(int id=0;id<atoms.n;id++){
+      ArrayList<ArrayList<Float>> jVoronoi= makeVoronoi(id,lspr.get(id));
+
+      for(int i=0;i<jVoronoi.size();i++){
+        ArrayList<Float> v= jVoronoi.get(i);
+        int na=v.size()/3;
+        if(na<3)continue;
+        //count
+        face++;
+        if(count.containsKey(na)){
+          int inc=count.get(na);
+          inc++;
+          count.put(na,inc);
+        }else{
+          int inc=1;
+          count.put(na,inc);
+        }
+      }//end i
+    }//id
+      //display count
+      Set set = count.keySet();
+      Iterator iterator = set.iterator();
+      Integer object;
+      System.out.println("voronoi information");
+      System.out.println(String.format("  |- %d faces are included",face));
+      while(iterator.hasNext()){
+        object = (Integer)iterator.next();
+        System.out.println(String.format("  |-- %d-gon face: %d",
+                                         object.intValue(),
+                                         count.get(object)));
+        face+=count.get(object);
+      }//while
+
+  }//allVoronoi
   /**
    * 平面のdisplay listを作成
    */
@@ -560,12 +599,12 @@ public class Plane {
       if(tmp!=0.f){
         t=(ip(normal,point)-ip(normal,v2))/tmp;
         if(0.f<=t && t<=1.f){
-        tp[i0] = t*v1[i0]+(1-t)*v2[i0];
-        tp[i1] = t*v1[i1]+(1-t)*v2[i1];
-        tp[i2] = t*v1[i2]+(1-t)*v2[i2];
-        tmpV.add(tp[0]);
-        tmpV.add(tp[1]);
-        tmpV.add(tp[2]);
+          tp[i0] = t*v1[i0]+(1-t)*v2[i0];
+          tp[i1] = t*v1[i1]+(1-t)*v2[i1];
+          tp[i2] = t*v1[i2]+(1-t)*v2[i2];
+          tmpV.add(tp[0]);
+          tmpV.add(tp[1]);
+          tmpV.add(tp[2]);
         }
       }
 
@@ -788,8 +827,8 @@ public class Plane {
 
           boolean isVoronoi=true;
           for(int ii=0;ii<jList.size();ii++){
-          int i=jList.get(ii);
-          //for(int i=0;i<atoms.n;i++){
+            int i=jList.get(ii);
+            //for(int i=0;i<atoms.n;i++){
             if(i==j || i==k || i==l || i==m)continue;
             double[] rci={atoms.r[i][0]-c[0],
                           atoms.r[i][1]-c[1],
