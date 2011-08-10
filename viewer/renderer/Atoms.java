@@ -225,6 +225,7 @@ public class Atoms extends data.Atoms implements Renderer{
 
   public void resetVisualTag(){
     for( int i=0; i<n; i++ )vtag[i]=0;
+    specialTag.clear();
   }
 
   public void setVisualTag(){
