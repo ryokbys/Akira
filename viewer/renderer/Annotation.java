@@ -241,7 +241,46 @@ public class Annotation{
                    0.f,legendScale,vconf.txtColor);
       break;
 
-    case 1://1 text
+    case 1://2 text
+      //3 line
+      gl.glBegin( GL2.GL_LINES );
+      gl.glLineWidth(1.5f);
+      gl.glColor3fv( vconf.bgColor, 0 );
+      y = ystart;
+      gl.glVertex2f( isVLong*xstart+isHLong*y,
+                     isHLong*xstart+isVLong*y);
+      gl.glVertex2f( isVLong*xend+isHLong*y,
+                     isHLong*xend+isVLong*y);
+
+      y = yend;
+      gl.glVertex2f( isVLong*xstart+isHLong*y,
+                     isHLong*xstart+isVLong*y);
+      gl.glVertex2f( isVLong*xend+isHLong*y,
+                     isHLong*xend+isVLong*y);
+      gl.glEnd();
+
+      //2 number
+      gl.glColor3fv( vconf.txtColor, 0 );
+      y = ystart;
+      str = getFormat(format, range[0]*vconf.dataFactor );
+
+      //if(Math.abs(range[0])>1e-4)
+      renderString(str,
+                   isVLong*(xend+dx)+isHLong*(y+dy),
+                   isHLong*(xend+dx)+isVLong*(y+dy),
+                   0.f,legendScale,vconf.txtColor);
+
+
+      y = yend;
+      str = getFormat(format, range[1]*vconf.dataFactor );
+      //if(Math.abs(range[1])>1e-4)
+      renderString(str,
+                   isVLong*(xend+dx)+isHLong*(y+dy),
+                   isHLong*(xend+dx)+isVLong*(y+dy),
+                   0.f,legendScale,vconf.txtColor);
+      break;
+
+    case 2://1 text
       //3 line
       gl.glBegin( GL2.GL_LINES );
       gl.glLineWidth(1.5f);
@@ -272,7 +311,7 @@ public class Annotation{
                    0.f,legendScale,vconf.txtColor);
       break;
 
-    case 2://6text
+    case 3://6text
       //6text
       yinc = (yend-ystart)/6.0f;
       y = ystart;
