@@ -54,7 +54,7 @@ public class ViewConfigWindowMenuController implements ActionListener {
       updateManager.checkUpdate();
       updateManager.showDialog();
     }else if(ae.getSource() == miConv ){
-      AkiraConverter ac=new AkiraConverter();
+      AkiraConverter ac=new AkiraConverter(true);
     }else if(ae.getSource() == miOpen ){
       String str = (new MyOpen()).getOpenFilename();
       ctrl.createRenderingWindow(str);
@@ -67,8 +67,29 @@ public class ViewConfigWindowMenuController implements ActionListener {
       }
     }else if(ae.getSource() == miBackRW ){
       ctrl.vconf.isBackRW=!ctrl.vconf.isBackRW;
-      ctrl.getActiveRW().backRW.setVisible(ctrl.vconf.isBackRW);
-      ctrl.getActiveRW().refresh();
+      if(ctrl.getActiveRW()!=null){
+        ctrl.getActiveRW().backRW.setVisible(ctrl.vconf.isBackRW);
+        ctrl.getActiveRW().refresh();
+      }
+    }else if(ae.getSource() == miMaximize){
+      //maximize
+      Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+      ctrl.vcWin.setBounds(new Rectangle(2,  22, d.width-50, 250));
+      ctrl.getActiveRW().setBounds(new Rectangle(2,  277, d.width-50, d.height-280));
+    }else if(ae.getSource() == miTile){
+      //tiling
+      Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+      ctrl.vcWin.setBounds(new Rectangle(2,  22, d.width-50, 250));
+      int n=ctrl.getRWinNum();
+      int inc=0;
+      for(int i=0;i<ctrl.MAX_RWIN;i++){
+        if(ctrl.RWin[i]!=null){
+          ctrl.RWin[i].setBounds(new Rectangle(2+(d.width-50)/n*inc,277,
+                                               (d.width-50)/n, d.height-280));
+          inc++;
+        }
+      }
+
     }else{
       //if 'Window' menu
       for(int i=0; i<ctrl.MAX_RWIN; i++){
@@ -157,6 +178,7 @@ public class ViewConfigWindowMenuController implements ActionListener {
   //rendering window list
   JMenuItem[] miRenderWin=new JMenuItem[ctrl.MAX_RWIN];
   private JRadioButtonMenuItem miBackRW;
+  private JMenuItem miMaximize,miTile;
   private JMenu getWindowMenu(){
     //render window list
     JMenu mnWins = new JMenu( "Window" );
@@ -173,6 +195,16 @@ public class ViewConfigWindowMenuController implements ActionListener {
       mnWins.addSeparator();
       mnWins.add(miBackRW);
     }
+
+    //arrange
+    mnWins.addSeparator();
+    miMaximize= new JMenuItem("Maximize Window");
+    miMaximize.addActionListener( this );
+    mnWins.add(miMaximize);
+    miTile= new JMenuItem("Tile Window");
+    miTile.addActionListener( this );
+    mnWins.add(miTile);
+
     return mnWins;
   }
 
@@ -208,8 +240,8 @@ public class ViewConfigWindowMenuController implements ActionListener {
     miAddBookMark.addActionListener( this );
 
 
-    //miConv  = new JMenuItem( "Convert" );
-    //miConv.addActionListener( this );
+    miConv  = new JMenuItem( "Convert" );
+    miConv.addActionListener( this );
 
     miExit  = new JMenuItem( "Exit" );
     miExit.addActionListener( this );
@@ -219,6 +251,8 @@ public class ViewConfigWindowMenuController implements ActionListener {
     mnFile.add( mnRecentList );
     mnFile.add( mnBookMarkList );
     mnFile.add( miAddBookMark );
+    mnFile.addSeparator();
+    mnFile.add( miConv );
     mnFile.addSeparator();
     mnFile.add( miExit );
     return mnFile;

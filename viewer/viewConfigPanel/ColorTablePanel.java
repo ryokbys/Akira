@@ -43,7 +43,7 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     ctableType.addActionListener(this);
 
     JLabel ticsLabel=new JLabel("Tics Type");
-    String[] ticsStr = {"3","1","6","row"};
+    String[] ticsStr = {"3","2","1","6"};
     ticsType = new JComboBox(ticsStr);
     ticsType.setPreferredSize(new Dimension(150, 25));
     ticsType.addActionListener(this);

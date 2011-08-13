@@ -53,32 +53,32 @@ public class Annotation{
                        vconf.dataFormat[rw.renderingAtomDataIndex-1]
                        );
     }
-      if(vconf.isVisibleBondColorTable)
-        showDataLegend(rw.gl,rw.glu,rw.glut,rw.vconf,
-                       rw.vconf.ticsType,
-                       rw.bonds.ctable,
-                       vconf.bondColorTablePos,
-                       vconf.bondLegend,
-                       vconf.bondColorTableFormat
-                       );
+    if(vconf.isVisibleBondColorTable)
+      showDataLegend(rw.gl,rw.glu,rw.glut,rw.vconf,
+                     rw.vconf.ticsType,
+                     rw.bonds.ctable,
+                     vconf.bondColorTablePos,
+                     vconf.bondLegend,
+                     vconf.bondColorTableFormat
+                     );
 
-      if(vconf.isVisibleVecColorTable)
-        showDataLegend(rw.gl,rw.glu,rw.glut,rw.vconf,
-                       rw.vconf.ticsType,
-                       rw.vec.ctable,
-                       vconf.vecColorTablePos,
-                       vconf.vecLegend,
-                       vconf.vecColorTableFormat
-                       );
+    if(vconf.isVisibleVecColorTable)
+      showDataLegend(rw.gl,rw.glu,rw.glut,rw.vconf,
+                     rw.vconf.ticsType,
+                     rw.vec.ctable,
+                     vconf.vecColorTablePos,
+                     vconf.vecLegend,
+                     vconf.vecColorTableFormat
+                     );
 
-      if(vconf.isVisibleVolColorTable)
-        showDataLegend(rw.gl,rw.glu,rw.glut,rw.vconf,
-                       rw.vconf.ticsType,
-                       rw.volume.ctable,
-                       vconf.volColorTablePos,
-                       vconf.volLegend,
-                       vconf.volColorTableFormat
-                       );
+    if(vconf.isVisibleVolColorTable)
+      showDataLegend(rw.gl,rw.glu,rw.glut,rw.vconf,
+                     rw.vconf.ticsType,
+                     rw.volume.ctable,
+                     vconf.volColorTablePos,
+                     vconf.volLegend,
+                     vconf.volColorTableFormat
+                     );
 
 
 
@@ -219,13 +219,13 @@ public class Annotation{
       str = getFormat(format, range[0]*vconf.dataFactor );
 
       //if(Math.abs(range[0])>1e-4)
-        renderString(str,
-                     isVLong*(xend+dx)+isHLong*(y+dy),
-                     isHLong*(xend+dx)+isVLong*(y+dy),
-                     0.f,legendScale,vconf.txtColor);
+      renderString(str,
+                   isVLong*(xend+dx)+isHLong*(y+dy),
+                   isHLong*(xend+dx)+isVLong*(y+dy),
+                   0.f,legendScale,vconf.txtColor);
 
       y = ystart + Math.abs( range[0])/dr*(yend-ystart);
-      str = getFormat(format, 0.0f );
+      str = getFormat(format,range[1]/2.f*vconf.dataFactor);
 
       renderString(str,
                    isVLong*(xend+dx)+isHLong*(y+dy),
@@ -235,13 +235,52 @@ public class Annotation{
       y = yend;
       str = getFormat(format, range[1]*vconf.dataFactor );
       //if(Math.abs(range[1])>1e-4)
-        renderString(str,
-                     isVLong*(xend+dx)+isHLong*(y+dy),
-                     isHLong*(xend+dx)+isVLong*(y+dy),
-                     0.f,legendScale,vconf.txtColor);
+      renderString(str,
+                   isVLong*(xend+dx)+isHLong*(y+dy),
+                   isHLong*(xend+dx)+isVLong*(y+dy),
+                   0.f,legendScale,vconf.txtColor);
       break;
 
-    case 1://1 text
+    case 1://2 text
+      //3 line
+      gl.glBegin( GL2.GL_LINES );
+      gl.glLineWidth(1.5f);
+      gl.glColor3fv( vconf.bgColor, 0 );
+      y = ystart;
+      gl.glVertex2f( isVLong*xstart+isHLong*y,
+                     isHLong*xstart+isVLong*y);
+      gl.glVertex2f( isVLong*xend+isHLong*y,
+                     isHLong*xend+isVLong*y);
+
+      y = yend;
+      gl.glVertex2f( isVLong*xstart+isHLong*y,
+                     isHLong*xstart+isVLong*y);
+      gl.glVertex2f( isVLong*xend+isHLong*y,
+                     isHLong*xend+isVLong*y);
+      gl.glEnd();
+
+      //2 number
+      gl.glColor3fv( vconf.txtColor, 0 );
+      y = ystart;
+      str = getFormat(format, range[0]*vconf.dataFactor );
+
+      //if(Math.abs(range[0])>1e-4)
+      renderString(str,
+                   isVLong*(xend+dx)+isHLong*(y+dy),
+                   isHLong*(xend+dx)+isVLong*(y+dy),
+                   0.f,legendScale,vconf.txtColor);
+
+
+      y = yend;
+      str = getFormat(format, range[1]*vconf.dataFactor );
+      //if(Math.abs(range[1])>1e-4)
+      renderString(str,
+                   isVLong*(xend+dx)+isHLong*(y+dy),
+                   isHLong*(xend+dx)+isVLong*(y+dy),
+                   0.f,legendScale,vconf.txtColor);
+      break;
+
+    case 2://1 text
       //3 line
       gl.glBegin( GL2.GL_LINES );
       gl.glLineWidth(1.5f);
@@ -265,14 +304,14 @@ public class Annotation{
 
       //1text
       y = ystart + Math.abs(range[0])/dr*(yend-ystart);
-      str = getFormat(format, 0.0f );
+      str = getFormat(format,range[1]/2.f*vconf.dataFactor);
       renderString(str,
                    isVLong*(xend+dx)+isHLong*(y+dy),
                    isHLong*(xend+dx)+isVLong*(y+dy),
                    0.f,legendScale,vconf.txtColor);
       break;
 
-    case 2://6text
+    case 3://6text
       //6text
       yinc = (yend-ystart)/6.0f;
       y = ystart;

@@ -38,7 +38,8 @@ public class ExportPanel extends JPanel implements ActionListener,
   private JButton btnWritePOV;
   private JButton btnWriteEPS;
   private JButton btnWriteMDInit;
-  private JButton btnWriteQMCLST;
+  private JButton btnWriteQmclst;
+  private JButton btnWriteQmclstSiO2;
   private JProgressBar progressBar;
 
   private void createPanel(){
@@ -55,9 +56,13 @@ public class ExportPanel extends JPanel implements ActionListener,
     btnWriteMDInit.setFocusable(false);
     btnWriteMDInit.addActionListener( this );
 
-    btnWriteQMCLST=new JButton("qmclst");
-    btnWriteQMCLST.setFocusable(false);
-    btnWriteQMCLST.addActionListener( this );
+    btnWriteQmclst=new JButton("qmclst");
+    btnWriteQmclst.setFocusable(false);
+    btnWriteQmclst.addActionListener( this );
+
+    btnWriteQmclstSiO2=new JButton("qmclst-SiO2");
+    btnWriteQmclstSiO2.setFocusable(false);
+    btnWriteQmclstSiO2.addActionListener( this );
 
 
 
@@ -93,10 +98,15 @@ public class ExportPanel extends JPanel implements ActionListener,
                           SpringLayout.EAST, btnWriteEPS);
 
 
-    layout.putConstraint( SpringLayout.NORTH, btnWriteQMCLST, 0,
+    layout.putConstraint( SpringLayout.NORTH, btnWriteQmclst, 0,
                           SpringLayout.NORTH, btnWriteMDInit);
-    layout.putConstraint( SpringLayout.WEST, btnWriteQMCLST, 5,
+    layout.putConstraint( SpringLayout.WEST, btnWriteQmclst, 5,
                           SpringLayout.EAST, btnWriteMDInit);
+
+    layout.putConstraint( SpringLayout.NORTH, btnWriteQmclstSiO2, 0,
+                          SpringLayout.NORTH, btnWriteQmclst);
+    layout.putConstraint( SpringLayout.WEST, btnWriteQmclstSiO2, 5,
+                          SpringLayout.EAST, btnWriteQmclst);
 
 
 
@@ -111,7 +121,8 @@ public class ExportPanel extends JPanel implements ActionListener,
     this.add(btnWritePOV);
     this.add(btnWriteEPS);
     this.add(btnWriteMDInit);
-    add(btnWriteQMCLST);
+    add(btnWriteQmclst);
+    add(btnWriteQmclstSiO2);
     this.add(progressBar);
 
   }
@@ -137,8 +148,11 @@ public class ExportPanel extends JPanel implements ActionListener,
     }else if( e.getSource() == btnWriteMDInit ){
       outputFormat=2;
       myThread.start();
-    }else if( e.getSource() == btnWriteQMCLST ){
+    }else if( e.getSource() == btnWriteQmclst ){
       outputFormat=3;
+      myThread.start();
+    }else if( e.getSource() == btnWriteQmclstSiO2 ){
+      outputFormat=4;
       myThread.start();
     }
   }
@@ -165,7 +179,11 @@ public class ExportPanel extends JPanel implements ActionListener,
         break;
       case 3:
         file=String.format(workingDir+"/%04d.qmclst",fileNo);
-        writeQMCLSTFile(file);
+        writeQmclstFile(file);
+        break;
+      case 4:
+        file=String.format(workingDir+"/%04d.qmclst",fileNo);
+        writeQmclstSiO2File(file);
         break;
       }
       progressBar.setValue(atoms.n-1);
@@ -470,7 +488,7 @@ public class ExportPanel extends JPanel implements ActionListener,
 
   }
 
-  private void writeQMCLSTFile(String filePath){
+  private void writeQmclstFile(String filePath){
     FileWriter fw;
     BufferedWriter bw;
     PrintWriter pw;
@@ -483,6 +501,95 @@ public class ExportPanel extends JPanel implements ActionListener,
       bw = new BufferedWriter( fw );
       pw = new PrintWriter( bw );
 
+
+
+      int n=0;
+      for(int i=0;i<atoms.n;i++){
+        if(atoms.vtag[i]<0)continue;
+        n++;
+      }
+      System.out.println(String.format("output Natom: %d",n));
+
+      pw.println(String.format("%d",n));
+
+      for(int i=0;i<atoms.n;i++){
+        progressBar.setValue(i);
+        if(atoms.vtag[i]<0)continue;
+
+        float[] out = new float[3];
+        for(int k=0; k<3; k++) out[k] = atoms.hinv[k][0]*atoms.r[i][0]
+                                 + atoms.hinv[k][1]*atoms.r[i][1]
+                                 + atoms.hinv[k][2]*atoms.r[i][2];
+        pw.println(String.format("%e %e %e",out[0],out[1],out[2]));
+      }
+
+      pw.close();
+      bw.close();
+      fw.close();
+    }catch( IOException e ){
+      System.out.println("---> Failed to write MD init file");
+      //System.out.println(e.getMessage());
+    }
+
+  }
+  private void writeQmclstSiO2File(String filePath){
+    FileWriter fw;
+    BufferedWriter bw;
+    PrintWriter pw;
+    String str;
+
+    viewer.renderer.Atoms atoms=ctrl.getActiveRW().atoms;
+    // open
+    try{
+      fw = new FileWriter( filePath );
+      bw = new BufferedWriter( fw );
+      pw = new PrintWriter( bw );
+
+
+      double bond=1.6*1.3/0.529;
+      double bond2=bond*bond;
+
+      //-----cal coordinatio num
+      int[] icoord=new int[atoms.n];
+      for(int i=0;i<atoms.n;i++)icoord[i]=0;
+      for(int i=0;i<atoms.n-1;i++){
+        if(atoms.vtag[i]<0)continue;
+        for(int j=i+1;j<atoms.n;j++){
+          if(atoms.vtag[j]<0)continue;
+          float dr2=0;
+          for(int k=0; k<3; k++)
+            dr2+=(atoms.r[i][k]-atoms.r[j][k])*(atoms.r[i][k]-atoms.r[j][k]);
+          if(dr2< bond2){
+            icoord[i]++;
+            icoord[j]++;
+          }
+        }
+      }
+      //-----delete isolated Si
+      for(int i=0;i<atoms.n;i++){
+        if(atoms.vtag[i]<0)continue;
+        if(atoms.tag[i]==1 && icoord[i]<4)atoms.vtag[i]=-1;
+      }
+      //-----recal coordinatio num
+      for(int i=0;i<atoms.n;i++)icoord[i]=0;
+      for(int i=0;i<atoms.n-1;i++){
+        if(atoms.vtag[i]<0)continue;
+        for(int j=i+1;j<atoms.n;j++){
+          if(atoms.vtag[j]<0)continue;
+          float dr2=0;
+          for(int k=0; k<3; k++)
+            dr2+=(atoms.r[i][k]-atoms.r[j][k])*(atoms.r[i][k]-atoms.r[j][k]);
+          if(dr2< bond2){
+            icoord[i]++;
+            icoord[j]++;
+          }
+        }
+      }
+      //delete O
+      for(int i=0;i<atoms.n;i++){
+        if(atoms.vtag[i]<0)continue;
+        if(atoms.tag[i]==2 && icoord[i]<=1)atoms.vtag[i]=-1;
+      }
 
 
       int n=0;

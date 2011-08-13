@@ -22,7 +22,7 @@ import org.apache.tools.bzip2.*;
 public class AkiraConverter{
 
   public static void main( String[] args ){
-    AkiraConverter akiraconv =new AkiraConverter();
+    AkiraConverter akiraconv =new AkiraConverter(false);
   }
 
   //config file name
@@ -40,12 +40,17 @@ public class AkiraConverter{
    * and this measures elapsed time of myMain()
    */
   //constructor
-  public AkiraConverter(){
+  public AkiraConverter(boolean calledGUI){
     File configFilename = new File( convConfFile );
-    if( configFilename.exists() ){
-      startConv();
-    }else{
+
+    if(calledGUI){
       ConfCreater confCreater=new ConfCreater(this);
+    }else{
+      if( configFilename.exists() ){
+        startConv();
+      }else{
+        ConfCreater confCreater=new ConfCreater(this);
+      }
     }
   }
 
