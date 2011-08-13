@@ -733,14 +733,14 @@ public class Plane {
 
     for(int i=0;i<atoms.n;i++){
       if(atoms.tag[i]!=isp)continue;
-      if(atoms.vtag[i]<0)continue;
+      if(atoms.vtag[i]<0)continue;//skip invisible atom
 
       float[] ri=atoms.r[i];
       ArrayList<Integer> iList = lspr.get(i);
       ArrayList<Float> itetra= new ArrayList<Float>();
       for(int jj=0;jj<iList.size();jj++){
         int j= iList.get(jj);// obtain neighbor from lspr
-        if(atoms.vtag[j]<0)continue;
+        if(atoms.vtag[j]<0)continue;//skip invisible atom
         if(i==j)continue;
         float rij=0.f;
         for(int l=0;l<3;l++)rij+=(atoms.r[j][l]-ri[l])*(atoms.r[j][l]-ri[l]);
