@@ -26,7 +26,7 @@ import viewer.LF.*;
 public class Controller implements WindowListener{
 
   public ViewConfig vconf=new ViewConfig();
-  ViewConfigWindow vcWin;
+  public ViewConfigWindow vcWin;
   public int activeRWinID=-1;//activewindow ID
   public static final int MAX_RWIN=10;
   public RenderingWindow[] RWin=new RenderingWindow[MAX_RWIN];//instance array
@@ -48,6 +48,11 @@ public class Controller implements WindowListener{
     }else{
       return null;
     }
+  }
+  public int getRWinNum(){
+    int n=0;
+    for(int i=0;i<MAX_RWIN;i++) if(RWin[i]!=null)n++;
+    return n;
   }
 
   /* accesser starts */
