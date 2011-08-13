@@ -54,7 +54,7 @@ public class ViewConfigWindowMenuController implements ActionListener {
       updateManager.checkUpdate();
       updateManager.showDialog();
     }else if(ae.getSource() == miConv ){
-      AkiraConverter ac=new AkiraConverter();
+      AkiraConverter ac=new AkiraConverter(true);
     }else if(ae.getSource() == miOpen ){
       String str = (new MyOpen()).getOpenFilename();
       ctrl.createRenderingWindow(str);
@@ -240,8 +240,8 @@ public class ViewConfigWindowMenuController implements ActionListener {
     miAddBookMark.addActionListener( this );
 
 
-    //miConv  = new JMenuItem( "Convert" );
-    //miConv.addActionListener( this );
+    miConv  = new JMenuItem( "Convert" );
+    miConv.addActionListener( this );
 
     miExit  = new JMenuItem( "Exit" );
     miExit.addActionListener( this );
@@ -251,6 +251,8 @@ public class ViewConfigWindowMenuController implements ActionListener {
     mnFile.add( mnRecentList );
     mnFile.add( mnBookMarkList );
     mnFile.add( miAddBookMark );
+    mnFile.addSeparator();
+    mnFile.add( miConv );
     mnFile.addSeparator();
     mnFile.add( miExit );
     return mnFile;

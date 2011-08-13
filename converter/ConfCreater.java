@@ -37,11 +37,9 @@ public class ConfCreater extends JFrame implements ActionListener{
   //save file
   void saveConfFile(){
     try{
-      FileWriter fw = new FileWriter("./akiraconv.conf");
+      FileWriter fw = new FileWriter("./AkiraConverter.conf");
       fw.write(textArea.getText());
       fw.close();
-    } catch (FileNotFoundException ex){
-      ex.printStackTrace();
     } catch (IOException ex){
       ex.printStackTrace();
     }
@@ -60,7 +58,7 @@ public class ConfCreater extends JFrame implements ActionListener{
     //set text area
     try{
       BufferedReader br =
-        new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/converter/akiraconv.conf")));
+        new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/converter/AkiraConverter.conf")));
       String line;
       while ((line = br.readLine()) != null){
         textArea.append(line + "\n");
