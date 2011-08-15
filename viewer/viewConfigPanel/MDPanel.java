@@ -29,19 +29,73 @@ public class MDPanel extends JPanel implements ActionListener{
 
   }
 
+  MDFrame md;
   public void actionPerformed( ActionEvent ae){
-    if( ae.getSource() == applyButton){
-      new MDFrame();
+    if( ae.getSource() == loadButton){
+      md=null;
+      md= new MDFrame(ctrl);
+      md.eps=(Double)spEps.getValue();
+      md.sgm=(Double)spSgm.getValue();
+      md.mass=(Double)spMass.getValue();
+      md.dt=(Double)spDt.getValue();
+      md.dmp=(Double)spDmp.getValue();
+      md.set(ctrl.getActiveRW().atoms);
+    }else if( ae.getSource() == startButton){
+      if(md.fpsAnimator.isAnimating()){
+        md.fpsAnimator.stop();
+      }else{
+        md.fpsAnimator.start();
+      }
     }
   }
 
-  private JButton applyButton;
-  private void createPanel(){
-    applyButton = new JButton( "Apply" );
-    applyButton.addActionListener( this );
-    applyButton.setFocusable(false);
+  private JButton loadButton;
+  private JButton startButton;
+  private JSpinner spSgm,spEps,spDt,spMass,spDmp;
 
-    add(applyButton);
+  private void createPanel(){
+    loadButton = new JButton( "Load" );
+    loadButton.addActionListener( this );
+    loadButton.setFocusable(false);
+
+    startButton = new JButton( "Start" );
+    startButton.addActionListener( this );
+    startButton.setFocusable(false);
+
+    JLabel lSgm = new JLabel( "sgm [Å]:" );
+    spSgm = new JSpinner(new SpinnerNumberModel(3.41, 0., null, 1.));
+    spSgm.setFocusable(false);
+    spSgm.setPreferredSize(new Dimension(80, 25));
+    JLabel lEps = new JLabel( "eps [T]:" );
+    spEps = new JSpinner(new SpinnerNumberModel(120., 0., null, 50.));
+    spEps.setFocusable(false);
+    spEps.setPreferredSize(new Dimension(80, 25));
+    JLabel lMass = new JLabel( "mass [a.u.]:" );
+    spMass = new JSpinner(new SpinnerNumberModel(40., 0., null, 10.));
+    spMass.setFocusable(false);
+    spMass.setPreferredSize(new Dimension(80, 25));
+    JLabel lDt = new JLabel( "dt [a.u.]:" );
+    spDt = new JSpinner(new SpinnerNumberModel(40., 0., null, 10.));
+    spDt.setFocusable(false);
+    spDt.setPreferredSize(new Dimension(80, 25));
+    JLabel lDmp = new JLabel( "damp. fac.:" );
+    spDmp = new JSpinner(new SpinnerNumberModel(1., 0., 1, 0.01));
+    spDmp.setFocusable(false);
+    spDmp.setPreferredSize(new Dimension(80, 25));
+
+
+    add(loadButton);
+    add(startButton);
+    add(lSgm);
+    add(spSgm);
+    add(lEps);
+    add(spEps);
+    add(lMass);
+    add(spMass);
+    add(lDt);
+    add(spDt);
+    add(lDmp);
+    add(spDmp);
   }
 }
 
@@ -51,7 +105,9 @@ class MDFrame extends JPanel implements GLEventListener,
                                         MouseListener,
                                         MouseMotionListener,
                                         MouseWheelListener{
-  MDFrame(){
+  Controller ctrl;
+  MDFrame(Controller ctrl){
+    this.ctrl=ctrl;
     init();
     jframe.setTitle( "Molecular Dynamics: LJ" );
     jframe.setVisible( true );
@@ -89,7 +145,6 @@ class MDFrame extends JPanel implements GLEventListener,
     jframe.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
 
     fpsAnimator = new FPSAnimator( drawable, fps );
-    mdSetup();
   }
 
 
@@ -116,6 +171,8 @@ class MDFrame extends JPanel implements GLEventListener,
     gl.glEnable( GL2.GL_LINE_SMOOTH );
     gl.glEnable(GL2.GL_BLEND); //for alpha blending
     gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+
+
   }
 
   //called by OpenGL
@@ -129,12 +186,13 @@ class MDFrame extends JPanel implements GLEventListener,
     }
 
 
-    //procedure
+    //
     gl.glMatrixMode(GL2.GL_MODELVIEW);
     gl.glLoadIdentity(); // Clear
     //eye
-    glu.gluLookAt(eye[0],eye[1],eye[2],drc[0],
-                  drc[1],drc[2],up[0],up[1],up[2]);
+    glu.gluLookAt(eye[0],eye[1],eye[2],
+                  drc[0],drc[1],drc[2],
+                  up[0],up[1],up[2]);
     //set light
     setLight();
     gl.glPushMatrix();
@@ -147,7 +205,8 @@ class MDFrame extends JPanel implements GLEventListener,
 
 
     //make & show
-    makeAxis();
+    if(box_t==-1)makeBox();
+    gl.glCallList( box_t );
 
     if(fpsAnimator.isAnimating()) MDstep(100);
     atomshow();
@@ -163,55 +222,150 @@ class MDFrame extends JPanel implements GLEventListener,
     }
 
   }
+
   public void displayChanged(GLAutoDrawable drawable,
                              boolean modeChanged,
                              boolean deviceChanged){
   }
+  public void dispose(GLAutoDrawable drawable){
+  }
 
-  public float pos[] = { 1.0f, 0.0f, 0.0f, 0.0f };
-  public float dif[] = { 0.0f, 0.0f, 1.0f, 1.0f };
-  public float amb[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-  public float spc[] = { 0.9f, 0.9f, 0.9f, 1.0f };
-  public float emi[] = { 0.9f, 0.9f, 0.9f, 1.0f };
+  float pos[] = { 0.0f, 0.0f, 10.0f, 0.0f };
+  float dif[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+  float amb[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+  float spc[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+  float emi[] = { 0.0f, 0.0f, 0.0f, 1.0f };
   int shininess=50;
+
   void setLight(){
     gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_POSITION, pos, 0 );
     gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_AMBIENT,  amb, 0 );
     gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_DIFFUSE,  dif, 0 );
     gl.glLightfv( GL2.GL_LIGHT0, GL2.GL_SPECULAR, spc, 0 );
 
-    float[] color={1.f, 1.f, 1.f };
-    gl.glEnable(GL2.GL_COLOR_MATERIAL);
+    //gl.glEnable(GL2.GL_COLOR_MATERIAL);
+    //gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, spc, 0 );
+    //gl.glMateriali( GL2.GL_FRONT, GL2.GL_SHININESS, shininess );
 
-    gl.glMaterialfv(GL2.GL_FRONT_AND_BACK,GL2.GL_AMBIENT_AND_DIFFUSE,color,0);
-    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, spc, 0 );
-    gl.glMateriali( GL2.GL_FRONT, GL2.GL_SHININESS, shininess );
 
     gl.glEnable( GL2.GL_LIGHTING );
     gl.glEnable( GL2.GL_LIGHT0 );
 
   }
 
+  double[] chgScale( double[] in ){
+    double[] out = new double[3];
+    for(int k=0;k<3;k++) out[k]=(float)(h[k][0]*in[0] +h[k][1]*in[1] +h[k][2]*in[2]);
+    return out;
+  }
 
-  void makeAxis(){
-    gl.glBegin(GL2.GL_LINES);
-    gl.glLineWidth(2);
+  int box_t=-1;
+  void makeBox(){
+    double tp[] = new double[3];
+    double[] p;
 
-    gl.glColor3f(1.0f, 0.0f, 0.0f );
+    box_t = gl.glGenLists(1);
+    gl.glNewList( box_t, GL2.GL_COMPILE );
 
-    gl.glVertex3d(0., 0., 0.);
-    gl.glVertex3d(al[0], 0., 0.);
 
-    gl.glColor3f( 0.0f, 1.0f, 0.0f );
-    gl.glVertex3d(0., 0., 0.);
-    gl.glVertex3d(0., al[1], 0.);
+    gl.glLineWidth( ctrl.vconf.boxLineWidth );
+    gl.glColor4fv( ctrl.vconf.boxColor, 0);
 
-    gl.glColor3f( 0.0f, 0.0f, 1.0f );
-    gl.glVertex3d(0., 0., 0.);
-    gl.glVertex3d(0., 0., al[2]);
+    gl.glDisable( GL2.GL_LIGHTING );
+
+    gl.glBegin( GL2.GL_LINE_LOOP );
+    tp[0] = 0.f;
+    tp[1] = 0.f;
+    tp[2] = 0.f;
+    p = chgScale( tp );
+    gl.glVertex3dv( p, 0 );
+    tp[0] = 1f;
+    tp[1] = 0f;
+    tp[2] = 0.f;
+    p = chgScale( tp );
+    gl.glVertex3dv( p, 0 );
+    tp[0] = 1.f;
+    tp[1] = 1.f;
+    tp[2] = 0.f;
+    p = chgScale( tp );
+    gl.glVertex3dv( p, 0 );
+    tp[0] = 0.f;
+    tp[1] = 1.f;
+    tp[2] = 0.f;
+    p = chgScale( tp );
+    gl.glVertex3dv( p, 0 );
     gl.glEnd();
 
+    gl.glBegin( GL2.GL_LINE_LOOP );
+    tp[0] = 0.f;
+    tp[1] = 0.f;
+    tp[2] = 1.f;
+    p = chgScale( tp );
+    gl.glVertex3dv( p, 0 );
+    tp[0] = 1.f;
+    tp[1] = 0.f;
+    tp[2] = 1.f;
+    p = chgScale( tp );
+    gl.glVertex3dv( p, 0 );
+    tp[0] = 1.f;
+    tp[1] = 1.f;
+    tp[2] = 1.f;
+    p = chgScale( tp );
+    gl.glVertex3dv( p, 0 );
+    tp[0] = 0.f;
+    tp[1] = 1.f;
+    tp[2] = 1.f;
+    p = chgScale( tp );
+    gl.glVertex3dv( p, 0 );
+    gl.glEnd();
+
+    gl.glBegin( GL2.GL_LINES );
+    tp[0] = 0.f;
+    tp[1] = 0.f;
+    tp[2] = 0.f;
+    p = chgScale( tp );
+    gl.glVertex3dv( p, 0 );
+    tp[0] = 0.f;
+    tp[1] = 0.f;
+    tp[2] = 1.f;
+    p = chgScale( tp );
+    gl.glVertex3dv( p, 0 );
+    tp[0] = 1.f;
+    tp[1] = 0.f;
+    tp[2] = 0.f;
+    p = chgScale( tp );
+    gl.glVertex3dv( p, 0 );
+    tp[0] = 1.f;
+    tp[1] = 0.f;
+    tp[2] = 1.f;
+    p = chgScale( tp );
+    gl.glVertex3dv( p, 0 );
+    tp[0] = 1.f;
+    tp[1] = 1.f;
+    tp[2] = 0.f;
+    p = chgScale( tp );
+    gl.glVertex3dv( p, 0 );
+    tp[0] = 1.f;
+    tp[1] = 1.f;
+    tp[2] = 1.f;
+    p = chgScale( tp );
+    gl.glVertex3dv( p, 0 );
+    tp[0] = 0.f;
+    tp[1] = 1.f;
+    tp[2] = 0.f;
+    p = chgScale( tp );
+    gl.glVertex3dv( p, 0 );
+    tp[0] = 0.f;
+    tp[1] = 1.f;
+    tp[2] = 1.f;
+    p = chgScale( tp );
+    gl.glVertex3dv( p, 0 );
+    gl.glEnd();
+
+    gl.glEnable( GL2.GL_LIGHTING );
+    gl.glEndList();
   }
+
 
   public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h){
     width=w;
@@ -220,8 +374,8 @@ class MDFrame extends JPanel implements GLEventListener,
     gl.glViewport(0, 0, w, h);
     gl.glMatrixMode(GL2.GL_PROJECTION);
     gl.glLoadIdentity();
-    //glu.gluPerspective(50.0, (double)w/(double)h, .5, 100.0);
-    gl.glOrtho(-al[0],al[0],-al[0],al[0],0.5, al[0]);
+    glu.gluPerspective(50.0, (double)w/(double)h, .5, 100.0);
+    //gl.glOrtho(-h[0][0],h[0][0],-h[0][0],h[0][0],0.5,h[0][0]);
 
     gl.glMatrixMode(GL2.GL_MODELVIEW);
   }
@@ -322,6 +476,16 @@ class MDFrame extends JPanel implements GLEventListener,
         fpsAnimator.start();
       }
       break;
+    case KeyEvent.VK_N:
+      MDstep(100);
+      break;
+    case KeyEvent.VK_Z:
+      if( ke.isShiftDown() ){
+        scale-=0.5;
+      }else{
+        scale+=0.5;
+      }
+      break;
 
     }
     if ( drawable instanceof AWTGLAutoDrawable ) {
@@ -335,155 +499,252 @@ class MDFrame extends JPanel implements GLEventListener,
   }
 
   //-- MD --------------------------------
-  double dt=40,dt2=40*0.5;
+  int natm;
+  double[][] h=new double[3][3];
+  double[][] hinv=new double[3][3];
+  double[][] r,v,f;
+  byte[] tag;
 
-  int Nx=4,Ny=4,Nz=4;
-  int N=4*Nx*Ny*Nz;
-  double[][] x=new double[N][3];
-  double[][] v=new double[N][3];
-  double[][] f=new double[N][3];
-  int ntable=500;
-  double[][] pottable=new double[2][ntable];
-  int nlspr=200;
-  int[][] lspr=new int[N][nlspr];
+  double eps=120;
+  double sgm=3.41;
+  double mass=40;
+  double dt=40;
+  double dt2=dt*0.5;
+  double dmp=1.;
+  //boltzman fac
+  double fkb= 1.3806503e-23*(2.41889e-17*2.41889e-17)/9.1093897e-31/(0.5291772e-10*0.5291772e-10);
 
-  double eps=0.01032326/27.2116;
-  double sgm=3.41/0.529177;
-  double mass=1840*40;
-  double massi=1/mass;
-  double rc=2.5*sgm;
-  double sgm6=sgm*sgm*sgm*sgm*sgm*sgm;
-  double cunit=10.0399231105058;
-  double[] al={Nx*cunit,Ny*cunit,Nz*cunit};
-  double[][] fcc={{0.0, 0.0, 0.0 },{0.5, 0.5, 0.0 },
-                  {0.5, 0.0, 0.5 },{0.0, 0.5, 0.5 }};
-  double ekin,epot;
-  int inc;
-  double r,ri,ri6,r2;
-  double vrc,dvrc;
+  public void set(Atoms atoms){
+    for(int i=0;i<3;i++)for(int j=0;j<3;j++){
+        h[i][j]=atoms.h[i][j];
+        hinv[i][j]=atoms.hinv[i][j];
+      }
+    natm=atoms.n;
 
-  public void mdSetup(){
-    //init v
-    for(int i=0;i<N;i++) for(int j=0;j<3;j++) v[i][j]=0.;
+    r=new double[natm][3];
+    v=new double[natm][3];
+    f=new double[natm][3];
+    tag=new byte[natm];
+    for(int i=0;i<natm;i++){
+      //stop volume data
+      if(atoms.tag[i]==Const.VOLUME_DATA_TAG){
+        natm=i-1;
+        break;
+      }
+      tag[i]=atoms.tag[i];
+      for(int j=0;j<3;j++){
+        r[i][j]=atoms.hinv[j][0]*atoms.r[i][0]+
+          atoms.hinv[j][1]*atoms.r[i][1]+
+          atoms.hinv[j][2]*atoms.r[i][2];
+        //
+        v[i][j]=0;
+        f[i][j]=0;
+      }
+    }
 
-    //init x
-    inc=0;
-    for(int i=0;i<Nx;i++){
-      for(int j=0;j<Ny;j++){
-        for(int k=0;k<Nz;k++){
-          for(int l=0;l<4;l++){
-            x[inc][0]=(fcc[l][0]+i)*cunit;
-            x[inc][1]=(fcc[l][1]+j)*cunit;
-            x[inc][2]=(fcc[l][2]+k)*cunit;
-            inc++;
-          }
+    setupPot();
+    setHome();
+    makeList();
+  }
+
+
+  ArrayList<ArrayList<Integer>> lspr= new ArrayList<ArrayList<Integer>>();
+  void makeList(){
+    lspr.clear();
+
+    double[] dsr=new double[3];
+    double[] dr=new double[3];
+    for(int i=0;i<natm;i++){
+      ArrayList<Integer> iList = new ArrayList<Integer>();
+      for(int j=0;j<natm;j++){
+        if(i==j)continue;
+        for(int k=0;k<3;k++){
+          dsr[k]=r[j][k]-r[i][k];
+          if(dsr[k]>0.5)dsr[k]-=1.0;
+          if(dsr[k]<-0.5)dsr[k]+=1.0;
         }
-      }
+        dr=chgScale( dsr );
+        double r2=dr[0]*dr[0]+dr[1]*dr[1]+dr[2]*dr[2];
+        double rij=Math.sqrt( r2 );
+        if(rij>rc)continue;
+        iList.add(j);
+      }//j
+      lspr.add(iList);
     }
+  }
 
-    v[0][0]=0.0001;
-    v[0][1]=0.0001;
-    v[0][2]=0.0001;
+  double sgm6,rc,massi,rpot;
+  int ntable=1000;
+  double[][] pottable=new double[2][ntable];
+  void setupPot(){
+    sgm/=0.529177;//convert to a.u.
+    eps*=fkb;
+    mass*=1840;
+    dt2=dt/2;
+    massi=1/mass;
+    rc=2.5*sgm;
+    sgm6=sgm*sgm*sgm*sgm*sgm*sgm;
 
-    //mk pair list
-    for(int i=0;i<N;i++){
-      for(int j=0;j<nlspr;j++) lspr[i][j]=-1;
-      inc=0;
-      for(int j=i+1;j<N;j++){
-        for(int k=0;k<3;k++) dr[k]=x[j][k]-x[i][k];
-        r2=dr[0]*dr[0]+dr[1]*dr[1]+dr[2]*dr[2];
-        if(r2<rc*rc) lspr[i][inc++]=j;
-      }
-    }
     //cutoff
-    r=rc; ri=1/r; ri6=ri*ri*ri*ri*ri*ri;
-    r=sgm6*ri6;
-    vrc=eps*(r-1)*r;
-    dvrc=-24*eps*(2*r-1)*r*ri;
+    double ri=1/rc;
+    double ri6=ri*ri*ri*ri*ri*ri;
+    double r=sgm6*ri6;
+    double vrc=4*eps*(r-1)*r;
+    double dvrc=-24*eps*(2*r-1)*r*ri;
 
     //pot table
+    rpot=rc/ntable;
     for(int i=0;i<ntable;i++){
-      r=(double)i;
-      ri=1/r; ri6=ri*ri*ri*ri*ri*ri;
+      ri=1.0/rpot/(i+1);
+      ri6=ri*ri*ri*ri*ri*ri;
       r=sgm6*ri6;
-      pottable[0][i]=eps*(r-1)*r;
-      pottable[1][i]=-24*eps*(2*r-1)*r*ri;
+      pottable[0][i]=4*eps*(r-1)*r-vrc-dvrc*(r-rc);
+      pottable[1][i]=-24*eps*(2*r-1)*r*ri-dvrc;
     }
 
   }
 
-  double[] dr=new double[3];
-  public void get_force(){
-    int ir;
-    double r,fr,dv;
-
+  double epot;
+  double epot0=-123.;
+  public void getForce(){
     //init
     epot=0;
-    for(int i=0;i<N;i++)for(int j=0;j<3;j++)f[i][j]=0.;
+    for(int i=0;i<natm;i++){
+      f[i][0]=0.;
+      f[i][1]=0.;
+      f[i][2]=0.;
+    }
 
-    //get
-    for(int i=0;i<N;i++){
-      for(int jj=0;jj<nlspr;jj++){
-        int j=lspr[i][jj];
-        if(j<0)break; //if j<0, go next i
-        if(j<i)continue;
-        for(int k=0;k<3;k++) dr[k]=x[j][k]-x[i][k];
-        r2=dr[0]*dr[0]+dr[1]*dr[1]+dr[2]*dr[2];
-        r=Math.sqrt( r2 );
-        ir=(int)r; fr=r-ir;
+    int ir;
+    double fr,dv;
+    double[] dsr=new double[3];
+    double[] dr=new double[3];
+    //cal force
+    for(int i=0;i<natm-1;i++){
+      ArrayList<Integer> iList = lspr.get(i);
+      for(int jj=0;jj<iList.size();jj++){
+        int j=iList.get(jj);
+        if(j>i)continue;
+        for(int k=0;k<3;k++){
+          dsr[k]=r[j][k]-r[i][k];
+          if(dsr[k]>0.5)dsr[k]-=1.0;
+          if(dsr[k]<-0.5)dsr[k]+=1.0;
+        }
+
+        dr=chgScale( dsr );
+        double r2=dr[0]*dr[0]+dr[1]*dr[1]+dr[2]*dr[2];
+        double rij=Math.sqrt( r2 );
+        if(rij>rc)continue;
+        ir=(int)(rij/rpot)-1;
+        fr=rij/rpot-ir;
         if(ir>ntable)ir=ntable-2;
         epot+=fr*pottable[0][ir]+(1-fr)*pottable[0][ir+1];
         dv=fr*pottable[1][ir]+(1-fr)*pottable[1][ir+1];
-        dv/=r;
-        f[i][0]+=dv*dr[0]; f[i][1]+=dv*dr[1]; f[i][2]+=dv*dr[2];
-        f[j][0]-=dv*dr[0]; f[j][1]-=dv*dr[1]; f[j][2]-=dv*dr[2];
+        dv/=rij;
+        f[i][0]+=dv*dr[0];
+        f[i][1]+=dv*dr[1];
+        f[i][2]+=dv*dr[2];
+        f[j][0]-=dv*dr[0];
+        f[j][1]-=dv*dr[1];
+        f[j][2]-=dv*dr[2];
       }
     }
 
   }
 
-  public void MDstep(int nloop){
-    int iloop;
-    get_force();
-    for(iloop=0;iloop<nloop;iloop++){
-      //kick
-      for(int i=0;i<N;i++)for(int j=0;j<3;j++) v[i][j]=v[i][j]+f[i][j]*dt2*massi;
-      //up
-      for(int i=0;i<N;i++)for(int j=0;j<3;j++) x[i][j]=x[i][j]+v[i][j]*dt;
-      //get force
-      get_force();
-      //kick
-      for(int i=0;i<N;i++)for(int j=0;j<3;j++) v[i][j]=v[i][j]+f[i][j]*dt2*massi;
-    }
+  private double calEkin(){
+    double ekin=0.;
+    for(int i=0;i<natm;i++)
+      for(int j=0;j<3;j++){
+        ekin+=v[i][j]*v[i][j];
+      }
+    return ekin*mass*0.5;
   }
+  public void MDstep(int nloop){
+    getForce();
+    if(epot0==-123.)epot0=epot;
+    for(int iloop=0;iloop<nloop;iloop++){
+      //kick
+      for(int i=0;i<natm;i++)
+        for(int j=0;j<3;j++){
+          v[i][j]+=f[i][j]*dt2*massi;
+          v[i][j]*=dmp;
+        }
+
+      //update
+      for(int i=0;i<natm;i++)for(int j=0;j<3;j++) r[i][j]+=(hinv[j][0]*v[i][0]+hinv[j][1]*v[i][1]+hinv[j][2]*v[i][2])*dt;
+      //get force
+      getForce();
+      //kick
+      for(int i=0;i<natm;i++)for(int j=0;j<3;j++) v[i][j]+=f[i][j]*dt2*massi;
+    }
+    double ekin=calEkin();
+    System.out.println(String.format("ekin, epot, etot= %12.4e, %12.4f, %12.4f",ekin,epot-epot0,ekin+epot-epot0));
+  }
+
 
   public void atomshow(){
-    gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, spc, 0 );
-    gl.glMateriali( GL2.GL_FRONT, GL2.GL_SHININESS, shininess );
-    for(int i=0;i<N;i++){
-      float[] color = {0.f, 0.f, 1.f};
-      gl.glMaterialfv( GL2.GL_FRONT,GL2.GL_AMBIENT_AND_DIFFUSE,color, 0 );
+
+    double ri[]=new double[3];
+    for(int i=0;i<natm;i++){
+
+      gl.glMaterialfv( GL2.GL_FRONT,GL2.GL_DIFFUSE, ctrl.vconf.tagColor[tag[i]-1], 0 );
       gl.glPushMatrix();
-      gl.glTranslated( x[i][0],x[i][1],x[i][2] );
-      double r=1;
-      int sl=10,st=10;
-      glut.glutSolidSphere( r, sl, st );
+      ri=chgScale( r[i] );
+      gl.glTranslated(ri[0],ri[1],ri[2]);
+      glut.glutSolidSphere( ctrl.vconf.tagRadius[tag[i]-1],
+                            ctrl.vconf.tagSlice[tag[i]-1],
+                            ctrl.vconf.tagStack[tag[i]-1]);
       gl.glPopMatrix();
     }
+
+
   }
 
-  double eye[]={al[0]/2,al[1]/2,al[2]/2};
-  double drc[]={al[0]/2,al[1]/2,-al[2]};
+  double eye[]={1,1,1};
+  double drc[]={1,1,-1};
   double up[]={0.,1.,0.};
   public void setHome(){
-    eye[0]=al[0]/2; eye[1]=al[1]/2; eye[2]=al[2]/2;
-    drc[0]=al[0]/2; drc[1]=al[1]/2; drc[2]=-al[2];
+    eye[0]=h[0][0]/2; eye[1]=h[1][1]/2; eye[2]=h[2][2]*2;
+    drc[0]=h[0][0]/2; drc[1]=h[1][1]/2; drc[2]=-h[2][2]/2;
     up[0]=0; up[1]=1; up[2]=0;
     scale=1;
     angle_x=0; angle_y=0;
     trans_x=0; trans_y=0;
   }
-  public void dispose(GLAutoDrawable drawable){
+
+
+  public void setFCC(){
+    double cunit=10.0399231105058;
+    double[][] fcc={{0.0, 0.0, 0.0 },{0.5, 0.5, 0.0 },
+                    {0.5, 0.0, 0.5 },{0.0, 0.5, 0.5 }};
+
+    int Nx=4;
+    int Ny=4;
+    int Nz=4;
+    h[0][0]=cunit*Nx;
+    h[1][0]=0;
+    h[2][0]=0;
+    h[0][2]=0;
+    h[1][1]=cunit*Ny;
+    h[2][1]=0;
+    h[0][2]=0;
+    h[1][2]=0;
+    h[2][2]=cunit*Nz;
+    //init x
+    int inc=0;
+    for(int i=0;i<Nx;i++){
+      for(int j=0;j<Ny;j++){
+        for(int k=0;k<Nz;k++){
+          for(int l=0;l<4;l++){
+            r[inc][0]=(fcc[l][0]+i);
+            r[inc][1]=(fcc[l][1]+j);
+            r[inc][2]=(fcc[l][2]+k);
+            inc++;
+          }
+        }
+      }
+    }
   }
 
 }//MDFrame

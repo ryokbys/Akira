@@ -106,7 +106,7 @@ public class VolumeRenderPanel extends JPanel implements ActionListener{
     cbyz =new JCheckBox("YZ",vconf.isVolYZ);
     cbyz.setFocusable(false);
 
-    //shimada detail
+
     JLabel lData = new JLabel( "Data Mesh" );
     spDataX = new JSpinner(new SpinnerNumberModel(vconf.volDataMesh[0], 1, null, 10));
     spDataX.setFocusable(false);
