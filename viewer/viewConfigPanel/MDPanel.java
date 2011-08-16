@@ -708,7 +708,7 @@ class MDFrame extends JFrame implements GLEventListener,
         if(ri[j]<0.)ri[j]+=1.0;
       }
 
-      rii=chgScale( ri[i] );
+      rii=chgScale( ri );
       gl.glTranslated(rii[0],rii[1],rii[2]);
       glut.glutSolidSphere( ctrl.vconf.tagRadius[tag[i]-1],
                             ctrl.vconf.tagSlice[tag[i]-1],
