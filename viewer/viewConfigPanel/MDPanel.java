@@ -10,6 +10,7 @@ import javax.swing.event.*;
 import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
 import com.sun.opengl.util.*;
+import com.sun.opengl.util.awt.*;
 
 import com.sun.opengl.util.gl2.*;
 import javax.media.opengl.awt.*;
@@ -26,7 +27,6 @@ public class MDPanel extends JPanel implements ActionListener{
   public MDPanel(Controller ctrl){
     this.ctrl=ctrl;
     createPanel();
-
   }
 
   MDFrame md;
@@ -97,10 +97,10 @@ public class MDPanel extends JPanel implements ActionListener{
     add(lDmp);
     add(spDmp);
   }
-}
+}//MDPanel
 
-  ////////////
-class MDFrame extends JPanel implements GLEventListener,
+////////////
+class MDFrame extends JFrame implements GLEventListener,
                                         KeyListener,
                                         MouseListener,
                                         MouseMotionListener,
@@ -108,9 +108,18 @@ class MDFrame extends JPanel implements GLEventListener,
   Controller ctrl;
   MDFrame(Controller ctrl){
     this.ctrl=ctrl;
-    init();
-    jframe.setTitle( "Molecular Dynamics: LJ" );
-    jframe.setVisible( true );
+    panel = new GLCanvas();
+    panel.addGLEventListener( this );
+    panel.addKeyListener( this );
+
+    pane = this.getContentPane();
+    pane.add( panel );
+    this.setBounds(new Rectangle( 20, 20, 1024, 768 ) );
+    this.addKeyListener( this );
+    this.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
+
+    setTitle( "Molecular Dynamics: LJ" );
+    setVisible( true );
   }
 
   GLAutoDrawable drawable;
@@ -118,7 +127,6 @@ class MDFrame extends JPanel implements GLEventListener,
   GLU  glu;
   GLUT glut;
 
-  JFrame jframe;
   Container pane;
   GLCanvas panel;
 
@@ -129,25 +137,8 @@ class MDFrame extends JPanel implements GLEventListener,
   int width,height;
 
 
-  FPSAnimator fpsAnimator;
+  public FPSAnimator fpsAnimator;
   int fps=1;
-
-  //called by constructor
-  public void init(){
-    panel = new GLCanvas();
-    panel.addGLEventListener( this );
-    panel.addKeyListener( this );
-    jframe = new JFrame("Sun Earth Moon");
-    pane = jframe.getContentPane();
-    pane.add( panel );
-    jframe.setBounds(new Rectangle( 0, 0, 600, 600 ) );
-    jframe.addKeyListener( this );
-    jframe.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
-
-    fpsAnimator = new FPSAnimator( drawable, fps );
-  }
-
-
 
   //called by OpenGL
   public void init(GLAutoDrawable drawable){
@@ -172,8 +163,11 @@ class MDFrame extends JPanel implements GLEventListener,
     gl.glEnable(GL2.GL_BLEND); //for alpha blending
     gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 
+    fpsAnimator = new FPSAnimator( drawable, fps );
 
+    txtRenderer = new TextRenderer(ctrl.vconf.annotationFont, true, true);
   }
+  TextRenderer txtRenderer;
 
   //called by OpenGL
   public void display(GLAutoDrawable drawable){
@@ -195,14 +189,17 @@ class MDFrame extends JPanel implements GLEventListener,
                   up[0],up[1],up[2]);
     //set light
     setLight();
+
     gl.glPushMatrix();
 
     //move
-    gl.glTranslated( (double)trans_x,(double)trans_y,0 );
     gl.glRotatef(angle_x,1.0f,0.0f,0.0f);
     gl.glRotatef(angle_y,0.0f,1.0f,0.0f);
+    gl.glTranslated( (double)trans_x,(double)trans_y,0 );
     gl.glScalef( scale,scale,scale );
 
+
+    gl.glTranslated( -h[0][0]/2, -h[1][1]/2, -h[2][2]/2);
 
     //make & show
     if(box_t==-1)makeBox();
@@ -211,15 +208,18 @@ class MDFrame extends JPanel implements GLEventListener,
     if(fpsAnimator.isAnimating()) MDstep(100);
     atomshow();
 
+
     gl.glPopMatrix();
 
+    //rot center
+    if(draging)gl.glCallList( rotcent_t );
 
-    if(fpsAnimator.isAnimating()){
-      if ( drawable instanceof AWTGLAutoDrawable ) {
-        AWTGLAutoDrawable awtDrawable = (AWTGLAutoDrawable) drawable;
-        awtDrawable.repaint();
-      }
-    }
+
+    //rendering most front layer
+    gl.glClear( GL.GL_DEPTH_BUFFER_BIT );
+    showStatus();
+
+    //repaint();
 
   }
 
@@ -260,17 +260,23 @@ class MDFrame extends JPanel implements GLEventListener,
   }
 
   int box_t=-1;
+  int rotcent_t=-1;
   void makeBox(){
+    float color[] = { 0.0f, 1.0f, 1.0f, 0.9f };
+    rotcent_t = gl.glGenLists(1);
+    gl.glNewList( rotcent_t, GL2.GL_COMPILE );
+    gl.glMaterialfv( GL2.GL_FRONT_AND_BACK,GL2.GL_DIFFUSE,color, 0 );
+    glut.glutSolidSphere( h[0][0]/4., 30, 30 );
+    gl.glEndList();
+
     double tp[] = new double[3];
     double[] p;
 
     box_t = gl.glGenLists(1);
     gl.glNewList( box_t, GL2.GL_COMPILE );
 
-
     gl.glLineWidth( ctrl.vconf.boxLineWidth );
     gl.glColor4fv( ctrl.vconf.boxColor, 0);
-
     gl.glDisable( GL2.GL_LIGHTING );
 
     gl.glBegin( GL2.GL_LINE_LOOP );
@@ -389,6 +395,7 @@ class MDFrame extends JPanel implements GLEventListener,
   boolean mouseLButton;
   boolean mouseMButton;
   boolean mouseRButton;
+  boolean draging=false;
   public void mousePressed( MouseEvent me ) {
     prev_x=me.getX();
     prev_y=me.getY();
@@ -404,8 +411,11 @@ class MDFrame extends JPanel implements GLEventListener,
     else if ( (me.getModifiers() & me.BUTTON3_MASK) != 0 ) {
       mouseRButton = true;
     }
+    draging=true;
   }
   public void mouseReleased( MouseEvent me ) {
+    draging=false;
+    repaint();
   }
   public void mouseClicked( MouseEvent me ) {
   }
@@ -420,8 +430,10 @@ class MDFrame extends JPanel implements GLEventListener,
       //swich according to modifires for notebook.
       if((me.getModifiers() & InputEvent.SHIFT_MASK) !=0){
         //trans
-        if(Math.abs(dx) > Math.abs(dy)) trans_x += dx*0.1f;
-        else trans_y += -dy*0.1f;
+        //if(Math.abs(dx) > Math.abs(dy)) trans_x += dx*0.1f;
+        //else trans_y += -dy*0.1f;
+        trans_x += dx*0.01f;
+        trans_y += -dy*0.01f;
       }
       else if((me.getModifiers() & InputEvent.ALT_MASK) !=0){
         //zoom
@@ -450,12 +462,15 @@ class MDFrame extends JPanel implements GLEventListener,
       if(Math.abs(dx) > Math.abs(dy)) trans_x += dx*0.1f;
       else trans_y += -dy*0.1f;
     }
+    repaint();
+  }
+  public void repaint(){
     if ( drawable instanceof AWTGLAutoDrawable ) {
       AWTGLAutoDrawable awtDrawable = (AWTGLAutoDrawable) drawable;
       awtDrawable.repaint();
     }
-
   }
+
   public void mouseMoved( MouseEvent me ) {
   }
   public void mouseWheelMoved( MouseWheelEvent mwe ) {
@@ -464,7 +479,7 @@ class MDFrame extends JPanel implements GLEventListener,
   public void keyPressed( KeyEvent ke ) {
     switch ( ke.getKeyCode() ) {
     case KeyEvent.VK_ESCAPE:
-      jframe.dispose();
+      dispose();
       break;
     case KeyEvent.VK_H:
       setHome();
@@ -488,10 +503,7 @@ class MDFrame extends JPanel implements GLEventListener,
       break;
 
     }
-    if ( drawable instanceof AWTGLAutoDrawable ) {
-      AWTGLAutoDrawable awtDrawable = (AWTGLAutoDrawable) drawable;
-      awtDrawable.repaint();
-    }
+    repaint();
   }
   public void keyReleased( KeyEvent ke ) {
   }
@@ -684,14 +696,20 @@ class MDFrame extends JPanel implements GLEventListener,
 
 
   public void atomshow(){
-
     double ri[]=new double[3];
+    double rii[]=new double[3];
     for(int i=0;i<natm;i++){
 
       gl.glMaterialfv( GL2.GL_FRONT,GL2.GL_DIFFUSE, ctrl.vconf.tagColor[tag[i]-1], 0 );
       gl.glPushMatrix();
-      ri=chgScale( r[i] );
-      gl.glTranslated(ri[0],ri[1],ri[2]);
+      for(int j=0;j<3;j++){
+        ri[j]=r[i][j];
+        if(ri[j]>1.)ri[j]-=1.0;
+        if(ri[j]<0.)ri[j]+=1.0;
+      }
+
+      rii=chgScale( ri[i] );
+      gl.glTranslated(rii[0],rii[1],rii[2]);
       glut.glutSolidSphere( ctrl.vconf.tagRadius[tag[i]-1],
                             ctrl.vconf.tagSlice[tag[i]-1],
                             ctrl.vconf.tagStack[tag[i]-1]);
@@ -700,13 +718,54 @@ class MDFrame extends JPanel implements GLEventListener,
 
 
   }
+  private void showStatus(){
+    gl.glDisable( GL2.GL_LIGHTING );
+    gl.glDisable( GL2.GL_DEPTH_TEST );
+
+    gl.glPushMatrix();
+    gl.glMatrixMode( GL2.GL_PROJECTION );
+    gl.glPushMatrix();
+
+    gl.glLoadIdentity();
+    glu.gluOrtho2D( 0, width, 0, height );
+    gl.glMatrixMode( GL2.GL_MODELVIEW );
+    gl.glLoadIdentity();
+    gl.glColor3fv( ctrl.vconf.txtColor, 0  );
+
+    String str;
+    str=String.format("sgm= %.3f Å",sgm*0.529177);
+    renderString(str,15.f, height-20,0.f,1.f,ctrl.vconf.txtColor);
+    str=String.format("eps= %.1f K",eps/fkb);
+    renderString(str,15.f, height-40,0.f,1.f,ctrl.vconf.txtColor);
+    str=String.format("dmp= %.3f",dmp);
+    renderString(str,15.f, height-60,0.f,1.f,ctrl.vconf.txtColor);
+
+    gl.glMatrixMode( GL2.GL_PROJECTION );
+    gl.glPopMatrix();
+    gl.glMatrixMode( GL2.GL_MODELVIEW );
+    gl.glPopMatrix();
+
+    gl.glEnable( GL2.GL_DEPTH_TEST );
+    gl.glEnable( GL2.GL_LIGHTING );
+  }
+
+  void renderString(String str,float x,float y,float z,float scale,float[] color){
+    txtRenderer.begin3DRendering();
+    txtRenderer.setColor(color[0],color[1],color[2],color[3]);
+    txtRenderer.draw3D(str, x,y,z,scale);
+    txtRenderer.end3DRendering();
+  }
+
 
   double eye[]={1,1,1};
   double drc[]={1,1,-1};
   double up[]={0.,1.,0.};
   public void setHome(){
-    eye[0]=h[0][0]/2; eye[1]=h[1][1]/2; eye[2]=h[2][2]*2;
-    drc[0]=h[0][0]/2; drc[1]=h[1][1]/2; drc[2]=-h[2][2]/2;
+    eye[0]=eye[1]=0.;
+    eye[2]=h[2][2]*2;
+    drc[0]=drc[1]=0.;
+    drc[2]=-h[2][2];
+
     up[0]=0; up[1]=1; up[2]=0;
     scale=1;
     angle_x=0; angle_y=0;
