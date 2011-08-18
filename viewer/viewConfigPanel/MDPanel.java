@@ -40,6 +40,10 @@ public class MDPanel extends JPanel implements ActionListener{
       md.dt=(Double)spDt.getValue();
       md.dmp=(Double)spDmp.getValue();
       md.set(ctrl.getActiveRW().atoms);
+    }else if( ae.getSource() == testButton){
+      md=null;
+      md= new MDFrame(ctrl);
+      md.setFCC();
     }else if( ae.getSource() == startButton){
       if(md.fpsAnimator.isAnimating()){
         md.fpsAnimator.stop();
@@ -51,12 +55,16 @@ public class MDPanel extends JPanel implements ActionListener{
 
   private JButton loadButton;
   private JButton startButton;
+  private JButton testButton;
   private JSpinner spSgm,spEps,spDt,spMass,spDmp;
 
   private void createPanel(){
     loadButton = new JButton( "Load" );
     loadButton.addActionListener( this );
     loadButton.setFocusable(false);
+    testButton = new JButton( "Test" );
+    testButton.addActionListener( this );
+    testButton.setFocusable(false);
 
     startButton = new JButton( "Start" );
     startButton.addActionListener( this );
@@ -86,6 +94,7 @@ public class MDPanel extends JPanel implements ActionListener{
 
     add(loadButton);
     add(startButton);
+    add(testButton);
     add(lSgm);
     add(spSgm);
     add(lEps);
@@ -511,6 +520,7 @@ class MDFrame extends JFrame implements GLEventListener,
   }
 
   //-- MD --------------------------------
+  int step=0;
   int natm;
   double[][] h=new double[3][3];
   double[][] hinv=new double[3][3];
@@ -553,7 +563,6 @@ class MDFrame extends JFrame implements GLEventListener,
         f[i][j]=0;
       }
     }
-
     setupPot();
     setHome();
     makeList();
@@ -616,7 +625,7 @@ class MDFrame extends JFrame implements GLEventListener,
 
   }
 
-  double epot;
+  double ekin,epot;
   double epot0=-123.;
   public void getForce(){
     //init
@@ -676,6 +685,7 @@ class MDFrame extends JFrame implements GLEventListener,
     getForce();
     if(epot0==-123.)epot0=epot;
     for(int iloop=0;iloop<nloop;iloop++){
+      step++;
       //kick
       for(int i=0;i<natm;i++)
         for(int j=0;j<3;j++){
@@ -690,8 +700,8 @@ class MDFrame extends JFrame implements GLEventListener,
       //kick
       for(int i=0;i<natm;i++)for(int j=0;j<3;j++) v[i][j]+=f[i][j]*dt2*massi;
     }
-    double ekin=calEkin();
-    System.out.println(String.format("ekin, epot, etot= %12.4e, %12.4f, %12.4f",ekin,epot-epot0,ekin+epot-epot0));
+    ekin=calEkin();
+    //System.out.println(String.format("ekin, epot, etot= %12.4e, %12.4f, %12.4f",ekin,epot-epot0,ekin+epot-epot0));
   }
 
 
@@ -733,12 +743,18 @@ class MDFrame extends JFrame implements GLEventListener,
     gl.glColor3fv( ctrl.vconf.txtColor, 0  );
 
     String str;
-    str=String.format("sgm= %.3f Å",sgm*0.529177);
+    str=String.format("step= %d",step);
     renderString(str,15.f, height-20,0.f,1.f,ctrl.vconf.txtColor);
-    str=String.format("eps= %.1f K",eps/fkb);
+
+    str=String.format("ekin, epot, etot= %12.4e, %12.4e, %12.4e",ekin,epot-epot0,ekin+epot-epot0);
     renderString(str,15.f, height-40,0.f,1.f,ctrl.vconf.txtColor);
-    str=String.format("dmp= %.3f",dmp);
+
+    str=String.format("sgm= %.3f Å, eps= %.1f K",sgm*0.529177,eps/fkb);
     renderString(str,15.f, height-60,0.f,1.f,ctrl.vconf.txtColor);
+
+    str=String.format("dmp= %.3f",dmp);
+    renderString(str,15.f, height-80,0.f,1.f,ctrl.vconf.txtColor);
+
 
     gl.glMatrixMode( GL2.GL_PROJECTION );
     gl.glPopMatrix();
@@ -774,13 +790,21 @@ class MDFrame extends JFrame implements GLEventListener,
 
 
   public void setFCC(){
-    double cunit=10.0399231105058;
-    double[][] fcc={{0.0, 0.0, 0.0 },{0.5, 0.5, 0.0 },
-                    {0.5, 0.0, 0.5 },{0.0, 0.5, 0.5 }};
+    double cunit=3.41*1.4142/0.529;
+    double[][] fcc={{0.0, 0.0, 0.0 },
+                    {0.5, 0.5, 0.0 },
+                    {0.5, 0.0, 0.5 },
+                    {0.0, 0.5, 0.5 }};
 
     int Nx=4;
     int Ny=4;
     int Nz=4;
+    natm=4*Nx*Ny*Nz;
+    r=new double[natm][3];
+    v=new double[natm][3];
+    f=new double[natm][3];
+    tag=new byte[natm];
+
     h[0][0]=cunit*Nx;
     h[1][0]=0;
     h[2][0]=0;
@@ -790,20 +814,36 @@ class MDFrame extends JFrame implements GLEventListener,
     h[0][2]=0;
     h[1][2]=0;
     h[2][2]=cunit*Nz;
+    hinv[0][0]=1.0/h[0][0];
+    hinv[1][0]=0;
+    hinv[2][0]=0;
+    hinv[0][2]=0;
+    hinv[1][1]=1.0/h[1][1];
+    hinv[2][1]=0;
+    hinv[0][2]=0;
+    hinv[1][2]=0;
+    hinv[2][2]=1.0/h[2][2];
     //init x
     int inc=0;
     for(int i=0;i<Nx;i++){
       for(int j=0;j<Ny;j++){
         for(int k=0;k<Nz;k++){
           for(int l=0;l<4;l++){
-            r[inc][0]=(fcc[l][0]+i);
-            r[inc][1]=(fcc[l][1]+j);
-            r[inc][2]=(fcc[l][2]+k);
+            r[inc][0]=(fcc[l][0]+i)/Nx;
+            r[inc][1]=(fcc[l][1]+j)/Ny;
+            r[inc][2]=(fcc[l][2]+k)/Nz;
+            tag[inc]=1;
+            v[inc][0]=0.;v[inc][1]=0.;v[inc][2]=0.;
+            f[inc][0]=0.;f[inc][1]=0.;f[inc][2]=0.;
             inc++;
-          }
-        }
-      }
-    }
+          }//l
+        }//k
+      }//j
+    }//i
+    v[0][0]=1;
+    setupPot();
+    setHome();
+    makeList();
   }
 
 }//MDFrame
