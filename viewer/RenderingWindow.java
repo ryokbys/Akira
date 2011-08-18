@@ -1291,6 +1291,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     if( units != 0 ){
       int add = units/Math.abs( units );
       vp.setObjectScale( add );
+      vp.objCenter[2] = add/2;// improve!?
     }
     this.repaint();
   }
