@@ -475,9 +475,12 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     axis.setHome();
     this.repaint();
   }
+  char resetRotType='z';
   public void resetRotation(char ixyz){
-    vp.resetRotation(ixyz);
+    //vp.resetRotation(ixyz);
+    vp.setHome();
     axis.resetRotation(ixyz);
+    resetRotType=ixyz;
     this.repaint();
   }
   public void setVPSavedHome(){
@@ -754,6 +757,16 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     vp.lookAt();
 
     gl.glPushMatrix();
+
+    //reset roation
+    if(resetRotType=='x'){
+      gl.glMultMatrixf( vp.xMVM, 0 );
+      resetRotType='z';
+    }else if(resetRotType=='y'){
+      gl.glMultMatrixf( vp.yMVM, 0 );
+      resetRotType='z';
+    }
+
     //translate
     gl.glTranslatef( vp.objCenter[0],vp.objCenter[1],vp.objCenter[2] );
 

@@ -51,11 +51,11 @@ public class Viewpoint{
                             0.0f, 0.0f, 1.0f, 0.0f,
                             0.0f, 0.0f, 0.0f, 1.0f };
 
-  final float[] xMVM = { 0.0f, 0.0f, 1.0f, 0.0f,
+  public final float[] xMVM = { 0.0f, 0.0f, 1.0f, 0.0f,
                          1.0f, 0.0f, 0.0f, 0.0f,
                          0.0f, 1.0f, 0.0f, 0.0f,
                          0.0f, 0.0f, 0.0f, 1.0f };
-  final float[] yMVM = { -1.0f, 0.0f, 0.0f, 0.0f,
+  public final float[] yMVM = { -1.0f, 0.0f, 0.0f, 0.0f,
                          0.0f, 0.0f, 1.0f, 0.0f,
                          0.0f, 1.0f, 0.0f, 0.0f,
                          0.0f, 0.0f, 0.0f, 1.0f };

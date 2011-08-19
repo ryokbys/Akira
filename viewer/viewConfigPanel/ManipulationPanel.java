@@ -35,6 +35,10 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
 
     if(ae.getSource() == revertHomeButton){
       RW.setVPHome();
+    }else if(ae.getSource() == revertXButton){
+      RW.resetRotation('x');
+    }else if(ae.getSource() == revertYButton){
+      RW.resetRotation('y');
     }else if(ae.getSource() == revertSavedHomeButton){
       RW.setVPSavedHome();
     }else if(ae.getSource() == saveViewPointButton){
@@ -126,6 +130,8 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
   private JComboBox cmbImgFormat;
 
   JButton revertHomeButton;
+  JButton revertXButton;
+  JButton revertYButton;
   JButton revertSavedHomeButton;
   JButton saveViewPointButton;
   JPopupMenu revertSavedHomePopup;
@@ -177,6 +183,10 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
     new ImageIcon(this.getClass().getResource("/img/button/arrow_anticlockwise.png"));
   Icon icnHome=
     new ImageIcon(this.getClass().getResource("/img/button/home.png"));
+  Icon icnHomeX=
+    new ImageIcon(this.getClass().getResource("/img/button/homex.png"));
+  Icon icnHomeY=
+    new ImageIcon(this.getClass().getResource("/img/button/homey.png"));
   Icon icnDoc=
     new ImageIcon(this.getClass().getResource("/img/button/doc.png"));
   Icon icnDocSave=
@@ -221,10 +231,22 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
     revertHomeButton= new JButton(icnHome);
     revertHomeButton.setToolTipText("Revert to home position: h");
     revertHomeButton.setBorderPainted(true);
-    //revertHomeButton.setBorder(null);
     revertHomeButton.addMouseListener(this);
     revertHomeButton.setFocusable(false);
     revertHomeButton.addActionListener( this );
+
+    revertXButton= new JButton(icnHomeX);
+    revertXButton.setToolTipText("Revert to home position: h");
+    revertXButton.setBorderPainted(true);
+    revertXButton.setFocusable(false);
+    revertXButton.addActionListener( this );
+
+    revertYButton= new JButton(icnHomeY);
+    revertYButton.setToolTipText("Revert to home position: h");
+    revertYButton.setBorderPainted(true);
+    revertYButton.setFocusable(false);
+    revertYButton.addActionListener( this );
+
 
     revertSavedHomeButton= new JButton(icnDoc);
     revertSavedHomeButton.setToolTipText("Revert to saved position: shift+h");
@@ -511,6 +533,8 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
     add(revertHomeButton,      "14,3, f, f");
     add(revertSavedHomeButton, "15,3, f, f");
     add(saveViewPointButton,   "16,3, f, f");
+    add(revertXButton,      "14,4, f, f");
+    add(revertYButton,      "15,4, f, f");
 
     JLabel lAni= new JLabel("Anime");
     add(lAni,            "18,2, 20, 2");
