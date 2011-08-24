@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- Last Modified <2011-08-07 19:36:16 by NAKAMURA Takahide> -->
+<!-- Last Modified <2011-08-24 21:23:40 by NAKAMURA Takahide> -->
 
   <project name="AKIRA" default="runall" basedir=".">
 
@@ -30,6 +30,7 @@
     <!-- set classpath -->
     <path id="libpath_ref">
       <pathelement path="." />
+      <pathelement path="./plugin" />
     </path>
     <path id="ant_libpath_ref">
       <pathelement path="${ant_lib}" />
@@ -82,6 +83,7 @@
         <include name="tools/*.java" />
         <include name="tools/*/*.java" />
         <include name="data/*.java" />
+        <include name="plugin/*.java" />
         <include name="viewer/*.java" />
         <include name="viewer/**/*.java" />
         <classpath refid="jogl_libpath_ref" />
