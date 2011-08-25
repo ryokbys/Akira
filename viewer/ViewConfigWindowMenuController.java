@@ -152,7 +152,7 @@ public class ViewConfigWindowMenuController implements ActionListener {
     JMenuBar menuBar  = new JMenuBar();
     menuBar.add(getFileMenu());
     menuBar.add(getWindowMenu());
-    menuBar.add(getHelpMenu());
+    menuBar.add(getMiscMenu());
 
     return menuBar;
   }
@@ -160,20 +160,29 @@ public class ViewConfigWindowMenuController implements ActionListener {
 
   private JMenuItem miKeyHelp;
   private JMenuItem miManual;
-  private JMenuItem miLF;
+  //private JMenuItem miLF;
 
-  private JMenu getHelpMenu(){
-    JMenu menu = new JMenu( "Help" );
+  private JMenuItem miSetPluginDir;
+  private JMenuItem miConv;
+  private JMenuItem miUpdate;
 
-    miKeyHelp=new JMenuItem("Keys");
-    miKeyHelp.addActionListener( this );
+  private JMenu getMiscMenu(){
+    JMenu menu = new JMenu( "Misc." );
 
-    miManual=new JMenuItem("Manual (web)");
-    miManual.addActionListener( this );
     miAbout  = new JMenuItem( "About Akira" );
     miAbout.addActionListener( this );
+    miKeyHelp=new JMenuItem("Key Help");
+    miKeyHelp.addActionListener( this );
+    miManual=new JMenuItem("Manual (web)");
+    miManual.addActionListener( this );
+
     miUpdate  = new JMenuItem( "Check update" );
     miUpdate.addActionListener( this );
+
+    miSetPluginDir  = new JMenuItem( "Set Export Plugin Directory" );
+    miSetPluginDir.addActionListener( this );
+    miConv  = new JMenuItem( "Convert" );
+    miConv.addActionListener( this );
 
 
 
@@ -181,7 +190,11 @@ public class ViewConfigWindowMenuController implements ActionListener {
     menu.add(miKeyHelp);
     menu.add(miManual);
     menu.addSeparator();
+    menu.add( miSetPluginDir );
+    menu.add( miConv );
+    menu.addSeparator();
     menu.add(miUpdate);
+
     return menu;
   }
 
@@ -194,6 +207,16 @@ public class ViewConfigWindowMenuController implements ActionListener {
     //render window list
     JMenu mnWins = new JMenu( "Window" );
 
+
+
+    //arrange
+    miMaximize= new JMenuItem("Maximize Window");
+    miMaximize.addActionListener( this );
+    mnWins.add(miMaximize);
+    miTile= new JMenuItem("Tile Window");
+    miTile.addActionListener( this );
+    mnWins.add(miTile);
+    mnWins.addSeparator();
     for( int i=0; i<ctrl.MAX_RWIN; i++ ){
       miRenderWin[i]= new JMenuItem(String.format("%d: null",i));
       miRenderWin[i].addActionListener( this );
@@ -207,14 +230,6 @@ public class ViewConfigWindowMenuController implements ActionListener {
       mnWins.add(miBackRW);
     }
 
-    //arrange
-    mnWins.addSeparator();
-    miMaximize= new JMenuItem("Maximize Window");
-    miMaximize.addActionListener( this );
-    mnWins.add(miMaximize);
-    miTile= new JMenuItem("Tile Window");
-    miTile.addActionListener( this );
-    mnWins.add(miTile);
 
     return mnWins;
   }
@@ -228,15 +243,13 @@ public class ViewConfigWindowMenuController implements ActionListener {
   public static final int MAX_BOOKMARK=10;
   private JMenuItem[] miBookMark=new JMenuItem[MAX_BOOKMARK];
   private JMenuItem miAddBookMark;
-  private JMenuItem miSetPluginDir;
-  private JMenuItem miConv;
-  private JMenuItem miUpdate;
   private JMenuItem miExit;
 
   private JMenu getFileMenu(){
-    JMenu mnFile = new JMenu( "File" );
+    JMenu menu = new JMenu( "File" );
 
     //main menu
+
     miOpen  = new JMenuItem( "Open" );
     miOpen.addActionListener( this );
 
@@ -246,31 +259,21 @@ public class ViewConfigWindowMenuController implements ActionListener {
     JMenu mnBookMarkList  = new JMenu( "Bookmarks" );
     setBookMarks(mnBookMarkList);
 
-
     miAddBookMark  = new JMenuItem( "Bookmark The Most Front Window" );
     miAddBookMark.addActionListener( this );
-
-
-    miSetPluginDir  = new JMenuItem( "Set Export Plugin Directory" );
-    miSetPluginDir.addActionListener( this );
-
-    miConv  = new JMenuItem( "Convert" );
-    miConv.addActionListener( this );
 
     miExit  = new JMenuItem( "Exit" );
     miExit.addActionListener( this );
 
     //add file menu
-    mnFile.add( miOpen );
-    mnFile.add( mnRecentList );
-    mnFile.add( mnBookMarkList );
-    mnFile.add( miAddBookMark );
-    mnFile.addSeparator();
-    mnFile.add( miSetPluginDir );
-    mnFile.add( miConv );
-    mnFile.addSeparator();
-    mnFile.add( miExit );
-    return mnFile;
+    menu.add( miOpen );
+    menu.addSeparator();
+    menu.add( mnRecentList );
+    menu.add( mnBookMarkList );
+    menu.add( miAddBookMark );
+    menu.addSeparator();
+    menu.add( miExit );
+    return menu;
   }
 
 

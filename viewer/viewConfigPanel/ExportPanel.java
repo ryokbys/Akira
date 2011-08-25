@@ -110,7 +110,7 @@ public class ExportPanel extends JPanel implements ActionListener{
 
     //add
     for(int i=0;i<plugins.size();i++){
-      JButton btn=new JButton(pluginName.get(i));
+      JButton btn=new JButton(pluginName.get(i)+" Format");
       btn.setActionCommand(pluginName.get(i));
       btn.addActionListener( this );
       add(btn);
@@ -195,8 +195,7 @@ public class ExportPanel extends JPanel implements ActionListener{
                                  hinv[k][0]*r[i][0]+
                                  hinv[k][1]*r[i][1]+
                                  hinv[k][2]*r[i][2];
-        pw.println(String.format("%d %e %e %e %e %e %e %e %e %e"
-                                 ,(int)tag[i],out[0],out[1],out[2]));
+        pw.println(String.format("%d %e %e %e",(int)tag[i],out[0],out[1],out[2]));
       }
 
       pw.close();
