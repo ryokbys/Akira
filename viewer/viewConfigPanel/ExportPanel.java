@@ -74,7 +74,7 @@ public class ExportPanel extends JPanel implements ActionListener{
       methodAddUrl.invoke(classLoader, classPath.toURI().toURL());
       System.out.println("added "+classPath);
     }catch(Exception e){
-      e.printStackTrace();
+      //e.printStackTrace();
     }
   }
   private void createPluginButton(){
@@ -101,11 +101,11 @@ public class ExportPanel extends JPanel implements ActionListener{
         }//if
       }//i
     } catch (ClassNotFoundException ex) {
-      System.out.println(" --noclass");
-      ex.printStackTrace();
+      //System.out.println(" --noclass");
+      //ex.printStackTrace();
     }catch(Exception ex){
-      System.out.println(" --exception");
-      ex.printStackTrace();
+      //System.out.println(" --exception");
+      //ex.printStackTrace();
     }
 
     //add
