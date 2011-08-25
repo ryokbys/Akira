@@ -31,8 +31,7 @@ class KeyController extends KeyAdapter{
     if(rw==null)return;
 
     //when caps_lock is on, atoms are invisible
-    if(ctrl.javaVer>=1.6)
-      rw.visibleAtoms=!Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
+    if(ctrl.javaVer>=1.6)rw.visibleAtoms=!Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
 
     switch ( ke.getKeyCode() ){
     case KeyEvent.VK_ESCAPE:

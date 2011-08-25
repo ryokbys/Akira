@@ -22,6 +22,8 @@ public class ViewConfig implements Serializable{
   public String configDir;
   public String configFile;
 
+  public String pluginDir;
+
   //manipulation
   public float   ControllerValue;
   public int     viewMode;
@@ -197,6 +199,7 @@ public class ViewConfig implements Serializable{
       configDir= System.getProperty("user.home")+"/.Akira";
       configFile= System.getProperty("user.home")+"/.Akira/viewer.config";
     }
+    pluginDir=System.getProperty("user.home")+"/myLocal/Akira/plugin";
     resetAll();
   }
 

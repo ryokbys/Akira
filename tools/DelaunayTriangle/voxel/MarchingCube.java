@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * MarchingCube
  * <pre>
- * ƒ}[ƒ`ƒ“ƒOEƒLƒ…[ƒu–@‚Å“™’l–Ê‚ğ¶¬‚·‚éƒNƒ‰ƒX
+ * ãƒãƒ¼ãƒãƒ³ã‚°ãƒ»ã‚­ãƒ¥ãƒ¼ãƒ–æ³•ã§ç­‰å€¤é¢ã‚’ç”Ÿæˆã™ã‚‹ã‚¯ãƒ©ã‚¹
  * </pre>
  * @author t.matsuoka
  * @version 0.1
@@ -17,9 +17,9 @@ public class MarchingCube {
   private final double[] vector;
 
   /**
-   * ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+   * ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
    *
-   * @param arg@ƒ{ƒNƒZƒ‹Šiq
+   * @param argã€€ãƒœã‚¯ã‚»ãƒ«æ ¼å­
    */
   public MarchingCube(Voxel arg){
     voxel=arg.getVoxel();
@@ -28,9 +28,9 @@ public class MarchingCube {
   }
 
   /**
-   * “™’l–Ê‚Ì¶¬
+   * ç­‰å€¤é¢ã®ç”Ÿæˆ
    *
-   * @param iso@’l
+   * @param isoã€€å€¤
    * @return
    */
   public double[][] createTrianglePoint3dArray(double iso){

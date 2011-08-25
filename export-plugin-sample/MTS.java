@@ -1,7 +1,7 @@
 package plugin;
 import viewer.viewConfigPanel.MyPluginInterface;
 
-public class MDInit implements MyPluginInterface {
+public class MTS implements MyPluginInterface {
   public void exec(String dir, int fn,
                    float[][] h,
                    float[][] hinv,
@@ -10,6 +10,6 @@ public class MDInit implements MyPluginInterface {
                    byte[] tag,
                    int[] vtag
                    ){
-    System.out.println("md init");
+    System.out.println("mts");
   }
 }

@@ -4,11 +4,6 @@ import java.io.*;
 import viewer.viewConfigPanel.MyPluginInterface;
 
 public class SiO2Qmclst implements MyPluginInterface {
-  //public void do(float[][] h, int n, float[][] r){
-  public void exec(){
-    System.out.println("qmclst");
-  }
-
   public void exec(String dir, int fn,
                    float[][] h,
                    float[][] hinv,

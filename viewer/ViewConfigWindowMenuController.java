@@ -53,6 +53,17 @@ public class ViewConfigWindowMenuController implements ActionListener {
     }else if(ae.getSource() == miUpdate ){
       updateManager.checkUpdate();
       updateManager.showDialog();
+
+    }else if(ae.getSource() == miSetPluginDir ){
+      JFileChooser chooser = new JFileChooser();
+      chooser.setDialogTitle("set plugin directory");
+      chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+      chooser.setAcceptAllFileFilterUsed(false);
+      int s = chooser.showOpenDialog( null );
+      if( s == JFileChooser.APPROVE_OPTION ){
+        ctrl.vconf.pluginDir= chooser.getSelectedFile().getAbsolutePath();
+        System.out.println("export plugin directory is reset to "+ctrl.vconf.pluginDir);
+      }
     }else if(ae.getSource() == miConv ){
       AkiraConverter ac=new AkiraConverter(true);
     }else if(ae.getSource() == miOpen ){
@@ -217,13 +228,13 @@ public class ViewConfigWindowMenuController implements ActionListener {
   public static final int MAX_BOOKMARK=10;
   private JMenuItem[] miBookMark=new JMenuItem[MAX_BOOKMARK];
   private JMenuItem miAddBookMark;
+  private JMenuItem miSetPluginDir;
   private JMenuItem miConv;
   private JMenuItem miUpdate;
   private JMenuItem miExit;
 
   private JMenu getFileMenu(){
     JMenu mnFile = new JMenu( "File" );
-
 
     //main menu
     miOpen  = new JMenuItem( "Open" );
@@ -240,6 +251,9 @@ public class ViewConfigWindowMenuController implements ActionListener {
     miAddBookMark.addActionListener( this );
 
 
+    miSetPluginDir  = new JMenuItem( "Set Export Plugin Directory" );
+    miSetPluginDir.addActionListener( this );
+
     miConv  = new JMenuItem( "Convert" );
     miConv.addActionListener( this );
 
@@ -252,6 +266,7 @@ public class ViewConfigWindowMenuController implements ActionListener {
     mnFile.add( mnBookMarkList );
     mnFile.add( miAddBookMark );
     mnFile.addSeparator();
+    mnFile.add( miSetPluginDir );
     mnFile.add( miConv );
     mnFile.addSeparator();
     mnFile.add( miExit );

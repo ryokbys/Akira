@@ -9,7 +9,7 @@ import tools.DelaunayTriangle.MeshData2D;
 /**
  * TetrahedronVoxel
  * <pre>
- * ”ñ\‘¢ŠiŽq‚©‚ç“à‘}•âŠ®‚Åƒ{ƒNƒZƒ‹ŠiŽq‚ð\’z‚·‚éƒNƒ‰ƒX
+ * éžæ§‹é€ æ ¼å­ã‹ã‚‰å†…æŒ¿è£œå®Œã§ãƒœã‚¯ã‚»ãƒ«æ ¼å­ã‚’æ§‹ç¯‰ã™ã‚‹ã‚¯ãƒ©ã‚¹
  * </pre>
  * @author t.matsuoka
  * @version 0.1
@@ -20,14 +20,14 @@ public class TetrahedronVoxel implements Voxel {
   private double[][][] voxel;
 
   /**
-   * ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+   * ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
    *
-   * @param del@ˆ—Ï‚ÝDelaunay2D
-   * @param height@‚‚³‚Ì”z—ñ
-   * @param scalar@ƒXƒJƒ‰[’l
-   * @param dx@ƒ{ƒNƒZƒ‹ŠiŽq‚ÌxŠÔŠu
-   * @param dy@ƒ{ƒNƒZƒ‹ŠiŽq‚ÌyŠÔŠu
-   * @param dz@ƒ{ƒNƒZƒ‹ŠiŽq‚ÌzŠÔŠu
+   * @param delã€€å‡¦ç†æ¸ˆã¿Delaunay2D
+   * @param heightã€€é«˜ã•ã®é…åˆ—
+   * @param scalarã€€ã‚¹ã‚«ãƒ©ãƒ¼å€¤
+   * @param dxã€€ãƒœã‚¯ã‚»ãƒ«æ ¼å­ã®xé–“éš”
+   * @param dyã€€ãƒœã‚¯ã‚»ãƒ«æ ¼å­ã®yé–“éš”
+   * @param dzã€€ãƒœã‚¯ã‚»ãƒ«æ ¼å­ã®zé–“éš”
    */
   public TetrahedronVoxel(Delaunay2D del,double[] height,double[][] scalar,
       double dx,double dy,double dz){

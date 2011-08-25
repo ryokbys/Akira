@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 /**
  * DelaunayEvent
  * <pre>
- * Delaunay•ªŠ„‚ÌƒCƒxƒ“ƒgƒNƒ‰ƒX
+ * Delaunayåˆ†å‰²ã®ã‚¤ãƒ™ãƒ³ãƒˆã‚¯ãƒ©ã‚¹
  * </pre>
  * @author t.matsuoka
  * @version 0.1
@@ -21,7 +21,7 @@ public class DelaunayEvent extends ActionEvent {
   private Status status;
 
   /**
-   * ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+   * ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
    *
    * @param arg0
    * @param st
@@ -35,7 +35,7 @@ public class DelaunayEvent extends ActionEvent {
   /**
    *
    *
-   * @param st@ƒXƒe[ƒ^ƒX
+   * @param stã€€ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
    * @return
    */
   private static String getCommand(Status st){
@@ -56,7 +56,7 @@ public class DelaunayEvent extends ActionEvent {
   }
 
   /**
-   * ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+   * ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
    *
    * @param arg0
    * @param arg1
@@ -67,7 +67,7 @@ public class DelaunayEvent extends ActionEvent {
   }
 
   /**
-   * i’»’l‚ğæ“¾
+   * é€²æ—å€¤ã‚’å–å¾—
    *
    * @return
    */
@@ -76,7 +76,7 @@ public class DelaunayEvent extends ActionEvent {
   }
 
   /**
-   * i’»’l‚ğİ’è
+   * é€²æ—å€¤ã‚’è¨­å®š
    *
    * @param arg
    */
@@ -85,18 +85,18 @@ public class DelaunayEvent extends ActionEvent {
   }
 
   /**
-   * ƒXƒe[ƒ^ƒX‚ğæ“¾
+   * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’å–å¾—
    *
-   * @return@ƒXƒe[ƒ^ƒX
+   * @returnã€€ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
    */
   public Status getStatus() {
     return status;
   }
 
   /**
-   * ƒXƒe[ƒ^ƒX‚ğİ’è
+   * ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’è¨­å®š
    *
-   * @param status@ƒXƒe[ƒ^ƒX
+   * @param statusã€€ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
    */
   public void setStatus(Status status) {
     this.status = status;

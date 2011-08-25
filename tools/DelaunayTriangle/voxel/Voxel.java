@@ -3,28 +3,28 @@ package tools.DelaunayTriangle.voxel;
 /**
  * Voxel
  * <pre>
- * Voxel‚ÌƒCƒ“ƒ^[ƒtƒFƒCƒX
+ * Voxelã®ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ã‚¤ã‚¹
  * </pre>
  * @author t.matsuoka
  * @version 0.1
  */
 public interface Voxel {
   /**
-   * ƒ{ƒNƒZƒ‹Šiqƒf[ƒ^‚ğæ“¾
+   * ãƒœã‚¯ã‚»ãƒ«æ ¼å­ãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
    *
    * @return
    */
   public double[][][] getVoxel();
 
   /**
-   * ƒ{ƒNƒZƒ‹“WŠJ•ûŒü‚ÌƒxƒNƒgƒ‹‚ğæ“¾
+   * ãƒœã‚¯ã‚»ãƒ«å±•é–‹æ–¹å‘ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’å–å¾—
    *
    * @return
    */
   public double[] getVoxelVector();
 
   /**
-   * ƒ{ƒNƒZƒ‹Šiq‚ÌŠî€“_‚ğæ“¾
+   * ãƒœã‚¯ã‚»ãƒ«æ ¼å­ã®åŸºæº–ç‚¹ã‚’å–å¾—
    *
    * @return
    */

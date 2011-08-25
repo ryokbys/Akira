@@ -7,6 +7,8 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import javax.swing.*;
 import javax.swing.event.*;
+import java.net.*;
+import java.lang.reflect.Method;
 
 import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
@@ -35,72 +37,76 @@ public class ExportPanel extends JPanel implements ActionListener{
     fileNo=0;
   }
 
+  private JButton btnWriteAkira;
   private JButton btnWritePOV;
   private JButton btnWriteEPS;
-  private JButton btnWriteMDInit;
-  private JButton btnWriteQmclst;
 
   private void createPanel(){
 
-    btnWritePOV=new JButton("POV");
+
+    btnWriteAkira=new JButton("Akira Format");
+    btnWriteAkira.setFocusable(false);
+    btnWriteAkira.addActionListener( this );
+
+    btnWritePOV=new JButton("POV Format");
     btnWritePOV.setFocusable(false);
     btnWritePOV.addActionListener( this );
 
-    btnWriteEPS=new JButton("EPS");
+    btnWriteEPS=new JButton("EPS Format");
     btnWriteEPS.setFocusable(false);
     btnWriteEPS.addActionListener( this );
 
-    btnWriteMDInit=new JButton("MD init");
-    btnWriteMDInit.setFocusable(false);
-    btnWriteMDInit.addActionListener( this );
 
-    btnWriteQmclst=new JButton("qmclst");
-    btnWriteQmclst.setFocusable(false);
-    btnWriteQmclst.addActionListener( this );
-
-    add(btnWritePOV);
+    add(btnWriteAkira);
     add(btnWriteEPS);
-    add(btnWriteMDInit);
-    add(btnWriteQmclst);
+    add(btnWritePOV);
+
     createPluginButton();
   }
   private ArrayList<MyPluginInterface> plugins = new ArrayList<MyPluginInterface>();
   private ArrayList<String> pluginName = new ArrayList<String>();
+  static void addClassPathToClassLoader(File classPath){
+    try{
+      URLClassLoader classLoader=(URLClassLoader) ClassLoader.getSystemClassLoader();
+      Class classClassLoader = URLClassLoader.class;
+      Method methodAddUrl = classClassLoader.getDeclaredMethod("addURL", URL.class);
+      methodAddUrl.setAccessible(true);
+      methodAddUrl.invoke(classLoader, classPath.toURI().toURL());
+      System.out.println("added "+classPath);
+    }catch(Exception e){
+      e.printStackTrace();
+    }
+  }
   private void createPluginButton(){
-    String dir = System.getProperty("user.dir")+"/plugin";
+    String dir=vconf.pluginDir;
+    System.out.println("export plugin: "+dir);
     try {
       File f = new File(dir);
       String[] files = f.list();
-      //System.out.println(String.format("list: %d",files.length));
       for (int i = 0; i < files.length; i++) {
-        //System.out.println(files[i]);
         if (files[i].endsWith(".class")){
+          //eliminate ".class"
           String classname = files[i].substring(0,files[i].length() - ".class".length());
           Class c = Class.forName("plugin."+classname);
-          //System.out.println("CHECK: " + classname);
-          Class[] ifs = c.getInterfaces();
+          Class[] ifs = c.getInterfaces();//interface name
           for(int j = 0; j < ifs.length; j++){
-            //System.out.println("CHECK: " + ifs[j]);
-            if (ifs[j].equals(MyPluginInterface.class)){
-              //System.out.println("**this is MyPlugin**");
+            if(ifs[j].equals(MyPluginInterface.class)){
+              addClassPathToClassLoader(new File(f.getAbsolutePath()+File.separator+files[i]));
               MyPluginInterface plg = (MyPluginInterface)c.newInstance();
               plugins.add(plg);
               pluginName.add(classname);
-              //System.out.println(classname+" added");
-              //plugin.doPlugin();
+              System.out.println("export plugin; "+classname+" is added");
             }
           }//j
-
-        }
-      }
+        }//if
+      }//i
     } catch (ClassNotFoundException ex) {
-      //System.out.println(" --noclass");
-      //ex.printStackTrace();
+      System.out.println(" --noclass");
+      ex.printStackTrace();
     }catch(Exception ex){
-      //System.out.println(" --exception");
-      //ex.printStackTrace();
+      System.out.println(" --exception");
+      ex.printStackTrace();
     }
-    //System.out.println("END.");
 
     //add
     for(int i=0;i<plugins.size();i++){
@@ -117,24 +123,22 @@ public class ExportPanel extends JPanel implements ActionListener{
     String dir=ctrl.getActiveRW().getFileDirectory();
     fileNo++;
 
-    if( e.getSource() == btnWritePOV ){
-      writePOVFile(dir,fileNo,
-                   atoms.h,atoms.hinv,atoms.n,atoms.r,
-                   atoms.tag,atoms.vtag);
+
+    if( e.getSource() == btnWriteAkira ){
+      writeAKiraFile(dir,fileNo,
+                     atoms.h,atoms.hinv,atoms.n,atoms.r,
+                     atoms.tag,atoms.vtag);
     }else if( e.getSource() == btnWriteEPS ){
       writeEPSFile(dir,fileNo,
                    atoms.h,atoms.hinv,atoms.n,atoms.r,
                    atoms.tag,atoms.vtag);
-    }else if( e.getSource() == btnWriteMDInit ){
-      writeMDInitFile(dir,fileNo,
-                      atoms.h,atoms.hinv,atoms.n,atoms.r,
-                      atoms.tag,atoms.vtag);
-    }else if( e.getSource() == btnWriteQmclst ){
-      writeQmclstFile(dir,fileNo,
-                      atoms.h,atoms.hinv,atoms.n,atoms.r,
-                      atoms.tag,atoms.vtag);
+    }else if( e.getSource() == btnWritePOV ){
+      writePOVFile(dir,fileNo,
+                   atoms.h,atoms.hinv,atoms.n,atoms.r,
+                   atoms.tag,atoms.vtag);
     }
 
+    //plugin
     for(int i=0;i<plugins.size();i++){
       if(e.getActionCommand().equals(pluginName.get(i))){
         (plugins.get(i)).exec(dir,fileNo,
@@ -142,6 +146,65 @@ public class ExportPanel extends JPanel implements ActionListener{
                               atoms.tag,atoms.vtag);
         break;
       }
+    }
+  }
+
+  private void writeAKiraFile(String dir,int fn,
+                              float[][] h,
+                              float[][] hinv,
+                              int n,
+                              float[][] r,
+                              byte[] tag,
+                              int[] vtag
+                              ){
+
+    String filePath=String.format(dir+"/%04d.akr",fn);
+
+    FileWriter fw;
+    BufferedWriter bw;
+    PrintWriter pw;
+    String str;
+
+    // open
+    try{
+      fw = new FileWriter( filePath );
+      bw = new BufferedWriter( fw );
+      pw = new PrintWriter( bw );
+
+
+
+      int nv=0;
+      for(int i=0;i<n;i++){
+        if(vtag[i]<0)continue;
+        nv++;
+      }
+      System.out.println(String.format("output Natom: %d",nv));
+
+      pw.println(String.format("%d %d %d %d",nv,0,0,0));
+      pw.println(String.format("%e %e %e",h[0][0],h[0][1],h[0][2]));
+      pw.println(String.format("%e %e %e",h[1][0],h[1][1],h[1][2]));
+      pw.println(String.format("%e %e %e",h[2][0],h[2][1],h[2][2]));
+
+      //shpere as atom
+      for(int i=0;i<n;i++){
+        //skip
+        if(vtag[i]<0)continue;
+
+        float[] out = new float[3];
+        for(int k=0; k<3; k++) out[k] =
+                                 hinv[k][0]*r[i][0]+
+                                 hinv[k][1]*r[i][1]+
+                                 hinv[k][2]*r[i][2];
+        pw.println(String.format("%d %e %e %e %e %e %e %e %e %e"
+                                 ,(int)tag[i],out[0],out[1],out[2]));
+      }
+
+      pw.close();
+      bw.close();
+      fw.close();
+    }catch( IOException e ){
+      System.out.println("---> Failed to write Akira file");
+      //System.out.println(e.getMessage());
     }
   }
 
@@ -393,119 +456,6 @@ public class ExportPanel extends JPanel implements ActionListener{
       fw.close();
     }catch( IOException e ){
       System.out.println("---> Failed to write POV file");
-      //System.out.println(e.getMessage());
-    }
-
-  }
-
-  private void writeMDInitFile(String dir, int fn,
-                               float[][] h,
-                               float[][] hinv,
-                               int n,
-                               float[][] r,
-                               byte[] tag,
-                               int[] vtag
-                               ){
-    String filePath=String.format(dir+"/%04d.init.d",fn);
-
-    FileWriter fw;
-    BufferedWriter bw;
-    PrintWriter pw;
-    String str;
-
-    // open
-    try{
-      fw = new FileWriter( filePath );
-      bw = new BufferedWriter( fw );
-      pw = new PrintWriter( bw );
-
-
-
-      int nv=0;
-      for(int i=0;i<n;i++){
-        if(vtag[i]<0)continue;
-        nv++;
-      }
-      System.out.println(String.format("output Natom: %d",nv));
-
-      pw.println(String.format("%d",n));
-      pw.println(String.format("%e %e %e",h[0][0],h[0][1],h[0][2]));
-      pw.println(String.format("%e %e %e",h[1][0],h[1][1],h[1][2]));
-      pw.println(String.format("%e %e %e",h[2][0],h[2][1],h[2][2]));
-
-      //shpere as atom
-      for(int i=0;i<n;i++){
-        //skip
-        if(vtag[i]<0)continue;
-
-        float[] out = new float[3];
-        for(int k=0; k<3; k++) out[k] =
-                                 hinv[k][0]*r[i][0]+
-                                 hinv[k][1]*r[i][1]+
-                                 hinv[k][2]*r[i][2];
-        pw.println(String.format("%e %e %e %e %e %e %e %e %e %e"
-                                 ,(float)tag[i],out[0],out[1],out[2]
-                                 ,0e0,0e0,0e0
-                                 ,out[0],out[1],out[2]
-                                 ));
-      }
-
-      pw.close();
-      bw.close();
-      fw.close();
-    }catch( IOException e ){
-      System.out.println("---> Failed to write MD init file");
-      //System.out.println(e.getMessage());
-    }
-
-  }
-
-  private void writeQmclstFile(String dir, int fn,
-                               float[][] h,
-                               float[][] hinv,
-                               int n,
-                               float[][] r,
-                               byte[] tag,
-                               int[] vtag
-                               ){
-    String filePath=String.format(dir+"/%04d.qmclst",fn);
-    FileWriter fw;
-    BufferedWriter bw;
-    PrintWriter pw;
-    String str;
-
-    // open
-    try{
-      fw = new FileWriter( filePath );
-      bw = new BufferedWriter( fw );
-      pw = new PrintWriter( bw );
-
-
-
-      int nv=0;
-      for(int i=0;i<n;i++){
-        if(vtag[i]<0)continue;
-        nv++;
-      }
-      System.out.println(String.format("output Natom: %d",nv));
-
-      pw.println(String.format("%d",n));
-
-      for(int i=0;i<n;i++){
-        if(vtag[i]<0)continue;
-
-        float[] out = new float[3];
-        for(int k=0; k<3; k++)
-          out[k] = hinv[k][0]*r[i][0]+hinv[k][1]*r[i][1]+hinv[k][2]*r[i][2];
-
-        pw.println(String.format("%e %e %e",out[0],out[1],out[2]));
-      }
-
-      pw.close();
-      bw.close();
-      fw.close();
-    }catch( IOException e ){
-      System.out.println("---> Failed to write MD init file");
       //System.out.println(e.getMessage());
     }
 

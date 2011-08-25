@@ -1,8 +1,8 @@
 package tools.DelaunayTriangle.voxel;
 
 
-//ƒƒ^ƒ{[ƒ‹‚ÌƒNƒ‰ƒX
-//’†S“_(Point3)‚ÆA•‚ğ—^‚¦‚Ü‚·
+//ãƒ¡ã‚¿ãƒœãƒ¼ãƒ«ã®ã‚¯ãƒ©ã‚¹
+//ä¸­å¿ƒç‚¹(Point3)ã¨ã€å¹…ã‚’ä¸ãˆã¾ã™
 public class MetaBall {
   //coodination point and Q
   double[] myPoint;
