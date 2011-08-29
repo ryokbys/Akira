@@ -29,6 +29,7 @@ public class Atoms extends data.Atoms implements Renderer{
 
   public boolean isSetVtag=false;
 
+
   //override
   public void allocate(int n){
     if(maxNatom==0 || maxNatom<n){

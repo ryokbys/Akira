@@ -1,6 +1,6 @@
-package viewer.viewConfigPanel;
+package viewer.viewConfigPanel.plugin;
 
-public interface MyPluginInterface {
+public interface ExportPluginInterface {
   public void exec(String dir, int fn,
                    float[][] h,
                    float[][] hinv,

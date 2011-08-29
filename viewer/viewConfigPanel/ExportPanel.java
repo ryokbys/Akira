@@ -21,7 +21,7 @@ import data.*;
 import tools.*;
 import viewer.renderer.*;
 import viewer.*;
-import viewer.viewConfigPanel.*;
+import viewer.viewConfigPanel.plugin.*;
 
 import org.sourceforge.jlibeps.epsgraphics.*;
 
@@ -58,12 +58,14 @@ public class ExportPanel extends JPanel implements ActionListener{
 
 
     add(btnWriteAkira);
-    add(btnWriteEPS);
-    add(btnWritePOV);
+    if(ctrl.isEnjoyMode){
+      add(btnWriteEPS);
+      add(btnWritePOV);
+    }
 
     createPluginButton();
   }
-  private ArrayList<MyPluginInterface> plugins = new ArrayList<MyPluginInterface>();
+  private ArrayList<ExportPluginInterface> plugins = new ArrayList<ExportPluginInterface>();
   private ArrayList<String> pluginName = new ArrayList<String>();
   static void addClassPathToClassLoader(File classPath){
     try{
@@ -90,9 +92,9 @@ public class ExportPanel extends JPanel implements ActionListener{
           Class c = Class.forName("plugin."+classname);
           Class[] ifs = c.getInterfaces();//interface name
           for(int j = 0; j < ifs.length; j++){
-            if(ifs[j].equals(MyPluginInterface.class)){
+            if(ifs[j].equals(ExportPluginInterface.class)){
               addClassPathToClassLoader(new File(f.getAbsolutePath()+File.separator+files[i]));
-              MyPluginInterface plg = (MyPluginInterface)c.newInstance();
+              ExportPluginInterface plg = (ExportPluginInterface)c.newInstance();
               plugins.add(plg);
               pluginName.add(classname);
               System.out.println("export plugin; "+classname+" is added");
@@ -147,7 +149,7 @@ public class ExportPanel extends JPanel implements ActionListener{
         break;
       }
     }
-  }
+  }//actionp
 
   private void writeAKiraFile(String dir,int fn,
                               float[][] h,

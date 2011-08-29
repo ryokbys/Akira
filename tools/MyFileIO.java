@@ -134,14 +134,15 @@ public class MyFileIO{
           dos.writeFloat( b.theta );
           dos.writeFloat( b.phi );
         }
-      }
-      Set set = bonds.CN.keySet();
-      Iterator iterator = set.iterator();
-      Integer object;
-      while(iterator.hasNext()){
-        object = (Integer)iterator.next();
-        dos.writeInt( object.intValue() );
-        dos.writeInt( bonds.CN.get(object) );
+
+        Set set = bonds.CN.keySet();
+        Iterator iterator = set.iterator();
+        Integer object;
+        while(iterator.hasNext()){
+          object = (Integer)iterator.next();
+          dos.writeInt( object.intValue() );
+          dos.writeInt( bonds.CN.get(object) );
+        }
       }
 
       dos.flush();
@@ -284,7 +285,6 @@ public class MyFileIO{
     rclose();
     ropen();
     readHeader(atoms);
-
   }
 
   void read(Atoms atoms, Bonds bonds){

@@ -1,8 +1,8 @@
 package plugin;
 import java.io.*;
-import viewer.viewConfigPanel.MyPluginInterface;
+import viewer.viewConfigPanel.plugin.ExportPluginInterface;
 
-public class MTS implements MyPluginInterface {
+public class MDInit implements ExportPluginInterface {
   public void exec(String dir, int fn,
                    float[][] h,
                    float[][] hinv,
@@ -38,10 +38,6 @@ public class MTS implements MyPluginInterface {
       pw.println(String.format("%e %e %e",h[1][0],h[1][1],h[1][2]));
       pw.println(String.format("%e %e %e",h[2][0],h[2][1],h[2][2]));
 
-      pw.println(String.format("%e %e %e",0,0,0));
-      pw.println(String.format("%e %e %e",0,0,0));
-      pw.println(String.format("%e %e %e",0,0,0));
-
       //shpere as atom
       for(int i=0;i<n;i++){
         //skip
@@ -52,7 +48,11 @@ public class MTS implements MyPluginInterface {
                                  hinv[k][0]*r[i][0]+
                                  hinv[k][1]*r[i][1]+
                                  hinv[k][2]*r[i][2];
-        pw.println(String.format("%d %e %e %e",(int)tag[i],out[0],out[1],out[2]));
+        pw.println(String.format("%e %e %e %e %e %e %e %e %e %e"
+                                 ,(float)tag[i],out[0],out[1],out[2]
+                                 ,0e0,0e0,0e0
+                                 ,out[0],out[1],out[2]
+                                 ));
       }
 
       pw.close();

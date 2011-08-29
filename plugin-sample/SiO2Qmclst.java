@@ -1,9 +1,9 @@
 package plugin;
 import java.io.*;
 
-import viewer.viewConfigPanel.MyPluginInterface;
+import viewer.viewConfigPanel.plugin.ExportPluginInterface;
 
-public class SiO2Qmclst implements MyPluginInterface {
+public class SiO2Qmclst implements ExportPluginInterface {
   public void exec(String dir, int fn,
                    float[][] h,
                    float[][] hinv,
