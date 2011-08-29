@@ -2,7 +2,10 @@ package plugin;
 import java.io.*;
 import viewer.viewConfigPanel.plugin.ExportPluginInterface;
 
-public class MTS implements ExportPluginInterface {
+public class ExportMTS implements ExportPluginInterface {
+  public String getName(){
+    return "mts Format";
+  }
   public void exec(String dir, int fn,
                    float[][] h,
                    float[][] hinv,

@@ -4,9 +4,9 @@ import data.*;
 import tools.MyFileIO;
 import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
-public class MakeFCCAr implements ModelingPluginInterface {
+public class MakeDiamondSi implements ModelingPluginInterface {
   public String getName(){
-    return "Make FCC Ar";
+    return "Make Diamond Si";
   }
 
   public void make(int Nx, int Ny, int Nz){
@@ -18,13 +18,22 @@ public class MakeFCCAr implements ModelingPluginInterface {
     atoms.timeInterval=0.f;
 
     //body
-    float cunit=3.41f*1.4142f/0.529f;
-    float[][] fcc={{0.0f, 0.0f, 0.0f },
-                    {0.5f, 0.5f, 0.0f },
-                    {0.5f, 0.0f, 0.5f },
-                    {0.0f, 0.5f, 0.5f }};
+    float cunit=5.42f/0.529177f;//Si
 
-    atoms.n=4*Nx*Ny*Nz;
+    //float cunit=1.54f*/0.529177f;//C
+
+
+    float[][] diamond={{ 0.0f, 0.0f, 0.0f },
+                       { 0.0f, 0.5f, 0.5f },
+                       { 0.5f, 0.0f, 0.5f },
+                       { 0.5f, 0.5f, 0.0f },
+                       { 0.25f, 0.25f, 0.25f },
+                       { 0.25f, 0.75f, 0.75f },
+                       { 0.75f, 0.25f, 0.75f },
+                       { 0.75f, 0.75f, 0.25f }};
+
+
+    atoms.n=8*Nx*Ny*Nz;
     atoms.nData=1;
     atoms.allocate(atoms.n);
 
@@ -51,10 +60,10 @@ public class MakeFCCAr implements ModelingPluginInterface {
     for(int i=0;i<Nx;i++){
       for(int j=0;j<Ny;j++){
         for(int k=0;k<Nz;k++){
-          for(int l=0;l<4;l++){
-            atoms.r[inc][0]=(fcc[l][0]+i)*cunit;
-            atoms.r[inc][1]=(fcc[l][1]+j)*cunit;
-            atoms.r[inc][2]=(fcc[l][2]+k)*cunit;
+          for(int l=0;l<8;l++){
+            atoms.r[inc][0]=(diamond[l][0]+i)*cunit;
+            atoms.r[inc][1]=(diamond[l][1]+j)*cunit;
+            atoms.r[inc][2]=(diamond[l][2]+k)*cunit;
             atoms.tag[inc]=1;
             inc++;
           }//l

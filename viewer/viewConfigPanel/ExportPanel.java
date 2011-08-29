@@ -74,12 +74,13 @@ public class ExportPanel extends JPanel implements ActionListener{
       Method methodAddUrl = classClassLoader.getDeclaredMethod("addURL", URL.class);
       methodAddUrl.setAccessible(true);
       methodAddUrl.invoke(classLoader, classPath.toURI().toURL());
-      System.out.println("added "+classPath);
+      //System.out.println("added "+classPath);
     }catch(Exception e){
       //e.printStackTrace();
     }
   }
   private void createPluginButton(){
+    //String dir=vconf.pluginDir+File.separator+"export"+File.separator;
     String dir=vconf.pluginDir;
     System.out.println("export plugin: "+dir);
     try {
@@ -96,8 +97,8 @@ public class ExportPanel extends JPanel implements ActionListener{
               addClassPathToClassLoader(new File(f.getAbsolutePath()+File.separator+files[i]));
               ExportPluginInterface plg = (ExportPluginInterface)c.newInstance();
               plugins.add(plg);
-              pluginName.add(classname);
-              System.out.println("export plugin; "+classname+" is added");
+              pluginName.add(plg.getName());
+              System.out.println("export plugin; "+classname+".class is added");
             }
           }//j
         }//if
@@ -112,7 +113,7 @@ public class ExportPanel extends JPanel implements ActionListener{
 
     //add
     for(int i=0;i<plugins.size();i++){
-      JButton btn=new JButton(pluginName.get(i)+" Format");
+      JButton btn=new JButton(pluginName.get(i));
       btn.setActionCommand(pluginName.get(i));
       btn.addActionListener( this );
       add(btn);

@@ -3,7 +3,10 @@ import java.io.*;
 
 import viewer.viewConfigPanel.plugin.ExportPluginInterface;
 
-public class Qmclst implements ExportPluginInterface {
+public class ExportQmclst implements ExportPluginInterface {
+  public String getName(){
+    return "qmclst Format";
+  }
   public void exec(String dir, int fn,
                    float[][] h,
                    float[][] hinv,

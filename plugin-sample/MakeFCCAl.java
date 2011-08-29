@@ -4,9 +4,9 @@ import data.*;
 import tools.MyFileIO;
 import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
-public class MakeFCCAr implements ModelingPluginInterface {
+public class MakeFCCAl implements ModelingPluginInterface {
   public String getName(){
-    return "Make FCC Ar";
+    return "Make FCC Al";
   }
 
   public void make(int Nx, int Ny, int Nz){
@@ -18,7 +18,7 @@ public class MakeFCCAr implements ModelingPluginInterface {
     atoms.timeInterval=0.f;
 
     //body
-    float cunit=3.41f*1.4142f/0.529f;
+    float cunit=4.0496f/0.529f;
     float[][] fcc={{0.0f, 0.0f, 0.0f },
                     {0.5f, 0.5f, 0.0f },
                     {0.5f, 0.0f, 0.5f },

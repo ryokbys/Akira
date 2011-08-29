@@ -3,7 +3,10 @@ import java.io.*;
 
 import viewer.viewConfigPanel.plugin.ExportPluginInterface;
 
-public class SiO2Qmclst implements ExportPluginInterface {
+public class ExportSiO2Qmclst implements ExportPluginInterface {
+  public String getName(){
+    return "qmclst SiO2 Format";
+  }
   public void exec(String dir, int fn,
                    float[][] h,
                    float[][] hinv,

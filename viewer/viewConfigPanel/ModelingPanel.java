@@ -35,18 +35,36 @@ public class ModelingPanel extends JPanel implements ActionListener{
   }
 
   public void actionPerformed( ActionEvent e){
+    int nx=(Integer)spNx.getValue();
+    int ny=(Integer)spNy.getValue();
+    int nz=(Integer)spNz.getValue();
+
     //plugin
     for(int i=0;i<plugins.size();i++){
       if(e.getActionCommand().equals(pluginName.get(i))){
-        (plugins.get(i)).make();
+        (plugins.get(i)).make(nx,ny,nz);
         break;
       }
     }
 
   }
 
-
+  private JSpinner spNx,spNy,spNz;
   private void createPanel(){
+    spNx = new JSpinner(new SpinnerNumberModel(4, 0, null, 1));
+    spNx.setFocusable(false);
+    spNx.setPreferredSize(new Dimension(50, 25));
+    spNy = new JSpinner(new SpinnerNumberModel(4, 0, null, 1));
+    spNy.setFocusable(false);
+    spNy.setPreferredSize(new Dimension(50, 25));
+    spNz = new JSpinner(new SpinnerNumberModel(4, 0, null, 1));
+    spNz.setFocusable(false);
+    spNz.setPreferredSize(new Dimension(50, 25));
+
+    add(spNx);
+    add(spNy);
+    add(spNz);
+
     createPluginButton();
   }
 
@@ -59,14 +77,15 @@ public class ModelingPanel extends JPanel implements ActionListener{
       Method methodAddUrl = classClassLoader.getDeclaredMethod("addURL", URL.class);
       methodAddUrl.setAccessible(true);
       methodAddUrl.invoke(classLoader, classPath.toURI().toURL());
-      System.out.println("added "+classPath);
+      //System.out.println("added "+classPath);
     }catch(Exception e){
       //e.printStackTrace();
     }
   }
   private void createPluginButton(){
     String dir=vconf.pluginDir;
-    System.out.println("export plugin: "+dir);
+    //String dir=vconf.pluginDir+File.separator+"modeling"+File.separator;
+    System.out.println("model plugin: "+dir);
     try {
       File f = new File(dir);
       String[] files = f.list();
@@ -81,8 +100,8 @@ public class ModelingPanel extends JPanel implements ActionListener{
               addClassPathToClassLoader(new File(f.getAbsolutePath()+File.separator+files[i]));
               ModelingPluginInterface plg = (ModelingPluginInterface)c.newInstance();
               plugins.add(plg);
-              pluginName.add(classname);
-              System.out.println("export plugin; "+classname+" is added");
+              pluginName.add(plg.getName());
+              System.out.println("modeling plugin; "+classname+".class is added");
             }
           }//j
         }//if
@@ -97,7 +116,7 @@ public class ModelingPanel extends JPanel implements ActionListener{
 
     //add
     for(int i=0;i<plugins.size();i++){
-      JButton btn=new JButton(pluginName.get(i)+" Format");
+      JButton btn=new JButton(pluginName.get(i));
       btn.setActionCommand(pluginName.get(i));
       btn.addActionListener( this );
       add(btn);

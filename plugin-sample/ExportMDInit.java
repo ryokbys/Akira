@@ -2,7 +2,10 @@ package plugin;
 import java.io.*;
 import viewer.viewConfigPanel.plugin.ExportPluginInterface;
 
-public class MDInit implements ExportPluginInterface {
+public class ExportMDInit implements ExportPluginInterface {
+  public String getName(){
+    return "nkmd format";
+  }
   public void exec(String dir, int fn,
                    float[][] h,
                    float[][] hinv,
