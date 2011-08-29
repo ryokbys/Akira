@@ -33,7 +33,7 @@ public class ModelingPanel extends JPanel implements ActionListener{
     this.vconf=ctrl.vconf;
     createPanel();
   }
-
+  int fnum=0;
   public void actionPerformed( ActionEvent e){
     int nx=(Integer)spNx.getValue();
     int ny=(Integer)spNy.getValue();
@@ -42,7 +42,9 @@ public class ModelingPanel extends JPanel implements ActionListener{
     //plugin
     for(int i=0;i<plugins.size();i++){
       if(e.getActionCommand().equals(pluginName.get(i))){
-        (plugins.get(i)).make(nx,ny,nz);
+        fnum++;
+        String dir=ctrl.getActiveRW().getFileDirectory();
+        (plugins.get(i)).make(dir,fnum,nx,ny,nz);
         break;
       }
     }
@@ -61,11 +63,31 @@ public class ModelingPanel extends JPanel implements ActionListener{
     spNz.setFocusable(false);
     spNz.setPreferredSize(new Dimension(50, 25));
 
-    add(spNx);
-    add(spNy);
-    add(spNz);
+    JPanel jp=new JPanel();
+    jp.setLayout(new GridLayout(3,2));
+    jp.add(new JLabel("Nx"));
+    jp.add(spNx);
+    jp.add(new JLabel("Ny"));
+    jp.add(spNy);
+    jp.add(new JLabel("Nz"));
+    jp.add(spNz);
 
-    createPluginButton();
+    JPanel pluginPanel=createPluginButton();
+    SpringLayout layout = new SpringLayout();
+    setLayout(layout);
+    layout.putConstraint(SpringLayout.NORTH, jp, 5, SpringLayout.NORTH,this);
+    layout.putConstraint(SpringLayout.SOUTH, jp, -5, SpringLayout.SOUTH,this);
+    layout.putConstraint(SpringLayout.WEST, jp, 5, SpringLayout.WEST,this);
+
+    layout.putConstraint(SpringLayout.NORTH, pluginPanel, 5, SpringLayout.NORTH,this);
+    layout.putConstraint(SpringLayout.SOUTH, pluginPanel, -5, SpringLayout.SOUTH,this);
+    layout.putConstraint(SpringLayout.WEST, pluginPanel, 5, SpringLayout.EAST,jp);
+    layout.putConstraint(SpringLayout.EAST, pluginPanel, -5, SpringLayout.EAST,this);
+
+
+
+    add(jp);
+    add(pluginPanel);
   }
 
   private ArrayList<ModelingPluginInterface> plugins = new ArrayList<ModelingPluginInterface>();
@@ -82,7 +104,7 @@ public class ModelingPanel extends JPanel implements ActionListener{
       //e.printStackTrace();
     }
   }
-  private void createPluginButton(){
+  private JPanel createPluginButton(){
     String dir=vconf.pluginDir;
     //String dir=vconf.pluginDir+File.separator+"modeling"+File.separator;
     System.out.println("model plugin: "+dir);
@@ -115,13 +137,15 @@ public class ModelingPanel extends JPanel implements ActionListener{
     }
 
     //add
+    JPanel jp=new JPanel();
+    jp.setLayout(new GridLayout(0,6));
     for(int i=0;i<plugins.size();i++){
       JButton btn=new JButton(pluginName.get(i));
       btn.setActionCommand(pluginName.get(i));
       btn.addActionListener( this );
-      add(btn);
+      jp.add(btn);
     }
-
+    return jp;
   }
 
 

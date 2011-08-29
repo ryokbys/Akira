@@ -56,7 +56,7 @@ public class ExportPanel extends JPanel implements ActionListener{
     btnWriteEPS.setFocusable(false);
     btnWriteEPS.addActionListener( this );
 
-
+    this.setLayout(new GridLayout(0,6));
     add(btnWriteAkira);
     if(ctrl.isEnjoyMode){
       add(btnWriteEPS);

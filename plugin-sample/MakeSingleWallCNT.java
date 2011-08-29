@@ -1,7 +1,10 @@
 package plugin;
 import java.io.*;
+import javax.swing.*;
+
 import data.*;
 import tools.*;
+
 import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
 public class MakeSingleWallCNT implements ModelingPluginInterface {
@@ -10,14 +13,22 @@ public class MakeSingleWallCNT implements ModelingPluginInterface {
   }
 
   float eps=0.0000001f;
-  public void make(int Nx, int Ny, int Nz){
+  public void make(String dir, int fnum,
+                   int Nx, int Ny, int Nz){
     Atoms atoms=new Atoms();
 
     //extend z-direction
     int nextz=4;
+
+    String value = JOptionPane.showInputDialog("num of extend z",String.format("%d",nextz));
+    if(value != null)nextz=Integer.parseInt(value);
     //set chirarity
     int mc1=4;
+    value = JOptionPane.showInputDialog("chirarity 1",String.format("%d",mc1));
+    if(value != null)mc1=Integer.parseInt(value);
     int mc2=7;
+    value = JOptionPane.showInputDialog("chirarity 2",String.format("%d",mc2));
+    if(value != null)mc2=Integer.parseInt(value);
 
 
     //header
@@ -157,7 +168,7 @@ public class MakeSingleWallCNT implements ModelingPluginInterface {
 
 
     //write
-    MyFileIO atomFileIO= new MyFileIO("SWCNT.Akira");
+    MyFileIO atomFileIO= new MyFileIO(String.format("%04d-swcnt.Akira",fnum));
     atomFileIO.wopen();
     atomFileIO.writeHeader(1,0.f,1.f,false);
     atomFileIO.existBonds=false;

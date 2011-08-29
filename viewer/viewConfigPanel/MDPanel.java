@@ -40,10 +40,6 @@ public class MDPanel extends JPanel implements ActionListener{
       md.dt=(Double)spDt.getValue();
       md.dmp=(Double)spDmp.getValue();
       md.set(ctrl.getActiveRW().atoms);
-    }else if( ae.getSource() == testButton){
-      md=null;
-      md= new MDFrame(ctrl);
-      md.setFCC();
     }else if( ae.getSource() == startButton){
       if(md.fpsAnimator.isAnimating()){
         md.fpsAnimator.stop();
@@ -55,16 +51,12 @@ public class MDPanel extends JPanel implements ActionListener{
 
   private JButton loadButton;
   private JButton startButton;
-  private JButton testButton;
   private JSpinner spSgm,spEps,spDt,spMass,spDmp;
 
   private void createPanel(){
     loadButton = new JButton( "Load" );
     loadButton.addActionListener( this );
     loadButton.setFocusable(false);
-    testButton = new JButton( "Test" );
-    testButton.addActionListener( this );
-    testButton.setFocusable(false);
 
     startButton = new JButton( "Start" );
     startButton.addActionListener( this );
@@ -91,10 +83,8 @@ public class MDPanel extends JPanel implements ActionListener{
     spDmp.setFocusable(false);
     spDmp.setPreferredSize(new Dimension(80, 25));
 
-
     add(loadButton);
     add(startButton);
-    add(testButton);
     add(lSgm);
     add(spSgm);
     add(lEps);
@@ -788,62 +778,5 @@ class MDFrame extends JFrame implements GLEventListener,
     trans_x=0; trans_y=0;
   }
 
-
-  public void setFCC(){
-    double cunit=3.41*1.4142/0.529;
-    double[][] fcc={{0.0, 0.0, 0.0 },
-                    {0.5, 0.5, 0.0 },
-                    {0.5, 0.0, 0.5 },
-                    {0.0, 0.5, 0.5 }};
-
-    int Nx=4;
-    int Ny=4;
-    int Nz=4;
-    natm=4*Nx*Ny*Nz;
-    r=new double[natm][3];
-    v=new double[natm][3];
-    f=new double[natm][3];
-    tag=new byte[natm];
-
-    h[0][0]=cunit*Nx;
-    h[1][0]=0;
-    h[2][0]=0;
-    h[0][2]=0;
-    h[1][1]=cunit*Ny;
-    h[2][1]=0;
-    h[0][2]=0;
-    h[1][2]=0;
-    h[2][2]=cunit*Nz;
-    hinv[0][0]=1.0/h[0][0];
-    hinv[1][0]=0;
-    hinv[2][0]=0;
-    hinv[0][2]=0;
-    hinv[1][1]=1.0/h[1][1];
-    hinv[2][1]=0;
-    hinv[0][2]=0;
-    hinv[1][2]=0;
-    hinv[2][2]=1.0/h[2][2];
-    //init x
-    int inc=0;
-    for(int i=0;i<Nx;i++){
-      for(int j=0;j<Ny;j++){
-        for(int k=0;k<Nz;k++){
-          for(int l=0;l<4;l++){
-            r[inc][0]=(fcc[l][0]+i)/Nx;
-            r[inc][1]=(fcc[l][1]+j)/Ny;
-            r[inc][2]=(fcc[l][2]+k)/Nz;
-            tag[inc]=1;
-            v[inc][0]=0.;v[inc][1]=0.;v[inc][2]=0.;
-            f[inc][0]=0.;f[inc][1]=0.;f[inc][2]=0.;
-            inc++;
-          }//l
-        }//k
-      }//j
-    }//i
-    v[0][0]=1;
-    setupPot();
-    setHome();
-    makeList();
-  }
 
 }//MDFrame

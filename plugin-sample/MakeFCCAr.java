@@ -9,7 +9,8 @@ public class MakeFCCAr implements ModelingPluginInterface {
     return "Make FCC Ar";
   }
 
-  public void make(int Nx, int Ny, int Nz){
+  public void make(String dir, int fnum,
+                   int Nx, int Ny, int Nz){
     Atoms atoms=new Atoms();
 
     //header
@@ -57,7 +58,7 @@ public class MakeFCCAr implements ModelingPluginInterface {
     }//i
 
     //write
-    MyFileIO atomFileIO= new MyFileIO("fcc-Ar.Akira");
+    MyFileIO atomFileIO= new MyFileIO(String.format("%04d-fcc-Ar.Akira",fnum));
     atomFileIO.wopen();
     atomFileIO.writeHeader(1,0.f,1.f,false);
     atomFileIO.existBonds=false;

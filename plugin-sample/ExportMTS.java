@@ -41,9 +41,9 @@ public class ExportMTS implements ExportPluginInterface {
       pw.println(String.format("%e %e %e",h[1][0],h[1][1],h[1][2]));
       pw.println(String.format("%e %e %e",h[2][0],h[2][1],h[2][2]));
 
-      pw.println(String.format("%e %e %e",0,0,0));
-      pw.println(String.format("%e %e %e",0,0,0));
-      pw.println(String.format("%e %e %e",0,0,0));
+      pw.println(String.format("%e %e %e",0.,0.,0.));
+      pw.println(String.format("%e %e %e",0.,0.,0.));
+      pw.println(String.format("%e %e %e",0.,0.,0.));
 
       //shpere as atom
       for(int i=0;i<n;i++){
