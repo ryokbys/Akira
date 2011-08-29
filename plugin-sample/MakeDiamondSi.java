@@ -1,7 +1,7 @@
 package plugin;
 import java.io.*;
 import data.*;
-import tools.MyFileIO;
+import tools.*;
 import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
 public class MakeDiamondSi implements ModelingPluginInterface {
@@ -20,9 +20,6 @@ public class MakeDiamondSi implements ModelingPluginInterface {
     //body
     float cunit=5.42f/0.529177f;//Si
 
-    //float cunit=1.54f*/0.529177f;//C
-
-
     float[][] diamond={{ 0.0f, 0.0f, 0.0f },
                        { 0.0f, 0.5f, 0.5f },
                        { 0.5f, 0.0f, 0.5f },
@@ -40,21 +37,13 @@ public class MakeDiamondSi implements ModelingPluginInterface {
     atoms.h[0][0]=cunit*Nx;
     atoms.h[1][0]=0.f;
     atoms.h[2][0]=0.f;
-    atoms.h[0][2]=0.f;
+    atoms.h[0][1]=0.f;
     atoms.h[1][1]=cunit*Ny;
     atoms.h[2][1]=0.f;
     atoms.h[0][2]=0.f;
     atoms.h[1][2]=0.f;
     atoms.h[2][2]=cunit*Nz;
-    atoms.hinv[0][0]=1.f/atoms.h[0][0];
-    atoms.hinv[1][0]=0.f;
-    atoms.hinv[2][0]=0.f;
-    atoms.hinv[0][2]=0.f;
-    atoms.hinv[1][1]=1.f/atoms.h[1][1];
-    atoms.hinv[2][1]=0.f;
-    atoms.hinv[0][2]=0.f;
-    atoms.hinv[1][2]=0.f;
-    atoms.hinv[2][2]=1.f/atoms.h[2][2];
+    Matrix.inv(atoms.h,atoms.hinv);
     //init x
     int inc=0;
     for(int i=0;i<Nx;i++){
@@ -72,7 +61,7 @@ public class MakeDiamondSi implements ModelingPluginInterface {
     }//i
 
     //write
-    MyFileIO atomFileIO= new MyFileIO("model.Akira");
+    MyFileIO atomFileIO= new MyFileIO("Si-diamond.Akira");
     atomFileIO.wopen();
     atomFileIO.writeHeader(1,0.f,1.f,false);
     atomFileIO.existBonds=false;

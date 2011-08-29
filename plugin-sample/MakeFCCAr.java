@@ -1,7 +1,7 @@
 package plugin;
 import java.io.*;
 import data.*;
-import tools.MyFileIO;
+import tools.*;
 import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
 public class MakeFCCAr implements ModelingPluginInterface {
@@ -20,9 +20,9 @@ public class MakeFCCAr implements ModelingPluginInterface {
     //body
     float cunit=3.41f*1.4142f/0.529f;
     float[][] fcc={{0.0f, 0.0f, 0.0f },
-                    {0.5f, 0.5f, 0.0f },
-                    {0.5f, 0.0f, 0.5f },
-                    {0.0f, 0.5f, 0.5f }};
+                   {0.5f, 0.5f, 0.0f },
+                   {0.5f, 0.0f, 0.5f },
+                   {0.0f, 0.5f, 0.5f }};
 
     atoms.n=4*Nx*Ny*Nz;
     atoms.nData=1;
@@ -31,21 +31,15 @@ public class MakeFCCAr implements ModelingPluginInterface {
     atoms.h[0][0]=cunit*Nx;
     atoms.h[1][0]=0.f;
     atoms.h[2][0]=0.f;
-    atoms.h[0][2]=0.f;
+    atoms.h[0][1]=0.f;
     atoms.h[1][1]=cunit*Ny;
     atoms.h[2][1]=0.f;
     atoms.h[0][2]=0.f;
     atoms.h[1][2]=0.f;
     atoms.h[2][2]=cunit*Nz;
-    atoms.hinv[0][0]=1.f/atoms.h[0][0];
-    atoms.hinv[1][0]=0.f;
-    atoms.hinv[2][0]=0.f;
-    atoms.hinv[0][2]=0.f;
-    atoms.hinv[1][1]=1.f/atoms.h[1][1];
-    atoms.hinv[2][1]=0.f;
-    atoms.hinv[0][2]=0.f;
-    atoms.hinv[1][2]=0.f;
-    atoms.hinv[2][2]=1.f/atoms.h[2][2];
+
+    Matrix.inv(atoms.h,atoms.hinv);
+
     //init x
     int inc=0;
     for(int i=0;i<Nx;i++){
@@ -63,7 +57,7 @@ public class MakeFCCAr implements ModelingPluginInterface {
     }//i
 
     //write
-    MyFileIO atomFileIO= new MyFileIO("model.Akira");
+    MyFileIO atomFileIO= new MyFileIO("fcc-Ar.Akira");
     atomFileIO.wopen();
     atomFileIO.writeHeader(1,0.f,1.f,false);
     atomFileIO.existBonds=false;
