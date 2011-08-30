@@ -97,8 +97,8 @@ public class ModelingPanel extends JPanel implements ActionListener{
 
     layout.putConstraint(SpringLayout.NORTH, pluginPanel, 5, SpringLayout.NORTH,this);
     layout.putConstraint(SpringLayout.SOUTH, pluginPanel, -5, SpringLayout.SOUTH,this);
-    layout.putConstraint(SpringLayout.WEST, pluginPanel, 5, SpringLayout.EAST,jp);
     layout.putConstraint(SpringLayout.EAST, pluginPanel, -5, SpringLayout.EAST,this);
+    layout.putConstraint(SpringLayout.WEST, pluginPanel, 5, SpringLayout.EAST,jp);
 
 
 

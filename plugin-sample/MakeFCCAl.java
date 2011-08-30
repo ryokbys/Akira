@@ -6,7 +6,7 @@ import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
 public class MakeFCCAl implements ModelingPluginInterface {
   public String getName(){
-    return "Make FCC Al";
+    return "FCC Al";
   }
 
   public void make(String dir, int fnum,

@@ -123,9 +123,24 @@ public class ExportPanel extends JPanel implements ActionListener{
 
   public void actionPerformed( ActionEvent e ){
     viewer.renderer.Atoms atoms=ctrl.getActiveRW().atoms;
-    String dir=ctrl.getActiveRW().getFileDirectory();
-    fileNo++;
 
+    String dir;
+    if(ctrl.getActiveRW()==null)
+      dir= System.getProperty("user.home");
+    else
+      dir=ctrl.getActiveRW().getFileDirectory();
+
+    JFileChooser chooser = new JFileChooser(dir);
+    chooser.setDialogTitle("set saving-directory");
+    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    chooser.setAcceptAllFileFilterUsed(false);
+    int s = chooser.showOpenDialog( null );
+    if( s == JFileChooser.APPROVE_OPTION ){
+      dir= chooser.getSelectedFile().getAbsolutePath();
+    }else{
+      return;
+    }
+    fileNo++;
 
     if( e.getSource() == btnWriteAkira ){
       writeAKiraFile(dir,fileNo,

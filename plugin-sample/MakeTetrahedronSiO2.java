@@ -6,7 +6,7 @@ import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
 public class MakeTetrahedronSiO2 implements ModelingPluginInterface {
   public String getName(){
-    return "Make SiO2 Tetrahedron";
+    return "SiO2 Tetrahedron";
   }
 
   public void make(String dir, int fnum,

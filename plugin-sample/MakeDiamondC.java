@@ -7,7 +7,7 @@ import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
 public class MakeDiamondC implements ModelingPluginInterface {
   public String getName(){
-    return "Make Diamond C";
+    return "Diamond C";
   }
 
   public void make(String dir, int fnum,

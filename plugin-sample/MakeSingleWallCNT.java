@@ -9,7 +9,7 @@ import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
 public class MakeSingleWallCNT implements ModelingPluginInterface {
   public String getName(){
-    return "Make Single-Wall CNT";
+    return "Single-Wall CNT";
   }
 
   float eps=0.0000001f;
@@ -130,7 +130,7 @@ public class MakeSingleWallCNT implements ModelingPluginInterface {
     a3d[1]=radius *4;
     a3d[2]=a[1][1];
 
-    //make nanotube
+    //nanotube
     float[][] ra3d=new float[natm][3];
     for(int i=0;i<natm;i++){
       ra3d[i][0]=radius*(float)Math.cos(ra[i][0]/a[0][0]*2*Math.PI)+radius*2;

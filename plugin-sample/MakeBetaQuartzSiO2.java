@@ -6,7 +6,7 @@ import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
 public class MakeBetaQuartzSiO2 implements ModelingPluginInterface {
   public String getName(){
-    return "Make Beta-Quartz SiO2";
+    return "Beta-Quartz SiO2";
   }
 
   public void make(String dir, int fnum,

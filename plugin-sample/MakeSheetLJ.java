@@ -6,7 +6,7 @@ import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
 public class MakeSheetLJ implements ModelingPluginInterface {
   public String getName(){
-    return "Make Sheet LJ";
+    return "Sheet LJ";
   }
 
   public void make(String dir, int fnum,

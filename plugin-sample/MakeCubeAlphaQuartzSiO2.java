@@ -4,9 +4,9 @@ import data.*;
 import tools.*;
 import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
-public class MakeAlphaQuartzSiO2 implements ModelingPluginInterface {
+public class MakeCubeAlphaQuartzSiO2 implements ModelingPluginInterface {
   public String getName(){
-    return "Alpha-Quartz SiO2";
+    return "Cube Alpha-Quartz SiO2";
   }
 
   public void make(String dir, int fnum,
@@ -68,8 +68,15 @@ public class MakeAlphaQuartzSiO2 implements ModelingPluginInterface {
       }//j
     }//i
 
+    for(int i=0;i<atoms.n;i++){
+      if(atoms.r[i][0]<0.f)
+        atoms.r[i][0]+=atoms.h[0][0];
+    }
+    atoms.h[0][1]=0.f;
+    Matrix.inv(atoms.h,atoms.hinv);
+
     //write
-    MyFileIO atomFileIO= new MyFileIO(dir+File.separator+String.format("%04d-a-quartz.Akira",fnum));
+    MyFileIO atomFileIO= new MyFileIO(dir+File.separator+String.format("%04d-cube-a-quartz.Akira",fnum));
 
     atomFileIO.wopen();
     atomFileIO.writeHeader(1,0.f,1.f,false);

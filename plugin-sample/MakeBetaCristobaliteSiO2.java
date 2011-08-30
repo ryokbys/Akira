@@ -6,7 +6,7 @@ import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
 public class MakeBetaCristobaliteSiO2 implements ModelingPluginInterface {
   public String getName(){
-    return "Make Beta Cristobalite SiO2";
+    return "Beta Cristobalite SiO2";
   }
 
   public void make(String dir, int fnum,

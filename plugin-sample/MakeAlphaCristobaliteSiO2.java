@@ -6,7 +6,7 @@ import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
 public class MakeAlphaCristobaliteSiO2 implements ModelingPluginInterface {
   public String getName(){
-    return "Make Alpha-Cristobalite SiO2";
+    return "Alpha-Cristobalite SiO2";
   }
 
   public void make(String dir, int fnum,

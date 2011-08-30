@@ -6,7 +6,7 @@ import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
 public class MakeDiamondSi implements ModelingPluginInterface {
   public String getName(){
-    return "Make Diamond Si";
+    return "Diamond Si";
   }
 
   public void make(String dir, int fnum,
