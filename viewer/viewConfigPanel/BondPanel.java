@@ -115,9 +115,12 @@ public class BondPanel extends JPanel implements ActionListener{
     bondType= new JComboBox(btStr);
     bondType.setSelectedIndex(0);
     bondType.addActionListener(this);
+    bondType.setFocusable(false);
+
     bondColor= new JComboBox(bcStr);
     bondColor.setSelectedIndex(0);
     bondColor.addActionListener(this);
+    bondColor.setFocusable(false);
 
     JLabel radiusLabel = new JLabel( "Radius" );
     radiusSpinner = new JSpinner(new SpinnerNumberModel((double)vconf.bondRadius, 0.0, null, 0.1));
@@ -170,18 +173,17 @@ public class BondPanel extends JPanel implements ActionListener{
     JLabel lLegend=new JLabel("Lagend");
     taLegend = new JTextField(vconf.bondLegend);
     taLegend.setEditable(true);
+    taLegend.setFocusable(false);
     JLabel lFormat=new JLabel("Format");
     taFormat = new JTextField(vconf.bondColorTableFormat);
+    taFormat.setFocusable(false);
     taFormat.setEditable(true);
     taLegend.setPreferredSize(new Dimension(65, 25));
     taFormat.setPreferredSize(new Dimension(65, 25));
 
 
     tableModel = new MyTableModel( colNames, 0 );
-    //tableModel.setFocusable(false);
     table = new JTable( tableModel );
-    //table.setFocusable(false);
-
     table.setRowHeight( 20 );
     table.setIntercellSpacing( new Dimension(2,2) );
     table.setColumnSelectionAllowed( true );

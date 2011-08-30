@@ -62,26 +62,40 @@ public class ComboPanel extends JPanel implements ActionListener{
   private void createPanel(){
     startButton = new JButton( "Start" );
     startButton.addActionListener( this );
+    startButton.setFocusable(false);
+
     stopButton  = new JButton( "Stop" );
     stopButton.addActionListener( this );
+    stopBUtton.setFocusable(false);
+
     resetButton = new JButton( "Reset" );
     resetButton.addActionListener( this );
+    resetButton.setFocusable(false);
 
     addRowButton = new JButton( "Add Row" );
-    delRowButton = new JButton( "Del Row" );
+    addRowButton.setFocusable(false);
     addRowButton.addActionListener( this );
+
+    delRowButton = new JButton( "Del Row" );
+    delRowButton.setFocusable(false);
     delRowButton.addActionListener( this );
 
     writeButton = new JButton( "Write File" );
     writeButton.addActionListener( this );
+    writeButton.setFocusable(false);
+
     loadButton = new JButton( "Load File" );
     loadButton.addActionListener( this );
+    loadButton.setFocusable(false);
+
     loadDefaultButton = new JButton( "Load Default File" );
     loadDefaultButton.addActionListener( this );
-
+    loadDefaultBtuuon.setFocusable(false);
 
     deftableModel = new DefaultTableModel( colNames, 0 );
     jtable = new JTable( deftableModel );
+    jtable.setFocusable(false);
+
     jtable.setColumnSelectionAllowed( true );
     DefaultTableColumnModel columnModel
       = (DefaultTableColumnModel)jtable.getColumnModel();
@@ -106,10 +120,10 @@ public class ComboPanel extends JPanel implements ActionListener{
 
     sp = new JScrollPane( jtable );
     sp.setWheelScrollingEnabled( true );
-
+    sp.setFocusable(false);
 
     progressBar = new JProgressBar();
-
+    progressBar.setFocusable(false);
     progressBar.setStringPainted( true );
     progressBar.setMinimum(0);
 

@@ -149,11 +149,14 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     labelType= new JComboBox(lStr);
     labelType.setSelectedIndex(0);
     labelType.addActionListener(this);
+    labelType.setFocusable(false);
 
     atomType= new JComboBox(atStr);
     atomType.setSelectedIndex(1);
+    atomType.setFocusable(false);
     atomColor= new JComboBox(acStr);
     atomColor.setSelectedIndex(0);
+    atomColor.setFocusable(false);
 
     //General panel
     setFocusable( false );
@@ -191,8 +194,6 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     tableModel = new MyTableModel( colNames, 0 );
     //tableModel.setFocusable(false);
     table = new JTable( tableModel );
-    //table.setFocusable(false);
-
     table.setRowHeight( 20 );
     table.setIntercellSpacing( new Dimension(2,2) );
     table.setColumnSelectionAllowed( true );
@@ -217,12 +218,6 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     columnModel.getColumn(3).setPreferredWidth(4);
     columnModel.getColumn(4).setPreferredWidth(4);
     columnModel.getColumn(5).setPreferredWidth(4);
-
-
-
-
-
-
 
     SpringLayout layout = new SpringLayout();
     setLayout( layout );

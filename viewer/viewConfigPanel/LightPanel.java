@@ -62,29 +62,23 @@ public class LightPanel extends JPanel implements ActionListener{
     jrbAuto.setSelected(true);
     jrbAuto.addActionListener(this);
     jrbManu.addActionListener(this);
+    jrbAuto.setFocusable(false);
+    jrbManu.setFocusable(false);
 
     //label
-    posLabel = new JLabel();
-    posLabel.setText( "Position:" );
+    posLabel = new JLabel("Position:" );
 
-    directionLabel = new JLabel();
-    directionLabel.setText( "Direction:" );
+    directionLabel = new JLabel("Direction:" );
 
-    shineLabel = new JLabel();
-    shineLabel.setText( "Shineness:" );
+    shineLabel = new JLabel("Shineness:" );
 
     //info
-    directionInfoLabel= new JLabel();
-    directionInfoLabel.setText( "0: Infinitedirection Light" );
+    directionInfoLabel= new JLabel("0: Infinitedirection Light" );
 
-    difInfoLabel= new JLabel();
-    difInfoLabel.setText( "From a Particular Point" );
-    ambInfoLabel= new JLabel();
-    ambInfoLabel.setText( "From All Directions" );
-    spcInfoLabel= new JLabel();
-    spcInfoLabel.setText( "from a point souce" );
-    emiInfoLabel= new JLabel();
-    emiInfoLabel.setText( "actually emitted by the polygon" );
+    difInfoLabel= new JLabel("From a Particular Point" );
+    ambInfoLabel= new JLabel("From All Directions" );
+    spcInfoLabel= new JLabel("from a point souce" );
+    emiInfoLabel= new JLabel("actually emitted by the polygon" );
 
     //pos spinner
     Dimension pd = new Dimension(50,25);
@@ -94,22 +88,28 @@ public class LightPanel extends JPanel implements ActionListener{
                                             -1000.0, 1000.0, 5.0 ) );
     posXSpinner.setPreferredSize( pd );
     posXSpinner.addChangeListener( cl );
+    posXSpinner.setFocusable(false);
 
     posYSpinner =
       new JSpinner( new SpinnerNumberModel( (double)vconf.lightPos[1],
                                             -1000.0, 1000.0, 5.0 ) );
     posYSpinner.setPreferredSize( pd );
     posYSpinner.addChangeListener( cl );
+    posYSpinner.setFocusable(false);
+
     posZSpinner =
       new JSpinner( new SpinnerNumberModel( (double)vconf.lightPos[2],
                                             -1000.0, 1000.0, 5.0) );
     posZSpinner.setPreferredSize( pd );
     posZSpinner.addChangeListener( cl );
+    posZSpinner.setFocusable(false);
+
     posDirectionSpinner =
       new JSpinner( new SpinnerNumberModel( (double)vconf.lightPos[3],
                                             -1000.0, 1000.0, 5.0) );
     posDirectionSpinner.setPreferredSize( pd );
     posDirectionSpinner.addChangeListener( cl );
+    posDIrectionSpinner.setFocusable(false);
 
     difLabel = new JLabel( "Diffuse" );
     ambLabel = new JLabel( "Ambient" );
@@ -121,13 +121,15 @@ public class LightPanel extends JPanel implements ActionListener{
       new JSpinner( new SpinnerNumberModel( vconf.lightShininess, 0, 128, 1 ) );
     shininessSpinner.setPreferredSize( pd );
     shininessSpinner.addChangeListener( cl );
+    shininessSpinner.setFocusable(false);
 
     updateButton = new JButton("Repaint");
     updateButton.addActionListener( this);
+    updateButton.setFocusable(false);
 
     resetButton = new JButton("Reset");
     resetButton.addActionListener( this);
-
+    resetButton.setFocusable(false);
 
     Border thickBorder = new LineBorder(Color.WHITE, 1);
     //color chooser
@@ -139,6 +141,8 @@ public class LightPanel extends JPanel implements ActionListener{
     difColorButton.setOpaque(true);
     difColorButton.setBorderPainted(true);
     difColorButton.setBorder(BorderFactory.createLineBorder(Color.gray));
+    difColorButton.setFocusable(false);
+
     ambColorButton= new JButton();
     ambColorButton.addActionListener( this );
     ambColorButton.setName("Amb. Color");
@@ -147,6 +151,7 @@ public class LightPanel extends JPanel implements ActionListener{
     ambColorButton.setOpaque(true);
     ambColorButton.setBackground(new Color(vconf.lightAmb[0],vconf.lightAmb[1],vconf.lightAmb[2],vconf.lightAmb[3]));
     ambColorButton.setBorder(BorderFactory.createLineBorder(Color.gray));
+    ambColorButton.setFocusable(false);
 
     spcColorButton= new JButton();
     spcColorButton.addActionListener( this );
@@ -156,6 +161,7 @@ public class LightPanel extends JPanel implements ActionListener{
     spcColorButton.setOpaque(true);
     spcColorButton.setBackground(new Color(vconf.lightSpc[0],vconf.lightSpc[1],vconf.lightSpc[2],vconf.lightSpc[3]));
     spcColorButton.setBorder(BorderFactory.createLineBorder(Color.gray));
+    spcColorButton.setFocusable(false);
 
     emiColorButton= new JButton();
     emiColorButton.addActionListener( this );
@@ -165,6 +171,7 @@ public class LightPanel extends JPanel implements ActionListener{
     emiColorButton.setOpaque(true);
     emiColorButton.setBackground(new Color(vconf.lightEmi[0],vconf.lightEmi[1],vconf.lightEmi[2],vconf.lightEmi[3]));
     emiColorButton.setBorder(BorderFactory.createLineBorder(Color.gray));
+    emiColorButton.setFocusable(false);
 
     SpringLayout layout = new SpringLayout();
     //pos label

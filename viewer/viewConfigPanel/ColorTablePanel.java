@@ -41,17 +41,20 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     ctableType = new JComboBox(cTableStr);
     ctableType.setPreferredSize(new Dimension(150, 25));
     ctableType.addActionListener(this);
+    ctableType.setFocusable(false);
 
     JLabel ticsLabel=new JLabel("Tics Type");
     String[] ticsStr = {"3","2","1","6"};
     ticsType = new JComboBox(ticsStr);
     ticsType.setPreferredSize(new Dimension(150, 25));
     ticsType.addActionListener(this);
+    ticsType.setFocusable(false);
 
     JLabel alphaLabel=new JLabel("Alpha Type");
     String[] alphaStr = {"Normal", "High Opancity","Low Opancity","Cut"};
     alphaType = new JComboBox(alphaStr);
     alphaType.setPreferredSize(new Dimension(150, 25));
+    alphaType.setFocusable(false);
     alphaType.addActionListener(this);
 
 

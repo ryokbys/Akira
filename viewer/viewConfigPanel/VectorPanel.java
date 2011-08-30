@@ -103,15 +103,16 @@ public class VectorPanel extends JPanel implements ActionListener{
     }
     vecType.setSelectedIndex(0);
     vecType.addActionListener(this);
+    vecType.setFocusable(false);
+
     String[] vcStr={"Atom","Length"};
     vecColor= new JComboBox(vcStr);
     vecColor.setSelectedIndex(0);
     vecColor.addActionListener(this);
+    vecColor.setFocusable(false);
 
 
-
-    JLabel radiusLabel = new JLabel();
-    radiusLabel.setText( "Cone Radius" );
+    JLabel radiusLabel = new JLabel("Cone Radius" );
 
     coneRadiusSpinner = new JSpinner(new SpinnerNumberModel((double)vconf.vecConeRadius, 0.0, null, 0.1));
     coneRadiusSpinner.setFocusable(false);
@@ -136,16 +137,14 @@ public class VectorPanel extends JPanel implements ActionListener{
     //spLengthRatio.addActionListener(this);
 
 
-    JLabel cylinderRadiusLabel = new JLabel();
-    cylinderRadiusLabel.setText( "Cylinder Radius" );
+    JLabel cylinderRadiusLabel = new JLabel("Cylinder Radius" );
 
     cylinderRadiusSpinner = new JSpinner(new SpinnerNumberModel((double)vconf.vecCylinderRadius, null, null, 0.1));
     cylinderRadiusSpinner.setFocusable(false);
     cylinderRadiusSpinner.setPreferredSize(new Dimension(60, 23));
     //cylinderRadiusSpinner.addActionListener(this);
 
-    JLabel sliceLabel = new JLabel();
-    sliceLabel.setText( "Slice" );
+    JLabel sliceLabel = new JLabel("Slice" );
     sliceSpinner = new JSpinner(new SpinnerNumberModel(vconf.vecCylinderSlice, 1, null, 1));
     sliceSpinner.setFocusable(false);
     sliceSpinner.setPreferredSize(new Dimension(60, 23));
@@ -183,16 +182,19 @@ public class VectorPanel extends JPanel implements ActionListener{
     JLabel vecXLabel = new JLabel("X-component");
     vecX = new JComboBox(comboData);
     vecX.setSelectedIndex(vconf.vectorX);
+    vecX.setFocusable(false);
     vecX.addActionListener(this);
 
 
     JLabel vecYLabel = new JLabel("Y-component");
     vecY = new JComboBox(comboData);
+    vecY.setFocusable(false);
     vecY.setSelectedIndex(vconf.vectorY);
     vecY.addActionListener(this);
 
     JLabel vecZLabel = new JLabel("Z-component");
     vecZ = new JComboBox(comboData);
+    vecZ.setFocusable(false);
     vecZ.setSelectedIndex(vconf.vectorZ);
     vecZ.addActionListener(this);
 
@@ -202,6 +204,7 @@ public class VectorPanel extends JPanel implements ActionListener{
     taLegend.setEditable(true);
     JLabel lFormat=new JLabel("Format");
     taFormat = new JTextField(vconf.vecColorTableFormat);
+    taFormat.setFocusable(false);
     taFormat.setEditable(true);
     taLegend.setPreferredSize(new Dimension(55, 23));
     taFormat.setPreferredSize(new Dimension(55, 23));

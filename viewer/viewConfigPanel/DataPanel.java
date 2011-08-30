@@ -91,7 +91,6 @@ public class DataPanel extends JPanel implements ActionListener{
     tableModel = new MyTableModel( colNames, 0 );
     table = new JTable( tableModel );
     table.setFocusable(false);
-
     table.setRowHeight( 20 );
     table.setIntercellSpacing( new Dimension(2,2) );
     table.setColumnSelectionAllowed( true );

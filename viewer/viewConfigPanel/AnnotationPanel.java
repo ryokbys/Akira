@@ -177,29 +177,36 @@ public class AnnotationPanel extends JPanel implements ActionListener,ChangeList
 
     cbAxis= new JCheckBox( "Axis",true);
     cbAxis.addActionListener(this);
+    cbAxis.setFocusable(false);
+
     cbTime= new JCheckBox( "Time",true);
     cbTime.addActionListener(this);
+    cbTime.setFocusable(false);
+
     cbBox= new JCheckBox( "Box",true);
     cbBox.addActionListener(this);
-
+    cbBox.setFocusable(false);
 
     //----left
     timeFormatTextArea = new JTextField(vconf.timePrintFormat);
     timeFormatTextArea.setEditable(true);
     timeFormatTextArea.setPreferredSize( new Dimension(100,25) );
+    timeFOrmatTextArea.setFocusable(false);
+
     //timeFormatTextArea.setFocusable(false);
     applyTimeFormatButton=new JButton("Apply");
     applyTimeFormatButton.addActionListener(this);
     applyTimeFormatButton.setFocusable(false);
 
-
     spTX =new JSpinner( new SpinnerNumberModel( (double)vconf.txtPos[0],0.0, null, 1 ) );
     spTX.setPreferredSize( new Dimension(50,25) );
     spTX.addChangeListener( this );
+    spTX.setFocusable(false);
+
     spTY =new JSpinner( new SpinnerNumberModel( (double)vconf.txtPos[1],0.0, null, 1 ) );
     spTY.setPreferredSize( new Dimension(50,25) );
     spTY.addChangeListener( this );
-
+    spTY.setFocusable(false);
 
 
 
@@ -284,11 +291,12 @@ public class AnnotationPanel extends JPanel implements ActionListener,ChangeList
     fontsComboBox = new JComboBox(fontsList);
     fontsComboBox.setSelectedItem(vconf.annotationFont.getName());
     fontsComboBox.addActionListener(this);
-
+    fontsComboBox.setFocusable(false);
 
     fontStyleComboBox = new JComboBox(fontStyle);
     fontStyleComboBox.setSelectedIndex(vconf.annotationFont.getStyle());
     fontStyleComboBox.addActionListener(this);
+    fontStyleComboBox.setFocusable(false);
 
     //System.out.println(vconf.annotationFont.getName());
     //System.out.println(vconf.annotationFont.getStyle());
