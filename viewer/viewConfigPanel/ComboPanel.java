@@ -66,7 +66,7 @@ public class ComboPanel extends JPanel implements ActionListener{
 
     stopButton  = new JButton( "Stop" );
     stopButton.addActionListener( this );
-    stopBUtton.setFocusable(false);
+    stopButton.setFocusable(false);
 
     resetButton = new JButton( "Reset" );
     resetButton.addActionListener( this );
@@ -90,7 +90,7 @@ public class ComboPanel extends JPanel implements ActionListener{
 
     loadDefaultButton = new JButton( "Load Default File" );
     loadDefaultButton.addActionListener( this );
-    loadDefaultBtuuon.setFocusable(false);
+    loadDefaultButton.setFocusable(false);
 
     deftableModel = new DefaultTableModel( colNames, 0 );
     jtable = new JTable( deftableModel );

@@ -43,7 +43,23 @@ public class ModelingPanel extends JPanel implements ActionListener{
     for(int i=0;i<plugins.size();i++){
       if(e.getActionCommand().equals(pluginName.get(i))){
         fnum++;
-        String dir=ctrl.getActiveRW().getFileDirectory();
+        String dir;
+        if(ctrl.getActiveRW()==null)
+          dir= System.getProperty("user.home");
+        else
+          dir=ctrl.getActiveRW().getFileDirectory();
+
+        JFileChooser chooser = new JFileChooser(dir);
+        chooser.setDialogTitle("set saving-directory");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+        int s = chooser.showOpenDialog( null );
+        if( s == JFileChooser.APPROVE_OPTION ){
+          dir= chooser.getSelectedFile().getAbsolutePath();
+        }else{
+          return;
+        }
+
         (plugins.get(i)).make(dir,fnum,nx,ny,nz);
         break;
       }

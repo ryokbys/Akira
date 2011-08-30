@@ -6,7 +6,7 @@ import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
 public class MakeBetaCristobaliteSiO2 implements ModelingPluginInterface {
   public String getName(){
-    return "Make FCC Ar";
+    return "Make Beta Cristobalite SiO2";
   }
 
   public void make(String dir, int fnum,
@@ -88,7 +88,7 @@ public class MakeBetaCristobaliteSiO2 implements ModelingPluginInterface {
     }//i
 
     //write
-    MyFileIO atomFileIO= new MyFileIO(String.format("%04d-b-cristobalite.Akira",fnum));
+    MyFileIO atomFileIO= new MyFileIO(dir+File.separator+String.format("%04d-b-cristobalite.Akira",fnum));
 
     atomFileIO.wopen();
     atomFileIO.writeHeader(1,0.f,1.f,false);

@@ -191,7 +191,7 @@ public class AnnotationPanel extends JPanel implements ActionListener,ChangeList
     timeFormatTextArea = new JTextField(vconf.timePrintFormat);
     timeFormatTextArea.setEditable(true);
     timeFormatTextArea.setPreferredSize( new Dimension(100,25) );
-    timeFOrmatTextArea.setFocusable(false);
+    timeFormatTextArea.setFocusable(false);
 
     //timeFormatTextArea.setFocusable(false);
     applyTimeFormatButton=new JButton("Apply");

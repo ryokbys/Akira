@@ -109,7 +109,7 @@ public class LightPanel extends JPanel implements ActionListener{
                                             -1000.0, 1000.0, 5.0) );
     posDirectionSpinner.setPreferredSize( pd );
     posDirectionSpinner.addChangeListener( cl );
-    posDIrectionSpinner.setFocusable(false);
+    posDirectionSpinner.setFocusable(false);
 
     difLabel = new JLabel( "Diffuse" );
     ambLabel = new JLabel( "Ambient" );

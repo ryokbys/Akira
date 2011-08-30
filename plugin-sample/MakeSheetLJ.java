@@ -61,7 +61,7 @@ public class MakeSheetLJ implements ModelingPluginInterface {
     }//i
 
     //write
-    MyFileIO atomFileIO= new MyFileIO(String.format("%04d-LJ-sheet.Akira",fnum));
+    MyFileIO atomFileIO= new MyFileIO(dir+File.separator+String.format("%04d-LJ-sheet.Akira",fnum));
     atomFileIO.wopen();
     atomFileIO.writeHeader(1,0.f,1.f,false);
     atomFileIO.existBonds=false;
