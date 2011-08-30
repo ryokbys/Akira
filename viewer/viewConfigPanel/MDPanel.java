@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
+import java.net.*;
+import java.lang.reflect.Method;
 
 import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
@@ -15,6 +17,7 @@ import com.sun.opengl.util.awt.*;
 import com.sun.opengl.util.gl2.*;
 import javax.media.opengl.awt.*;
 
+import viewer.viewConfigPanel.plugin.*;
 import viewer.*;
 import data.*;
 
@@ -34,11 +37,6 @@ public class MDPanel extends JPanel implements ActionListener{
     if( ae.getSource() == loadButton){
       md=null;
       md= new MDFrame(ctrl);
-      md.eps=(Double)spEps.getValue();
-      md.sgm=(Double)spSgm.getValue();
-      md.mass=(Double)spMass.getValue();
-      md.dt=(Double)spDt.getValue();
-      md.dmp=(Double)spDmp.getValue();
       md.set(ctrl.getActiveRW().atoms);
     }else if( ae.getSource() == startButton){
       if(md.fpsAnimator.isAnimating()){
@@ -51,7 +49,6 @@ public class MDPanel extends JPanel implements ActionListener{
 
   private JButton loadButton;
   private JButton startButton;
-  private JSpinner spSgm,spEps,spDt,spMass,spDmp;
 
   private void createPanel(){
     loadButton = new JButton( "Load" );
@@ -62,40 +59,69 @@ public class MDPanel extends JPanel implements ActionListener{
     startButton.addActionListener( this );
     startButton.setFocusable(false);
 
-    JLabel lSgm = new JLabel( "sgm [Å]:" );
-    spSgm = new JSpinner(new SpinnerNumberModel(3.41, 0., null, 1.));
-    spSgm.setFocusable(false);
-    spSgm.setPreferredSize(new Dimension(80, 25));
-    JLabel lEps = new JLabel( "eps [T]:" );
-    spEps = new JSpinner(new SpinnerNumberModel(120., 0., null, 50.));
-    spEps.setFocusable(false);
-    spEps.setPreferredSize(new Dimension(80, 25));
-    JLabel lMass = new JLabel( "mass [a.u.]:" );
-    spMass = new JSpinner(new SpinnerNumberModel(40., 0., null, 10.));
-    spMass.setFocusable(false);
-    spMass.setPreferredSize(new Dimension(80, 25));
-    JLabel lDt = new JLabel( "dt [a.u.]:" );
-    spDt = new JSpinner(new SpinnerNumberModel(40., 0., null, 10.));
-    spDt.setFocusable(false);
-    spDt.setPreferredSize(new Dimension(80, 25));
-    JLabel lDmp = new JLabel( "damp. fac.:" );
-    spDmp = new JSpinner(new SpinnerNumberModel(1., 0., 1, 0.01));
-    spDmp.setFocusable(false);
-    spDmp.setPreferredSize(new Dimension(80, 25));
-
     add(loadButton);
     add(startButton);
-    add(lSgm);
-    add(spSgm);
-    add(lEps);
-    add(spEps);
-    add(lMass);
-    add(spMass);
-    add(lDt);
-    add(spDt);
-    add(lDmp);
-    add(spDmp);
+    add(createPluginButton());
   }
+
+  private ArrayList<MDPluginInterface> plugins = new ArrayList<MDPluginInterface>();
+  private ArrayList<String> pluginName = new ArrayList<String>();
+  static void addClassPathToClassLoader(File classPath){
+    try{
+      URLClassLoader classLoader=(URLClassLoader) ClassLoader.getSystemClassLoader();
+      Class classClassLoader = URLClassLoader.class;
+      Method methodAddUrl = classClassLoader.getDeclaredMethod("addURL", URL.class);
+      methodAddUrl.setAccessible(true);
+      methodAddUrl.invoke(classLoader, classPath.toURI().toURL());
+      //System.out.println("added "+classPath);
+    }catch(Exception e){
+      //e.printStackTrace();
+    }
+  }
+  private JPanel createPluginButton(){
+    String dir=ctrl.vconf.pluginDir;
+    //String dir=vconf.pluginDir+File.separator+"modeling"+File.separator;
+    System.out.println("MD plugin: "+dir);
+    try {
+      File f = new File(dir);
+      String[] files = f.list();
+      for (int i = 0; i < files.length; i++) {
+        if (files[i].endsWith(".class")){
+          //eliminate ".class"
+          String classname = files[i].substring(0,files[i].length() - ".class".length());
+          Class c = Class.forName("plugin."+classname);
+          Class[] ifs = c.getInterfaces();//interface name
+          for(int j = 0; j < ifs.length; j++){
+            if(ifs[j].equals(MDPluginInterface.class)){
+              addClassPathToClassLoader(new File(f.getAbsolutePath()+File.separator+files[i]));
+              MDPluginInterface plg = (MDPluginInterface)c.newInstance();
+              plugins.add(plg);
+              pluginName.add(plg.getName());
+              System.out.println("MD plugin; "+classname+".class is added");
+            }
+          }//j
+        }//if
+      }//i
+    } catch (ClassNotFoundException ex) {
+      //System.out.println(" --noclass");
+      //ex.printStackTrace();
+    }catch(Exception ex){
+      System.out.println(" --exception");
+      ex.printStackTrace();
+    }
+
+    //add
+    JPanel jp=new JPanel();
+    jp.setLayout(new GridLayout(0,6));
+    for(int i=0;i<plugins.size();i++){
+      JButton btn=new JButton(pluginName.get(i));
+      btn.setActionCommand(pluginName.get(i));
+      btn.addActionListener( this );
+      jp.add(btn);
+    }
+    return jp;
+  }
+
 }//MDPanel
 
 ////////////
