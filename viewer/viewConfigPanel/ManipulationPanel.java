@@ -29,10 +29,10 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
 
 
   public void actionPerformed(ActionEvent ae){
-
     RenderingWindow RW=ctrl.getActiveRW();
-    float val=vconf.ControllerValue;
+    if(RW==null)return;
 
+    float val=vconf.ControllerValue;
     if(ae.getSource() == revertHomeButton){
       RW.setVPHome();
     }else if(ae.getSource() == revertXButton){
@@ -88,7 +88,6 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
     }
     RW.updateStatusString();
 
-
     requestFocusInWindow();
   }
 
@@ -120,10 +119,12 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
 
 
   public void stateChanged( ChangeEvent ce ){
+    vconf.ControllerValue=(Float)valInputSpinner.getValue();
     vconf.isRotationXOnly=cbRotationXOnly.isSelected();
     vconf.isRotationYOnly=cbRotationYOnly.isSelected();
     vconf.isTransXOnly=cbTransXOnly.isSelected();
     vconf.isTransYOnly=cbTransYOnly.isSelected();
+    requestFocusInWindow();
   }
 
   /* create Controller frame */
@@ -205,27 +206,21 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
   private JCheckBox cbRotationXOnly,cbRotationYOnly,cbTransXOnly,cbTransYOnly;
 
 
+  JSpinner valInputSpinner;
   private void createPanel(){
     //input field
     JLabel valLabel;
-    JSpinner valInputSpinner;
-    SpinnerNumberModel valInputModel;
 
     valLabel = new JLabel("Control Value:");
     valLabel.setFocusable(false);
 
-    valInputModel=new SpinnerNumberModel(vconf.ControllerValue, 0.f, null, 10.f);
-    valInputSpinner = new JSpinner(valInputModel);
+
+    valInputSpinner = new JSpinner(new SpinnerNumberModel(vconf.ControllerValue, 0.f, null, 10.f));
     valInputSpinner.setFocusable(false);
 
     valInputSpinner.setPreferredSize(new Dimension(70, 25));
     valInputSpinner.setFocusable(false);
-    valInputSpinner.addChangeListener(new ChangeListener(){
-        public void stateChanged(ChangeEvent e){
-          JSpinner s = (JSpinner)e.getSource();
-          vconf.ControllerValue=(Float)s.getValue();
-          requestFocusInWindow();
-        }});
+    valInputSpinner.addChangeListener(this);
 
 
     revertHomeButton= new JButton(icnHome);
@@ -427,6 +422,7 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
     cmbImgFormat.setSelectedItem(vconf.imageFormat);
     cmbImgFormat.addActionListener(this);
     cmbImgFormat.setFocusable(false);
+
 
     JPanel valPanel= new JPanel();
     valPanel.setFocusable(false);
