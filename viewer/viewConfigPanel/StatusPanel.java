@@ -132,10 +132,13 @@ public class StatusPanel extends JPanel implements ChangeListener{
     outArea.setEditable(false);
     outArea.setLineWrap(true);
     outArea.setCaretPosition(outArea.getText().length());
+    outArea.setFocusable(false);
     JScrollPane stdOutErrPane =
       new JScrollPane(outArea,
                       ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
                       ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+    stdOutErrPane.setFocusable(false);
+
     setLayout(new GridLayout(1, 1));
     //print streamを乗っ取る．かならずこの順で乗っ取る．
     System.setErr(new PrintStream(new JTextAreaOutputStream(System.out,outArea)));
