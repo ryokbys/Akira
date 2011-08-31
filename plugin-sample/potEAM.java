@@ -18,7 +18,8 @@ public class potEAM implements MDPluginInterface{
   }
 
   public double[][] getForce(double[][]h, int natm,double[][] r){
-    return null;
+    double[][] f=new double[natm][3];
+    return f;
   }
   double[] chgScale( double[][]h, double[] in ){
     double[] out = new double[3];

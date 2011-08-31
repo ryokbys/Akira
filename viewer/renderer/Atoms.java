@@ -47,13 +47,17 @@ public class Atoms extends data.Atoms implements Renderer{
   }
 
 
-  /* constructor */
   private RenderingWindow rw;
   public ColorTable ctable;
+  /* main constructor */
   public Atoms(RenderingWindow rw){
     super();
     this.rw=rw;
     ctable=new ColorTable(rw);
+  }
+
+  //null constructor for MD panel
+  public Atoms(){
   }
 
   public void show(){

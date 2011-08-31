@@ -43,7 +43,6 @@ public class AkiraViewer{
     for(int i=0;i<args.length;i++){
       if(args[i].equals("-silent")){
         isSilent=true;
-        isEnjoyMode=false;
       }else if(args[i].equals("-h") || args[i].equals("-help")){
         printHelp();
         System.exit(0);
@@ -67,24 +66,20 @@ public class AkiraViewer{
 
     //switch action
     if(isSilent){
+      //silent activate
       nFile=0;
-
-      //activate
       new AkiraViewer(argFile,nFile,isEnjoyMode);
-
       //dispose splash screen
       SplashWindow.disposeSplash();
     }else if(nFile==0){
       //dispose splash screen
       SplashWindow.disposeSplash();
-
       MyOpen myopen= new MyOpen();
       argFile[0] = myopen.getOpenFilename();
       nFile=1;
-      //activate
       new AkiraViewer(argFile,nFile,isEnjoyMode);
     }else{
-      //activate
+      //normal activate
       new AkiraViewer(argFile,nFile,isEnjoyMode);
       //dispose splash screen
       SplashWindow.disposeSplash();

@@ -20,6 +20,7 @@ import javax.media.opengl.awt.*;
 import viewer.viewConfigPanel.plugin.*;
 import viewer.*;
 import data.*;
+import tools.*;
 
 /**
  * Molecular Dynamics
@@ -32,51 +33,31 @@ public class MDPanel extends JPanel implements ActionListener{
     createPanel();
   }
 
-  MDFrame md;
-  MDPluginInterface potType=null;
   public void actionPerformed( ActionEvent ae){
-    if( ae.getSource() == loadButton){
-      for(int i=0;i<plugins.size();i++){
-        if(ae.getActionCommand().equals(plugins.get(i).getName())){
-          JRadioButton radio=(JRadioButton)ae.getSource();
-          if( radio.isSelected() ){
-            potType=plugins.get(i);
-            break;
-          }
-        }
-      }
-      if(potType==null)potType=plugins.get(0);
+    for(int i=0;i<plugins.size();i++){
+      if(ae.getActionCommand().equals(plugins.get(i).getName())){
+        //set dir
+        String dir = (new MyOpen()).getOpenFilename();
+        if(dir==null)return;
 
-      potType=plugins.get(1);
-      System.out.println(((Object)potType).getClass().getName());
-
-      md=null;
-      md= new MDFrame(ctrl.getActiveRW().atoms);
-    }else if( ae.getSource() == startButton){
-      if(md.fpsAnimator.isAnimating()){
-        md.fpsAnimator.stop();
-      }else{
-        md.fpsAnimator.start();
+        //set Atoms
+        viewer.renderer.Atoms atoms=new viewer.renderer.Atoms();
+        Bonds bonds=new Bonds();
+        MyFileIO fileio=new MyFileIO(dir);
+        fileio.ropen();
+        fileio.readHeader(atoms);
+        fileio.readFooter(atoms);
+        atoms.allocate4Trj();
+        fileio.set(0,0,atoms,bonds);
+        MDFrame md= new MDFrame(atoms,plugins.get(i));
+        break;
       }
     }
-
-
   }
 
-  private JButton loadButton;
-  private JButton startButton;
+
 
   private void createPanel(){
-    loadButton = new JButton( "Load" );
-    loadButton.addActionListener( this );
-    loadButton.setFocusable(false);
-
-    startButton = new JButton( "Start" );
-    startButton.addActionListener( this );
-    startButton.setFocusable(false);
-
-    add(loadButton);
-    add(startButton);
     add(createPluginButton());
   }
 
@@ -127,20 +108,12 @@ public class MDPanel extends JPanel implements ActionListener{
     //add
     JPanel jp=new JPanel();
     jp.setLayout(new GridLayout(0,6));
-    ButtonGroup group= new ButtonGroup();
-
     for(int i=0;i<plugins.size();i++){
-      JButton btn=new JButton(plugins.get(i).getName());
-      JRadioButton radio;
-      if(plugins.get(i).getName().matches("LJ pot.")){
-        radio= new JRadioButton( plugins.get(i).getName(),true);
-      }else{
-        radio= new JRadioButton( plugins.get(i).getName());
-      }
-      radio.setActionCommand(plugins.get(i).getName());
-      radio.addActionListener( this );
-      group.add(radio);
-      jp.add(radio);
+      String name=plugins.get(i).getName();
+      JButton btn=new JButton(name);
+      btn.addActionListener( this );
+      btn.setActionCommand(name);
+      jp.add(btn);
     }
     return jp;
   }
@@ -152,7 +125,9 @@ public class MDPanel extends JPanel implements ActionListener{
                                           MouseListener,
                                           MouseMotionListener,
                                           MouseWheelListener{
-    MDFrame(Atoms atoms){
+    MDPluginInterface potType;
+    MDFrame(Atoms atoms,MDPluginInterface potType){
+      this.potType=potType;
       set(atoms);
       panel = new GLCanvas();
       panel.addGLEventListener( this );

@@ -558,7 +558,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   /* accesser  block ends *********************************************/
 
   /* called by this */
-  void initialize(String str){
+  void initialize(String filepath){
     //menu
     //RenderingWindowMenuController menu=new RenderingWindowMenuController(this);
     //setJMenuBar(menu.getMenu());
@@ -572,7 +572,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
 
     //monitor = new JavaSysMon();
 
-    fileio=new MyFileIO(str);
+    fileio=new MyFileIO(filepath);
     //new viewer.renderer.Atoms
     atoms=new viewer.renderer.Atoms(this);
     fileio.ropen();
