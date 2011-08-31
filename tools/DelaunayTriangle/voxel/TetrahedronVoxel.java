@@ -37,10 +37,10 @@ public class TetrahedronVoxel implements Voxel {
 //    double[][] node=data.getNode();
     double[][] node=del.getMeshData().getNode();
 
-    gp.moveTo(node[0][0], node[0][1]);
+    gp.moveTo((float)node[0][0], (float)node[0][1]);
     double zmin=Double.MAX_VALUE;
     for(int i=1;i<node.length;i++){
-      gp.lineTo(node[i][0], node[i][1]);
+      gp.lineTo((float)node[i][0], (float)node[i][1]);
       if(node[i].length<3)continue;
       if(node[i][2]<zmin)zmin=node[i][2];
     }
@@ -139,17 +139,17 @@ public class TetrahedronVoxel implements Voxel {
     return zz/ll;
   }
 
-  @Override
+  //@Override
   public double[] getVoxelOrigin() {
     return origin;
   }
 
-  @Override
+  //@Override
   public double[] getVoxelVector() {
     return vec;
   }
 
-  @Override
+  //@Override
   public double[][][] getVoxel() {
     return voxel;
   }

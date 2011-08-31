@@ -123,7 +123,7 @@ public class ModelingPanel extends JPanel implements ActionListener{
   private JPanel createPluginButton(){
     String dir=vconf.pluginDir;
     //String dir=vconf.pluginDir+File.separator+"modeling"+File.separator;
-    System.out.println("model plugin: "+dir);
+    System.out.println("modeling plugin: "+dir);
     try {
       File f = new File(dir);
       String[] files = f.list();

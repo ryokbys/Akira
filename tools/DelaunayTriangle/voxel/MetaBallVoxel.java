@@ -52,17 +52,17 @@ public class MetaBallVoxel implements Voxel {
     return myFieldSize;
   }
 
-  @Override
+  //@Override
   public double[][][] getVoxel() {
     return valueMemory;
   }
 
-  @Override
+  //@Override
   public double[] getVoxelOrigin() {
     return new double[]{0,0,0};
   }
 
-  @Override
+  //@Override
   public double[] getVoxelVector() {
     return new double[]{1,1,1};
   }
