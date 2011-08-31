@@ -66,7 +66,6 @@ public class ExportPanel extends JPanel implements ActionListener{
     createPluginButton();
   }
   private ArrayList<ExportPluginInterface> plugins = new ArrayList<ExportPluginInterface>();
-  private ArrayList<String> pluginName = new ArrayList<String>();
   static void addClassPathToClassLoader(File classPath){
     try{
       URLClassLoader classLoader=(URLClassLoader) ClassLoader.getSystemClassLoader();
@@ -97,7 +96,6 @@ public class ExportPanel extends JPanel implements ActionListener{
               addClassPathToClassLoader(new File(f.getAbsolutePath()+File.separator+files[i]));
               ExportPluginInterface plg = (ExportPluginInterface)c.newInstance();
               plugins.add(plg);
-              pluginName.add(plg.getName());
               System.out.println("export plugin; "+classname+".class is added");
             }
           }//j
@@ -113,8 +111,8 @@ public class ExportPanel extends JPanel implements ActionListener{
 
     //add
     for(int i=0;i<plugins.size();i++){
-      JButton btn=new JButton(pluginName.get(i));
-      btn.setActionCommand(pluginName.get(i));
+      JButton btn=new JButton(plugins.get(i).getName());
+      btn.setActionCommand(plugins.get(i).getName());
       btn.addActionListener( this );
       add(btn);
     }
@@ -158,7 +156,7 @@ public class ExportPanel extends JPanel implements ActionListener{
 
     //plugin
     for(int i=0;i<plugins.size();i++){
-      if(e.getActionCommand().equals(pluginName.get(i))){
+      if(e.getActionCommand().equals(plugins.get(i).getName())){
         (plugins.get(i)).exec(dir,fileNo,
                               atoms.h,atoms.hinv,atoms.n,atoms.r,
                               atoms.tag,atoms.vtag);

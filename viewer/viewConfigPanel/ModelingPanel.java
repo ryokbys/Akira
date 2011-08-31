@@ -41,7 +41,7 @@ public class ModelingPanel extends JPanel implements ActionListener{
 
     //plugin
     for(int i=0;i<plugins.size();i++){
-      if(e.getActionCommand().equals(pluginName.get(i))){
+      if(e.getActionCommand().equals(plugins.get(i).getName())){
         fnum++;
         String dir;
         if(ctrl.getActiveRW()==null)
@@ -107,7 +107,7 @@ public class ModelingPanel extends JPanel implements ActionListener{
   }
 
   private ArrayList<ModelingPluginInterface> plugins = new ArrayList<ModelingPluginInterface>();
-  private ArrayList<String> pluginName = new ArrayList<String>();
+
   static void addClassPathToClassLoader(File classPath){
     try{
       URLClassLoader classLoader=(URLClassLoader) ClassLoader.getSystemClassLoader();
@@ -138,7 +138,6 @@ public class ModelingPanel extends JPanel implements ActionListener{
               addClassPathToClassLoader(new File(f.getAbsolutePath()+File.separator+files[i]));
               ModelingPluginInterface plg = (ModelingPluginInterface)c.newInstance();
               plugins.add(plg);
-              pluginName.add(plg.getName());
               System.out.println("modeling plugin; "+classname+".class is added");
             }
           }//j
@@ -156,8 +155,8 @@ public class ModelingPanel extends JPanel implements ActionListener{
     JPanel jp=new JPanel();
     jp.setLayout(new GridLayout(0,6));
     for(int i=0;i<plugins.size();i++){
-      JButton btn=new JButton(pluginName.get(i));
-      btn.setActionCommand(pluginName.get(i));
+      JButton btn=new JButton(plugins.get(i).getName());
+      btn.setActionCommand(plugins.get(i).getName());
       btn.addActionListener( this );
       jp.add(btn);
     }
