@@ -17,6 +17,13 @@ public class potEAM implements MDPluginInterface{
     return "EAM pot.";
   }
 
+  public int getSpeciesN(){
+    return 1;
+  }
+  double mass=26*1840;//convert to a.u.
+  public double getMass(int i){
+    return mass;
+  }
   public double[][] getForce(double[][]h, int natm,double[][] r){
     double[][] f=new double[natm][3];
     return f;

@@ -175,8 +175,8 @@ public class StatusPanel extends JPanel implements ChangeListener{
       chars[0] = (char) i;
       String s = new String(chars);
       ta.append(s);
-      ta.setCaretPosition(ta.getText().length());
       system.write(i);
+      ta.setCaretPosition(ta.getText().length());
     }
     public void write(char[] buf, int off, int len){
       String s = new String(buf, off, len);

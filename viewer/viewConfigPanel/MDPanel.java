@@ -36,10 +36,10 @@ public class MDPanel extends JPanel implements ActionListener{
   public void actionPerformed( ActionEvent ae){
     for(int i=0;i<plugins.size();i++){
       if(ae.getActionCommand().equals(plugins.get(i).getName())){
+
         //set dir
         String dir = (new MyOpen()).getOpenFilename();
         if(dir==null)return;
-
         //set Atoms
         viewer.renderer.Atoms atoms=new viewer.renderer.Atoms();
         Bonds bonds=new Bonds();
@@ -49,6 +49,7 @@ public class MDPanel extends JPanel implements ActionListener{
         fileio.readFooter(atoms);
         atoms.allocate4Trj();
         fileio.set(0,0,atoms,bonds);
+        //md
         MDFrame md= new MDFrame(atoms,plugins.get(i));
         break;
       }
@@ -135,11 +136,11 @@ public class MDPanel extends JPanel implements ActionListener{
 
       pane = this.getContentPane();
       pane.add( panel );
-      this.setBounds(new Rectangle( 20, 20, 1024, 768 ) );
+      this.setBounds(ctrl.vconf.rectRWin);
       this.addKeyListener( this );
       this.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
 
-      setTitle( "Molecular Dynamics: LJ" );
+      setTitle("Molecular Dynamics: "+potType.getName());
       setVisible( true );
     }
 
@@ -537,19 +538,23 @@ public class MDPanel extends JPanel implements ActionListener{
     double[][] h=new double[3][3];
     double[][] hinv=new double[3][3];
     double[][] r,v,f;
-    byte[] tag;
+    int[] tag;
 
-    double eps=120;
-    double sgm=3.41;
-    double mass=40;
-    double massi=1/mass;
+    double[] mass,massi;
     double dt=40;
     double dt2=dt*0.5;
     double dmp=1.;
-    //boltzman fac
-    double fkb= 1.3806503e-23*(2.41889e-17*2.41889e-17)/9.1093897e-31/(0.5291772e-10*0.5291772e-10);
 
     private void set(Atoms atoms){
+
+      int ntag=potType.getSpeciesN();
+      mass=new double[ntag];
+      massi=new double[ntag];
+      for(int i=0;i<ntag;i++){
+        mass[i]=potType.getMass(i);
+        massi[i]=1/mass[i];
+      }
+
       for(int i=0;i<3;i++)for(int j=0;j<3;j++){
           h[i][j]=atoms.h[i][j];
           hinv[i][j]=atoms.hinv[i][j];
@@ -559,7 +564,7 @@ public class MDPanel extends JPanel implements ActionListener{
       r=new double[natm][3];
       v=new double[natm][3];
       //f=new double[natm][3];
-      tag=new byte[natm];
+      tag=new int[natm];
       for(int i=0;i<natm;i++){
         //stop volume data
         if(atoms.tag[i]==Const.VOLUME_DATA_TAG){
@@ -576,140 +581,27 @@ public class MDPanel extends JPanel implements ActionListener{
           //f[i][j]=0;
         }
       }
-      //setupPot();
       setHome();
-      //makeList();
     }
 
-
-    /*
-     * ArrayList<ArrayList<Integer>> lspr= new ArrayList<ArrayList<Integer>>();
-     * void makeList(){
-     *   lspr.clear();
-     *   double[] dsr=new double[3];
-     *   double[] dr=new double[3];
-     *   for(int i=0;i<natm;i++){
-     *     ArrayList<Integer> iList = new ArrayList<Integer>();
-     *     for(int j=0;j<natm;j++){
-     *       if(i==j)continue;
-     *       for(int k=0;k<3;k++){
-     *         dsr[k]=r[j][k]-r[i][k];
-     *         if(dsr[k]>0.5)dsr[k]-=1.0;
-     *         if(dsr[k]<-0.5)dsr[k]+=1.0;
-     *       }
-     *       dr=chgScale( dsr );
-     *       double r2=dr[0]*dr[0]+dr[1]*dr[1]+dr[2]*dr[2];
-     *       double rij=Math.sqrt( r2 );
-     *       if(rij>rc)continue;
-     *       iList.add(j);
-     *     }//j
-     *     lspr.add(iList);
-     *   }
-     * }
-     */
-
-    /*
-     * double sgm6,rc,massi,rpot;
-     * int ntable=1000;
-     * double[][] pottable=new double[2][ntable];
-     * void setupPot(){
-     *   sgm/=0.529177;//convert to a.u.
-     *   eps*=fkb;
-     *   mass*=1840;
-     *   dt2=dt/2;
-     *   massi=1/mass;
-     *   rc=2.5*sgm;
-     *   sgm6=sgm*sgm*sgm*sgm*sgm*sgm;
-     *
-     *   //cutoff
-     *   double ri=1/rc;
-     *   double ri6=ri*ri*ri*ri*ri*ri;
-     *   double r=sgm6*ri6;
-     *   double vrc=4*eps*(r-1)*r;
-     *   double dvrc=-24*eps*(2*r-1)*r*ri;
-     *
-     *   //pot table
-     *   rpot=rc/ntable;
-     *   for(int i=0;i<ntable;i++){
-     *     ri=1.0/rpot/(i+1);
-     *     ri6=ri*ri*ri*ri*ri*ri;
-     *     r=sgm6*ri6;
-     *     pottable[0][i]=4*eps*(r-1)*r-vrc-dvrc*(r-rc);
-     *     pottable[1][i]=-24*eps*(2*r-1)*r*ri-dvrc;
-     *   }
-     *
-     * }
-     *
-     *
-     *
-     */
     double ekin,epot;
-    double epot0=-123.;
-    /*
-     * public void getForce(){
-     *   //init
-     *   epot=0;
-     *   for(int i=0;i<natm;i++){
-     *     f[i][0]=0.;
-     *     f[i][1]=0.;
-     *     f[i][2]=0.;
-     *   }
-     *
-     *   int ir;
-     *   double fr,dv;
-     *   double[] dsr=new double[3];
-     *   double[] dr=new double[3];
-     *   //cal force
-     *   for(int i=0;i<natm-1;i++){
-     *     ArrayList<Integer> iList = lspr.get(i);
-     *     for(int jj=0;jj<iList.size();jj++){
-     *       int j=iList.get(jj);
-     *       if(j>i)continue;
-     *       for(int k=0;k<3;k++){
-     *         dsr[k]=r[j][k]-r[i][k];
-     *         if(dsr[k]>0.5)dsr[k]-=1.0;
-     *         if(dsr[k]<-0.5)dsr[k]+=1.0;
-     *       }
-     *
-     *       dr=chgScale( dsr );
-     *       double r2=dr[0]*dr[0]+dr[1]*dr[1]+dr[2]*dr[2];
-     *       double rij=Math.sqrt( r2 );
-     *       if(rij>rc)continue;
-     *       ir=(int)(rij/rpot)-1;
-     *       fr=rij/rpot-ir;
-     *       if(ir>ntable)ir=ntable-2;
-     *       epot+=fr*pottable[0][ir]+(1-fr)*pottable[0][ir+1];
-     *       dv=fr*pottable[1][ir]+(1-fr)*pottable[1][ir+1];
-     *       dv/=rij;
-     *       f[i][0]+=dv*dr[0];
-     *       f[i][1]+=dv*dr[1];
-     *       f[i][2]+=dv*dr[2];
-     *       f[j][0]-=dv*dr[0];
-     *       f[j][1]-=dv*dr[1];
-     *       f[j][2]-=dv*dr[2];
-     *     }
-     *   }
-     *
-     * }
-     */
-
     private double calEkin(){
       double ekin=0.;
       for(int i=0;i<natm;i++)
         for(int j=0;j<3;j++){
-          ekin+=v[i][j]*v[i][j];
+          ekin+=v[i][j]*v[i][j]*mass[tag[i]-1];
         }
-      return ekin*mass*0.5;
+      return ekin*0.5;
     }
     public void MDstep(int nloop){
       f=potType.getForce(h,natm,r);
-      if(epot0==-123.)epot0=epot;
+      epot=f[natm][0];
       for(int iloop=0;iloop<nloop;iloop++){
         step++;
         //kick
         for(int i=0;i<natm;i++)
           for(int j=0;j<3;j++){
-            v[i][j]+=f[i][j]*dt2*massi;
+            v[i][j]+=f[i][j]*dt2*massi[tag[i]-1];
             v[i][j]*=dmp;
           }
 
@@ -718,10 +610,9 @@ public class MDPanel extends JPanel implements ActionListener{
         //get force
         f=potType.getForce(h,natm,r);
         //kick
-        for(int i=0;i<natm;i++)for(int j=0;j<3;j++) v[i][j]+=f[i][j]*dt2*massi;
+        for(int i=0;i<natm;i++)for(int j=0;j<3;j++) v[i][j]+=f[i][j]*dt2*massi[tag[i]-1];
       }
       ekin=calEkin();
-      //System.out.println(String.format("ekin, epot, etot= %12.4e, %12.4f, %12.4f",ekin,epot-epot0,ekin+epot-epot0));
     }
 
 
@@ -766,11 +657,8 @@ public class MDPanel extends JPanel implements ActionListener{
       str=String.format("step= %d",step);
       renderString(str,15.f, height-20,0.f,1.f,ctrl.vconf.txtColor);
 
-      str=String.format("ekin, epot, etot= %12.4e, %12.4e, %12.4e",ekin,epot-epot0,ekin+epot-epot0);
+      str=String.format("ekin, epot, etot= %12.4e, %12.4e, %12.4e",ekin/natm,epot/natm,(ekin+epot)/natm);
       renderString(str,15.f, height-40,0.f,1.f,ctrl.vconf.txtColor);
-
-      str=String.format("sgm= %.3f Å, eps= %.1f K",sgm*0.529177,eps/fkb);
-      renderString(str,15.f, height-60,0.f,1.f,ctrl.vconf.txtColor);
 
       str=String.format("dmp= %.3f",dmp);
       renderString(str,15.f, height-80,0.f,1.f,ctrl.vconf.txtColor);

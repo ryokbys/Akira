@@ -41,7 +41,7 @@ public class AkiraViewer{
 
     //analyze command line options
     for(int i=0;i<args.length;i++){
-      if(args[i].equals("-silent")){
+      if(args[i].equals("-silent") || args[i].equals("-s")){
         isSilent=true;
       }else if(args[i].equals("-h") || args[i].equals("-help")){
         printHelp();
