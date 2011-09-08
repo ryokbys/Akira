@@ -79,7 +79,7 @@ public class ExportPanel extends JPanel implements ActionListener{
     }
   }
   private void createPluginButton(){
-    //String dir=vconf.pluginDir+File.separator+"export"+File.separator;
+    //String dir=vconf.pluginDir+File.separator+"export"+File.separator;File.separator+"export"+File.separator;
     String dir=vconf.pluginDir;
     System.out.println("export plugin: "+dir);
     try {

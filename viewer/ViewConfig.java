@@ -196,10 +196,11 @@ public class ViewConfig implements Serializable{
       configDir= "\\Akira";
       configFile="\\Akira\\viewer.config";
       pluginDir="\\Akira\\plugin";
+
     }else{
-      configDir= System.getProperty("user.home")+"/.Akira";
-      configFile= System.getProperty("user.home")+"/.Akira/viewer.config";
-      pluginDir=System.getProperty("user.home")+"/myLocal/Akira/plugin";
+      configDir= System.getProperty("user.home")+"/Akira";
+      configFile= configDir+"/viewer.config";
+      pluginDir= configDir+"/plugin";
     }
     resetAll();
   }

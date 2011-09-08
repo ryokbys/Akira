@@ -1,8 +1,6 @@
 package viewer.LF;
 
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -35,7 +33,7 @@ public class JStatusBar extends JPanel {
 
     contentPanel = new JPanel( );
     contentPanel.setOpaque(false);
-    layout = new FormLayout("2dlu, pref:grow", "2dlu, fill:12dlu, 2dlu");
+    layout = new FormLayout("2dlu, pref:grow", "2dlu, fill:15dlu, 2dlu");
 
     contentPanel.setLayout(layout);
     add(contentPanel, BorderLayout.CENTER);
@@ -79,7 +77,7 @@ public class JStatusBar extends JPanel {
 
     layout.appendColumn(new ColumnSpec("2dlu"));
     layout.appendColumn(new ColumnSpec("30dlu"));
-    layout.appendColumn(new ColumnSpec("25dlu"));
+    layout.appendColumn(new ColumnSpec("30dlu"));
     layout.appendColumn(new ColumnSpec("5dlu"));
 
     layoutCoordinateX++;

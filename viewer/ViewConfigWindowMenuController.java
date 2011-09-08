@@ -179,8 +179,9 @@ public class ViewConfigWindowMenuController implements ActionListener {
     miUpdate  = new JMenuItem( "Check update" );
     miUpdate.addActionListener( this );
 
-    miSetPluginDir  = new JMenuItem( "Set Export Plugin Directory" );
+    miSetPluginDir  = new JMenuItem( "Set Plugin Directory" );
     miSetPluginDir.addActionListener( this );
+
     miConv  = new JMenuItem( "Convert" );
     miConv.addActionListener( this );
 

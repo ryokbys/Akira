@@ -600,10 +600,8 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     frameButton.addActionListener(this);
 
 
-    if(ctrl.isEnjoyMode)
-      statusBar.set3(lStatus,spFrame,frameButton);
-    else
-      statusBar.setMainLeftComponent(lStatus);
+    statusBar.set3(lStatus,spFrame,frameButton);
+    //statusBar.setMainLeftComponent(lStatus);
 
     add(statusBar, BorderLayout.SOUTH);
 

@@ -92,7 +92,7 @@ public class Viewpoint{
     //set viewpoint file
     String str;
     for(int i=0;i<nVPFile;i++){
-      str=vconf.configDir + File.separator+String.format("viewpoint%02d",i);
+      str=vconf.configDir + File.separator+String.format("vp%02d",i);
       vpFile[i]=new File(str);
     }
   }//end of constructor (Viewpoint)
