@@ -81,6 +81,13 @@ public class ExportPanel extends JPanel implements ActionListener{
   private void createPluginButton(){
     //String dir=vconf.pluginDir+File.separator+"export"+File.separator;File.separator+"export"+File.separator;
     String dir=vconf.pluginDir;
+
+    /*
+     * URL jarUrl = this.getClass().getResource( "Akira.jar" );
+     * File jarFile = new File( new URI("file:" + jarUrl.getFile()) );
+     * System.out.println(jarFile.getAbsolutePath());
+     */
+
     System.out.println("export plugin: "+dir);
     try {
       File f = new File(dir);

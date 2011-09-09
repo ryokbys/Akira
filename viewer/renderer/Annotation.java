@@ -225,7 +225,7 @@ public class Annotation{
                    0.f,legendScale,vconf.txtColor);
 
       y = ystart + Math.abs( range[0])/dr*(yend-ystart);
-      str = getFormat(format,range[1]/2.f*vconf.dataFactor);
+      str = getFormat(format,(range[1]+range[0])*0.5f*vconf.dataFactor);
 
       renderString(str,
                    isVLong*(xend+dx)+isHLong*(y+dy),
@@ -304,7 +304,7 @@ public class Annotation{
 
       //1text
       y = ystart + Math.abs(range[0])/dr*(yend-ystart);
-      str = getFormat(format,range[1]/2.f*vconf.dataFactor);
+      str = getFormat(format,(range[1]-range[0])*0.5f*vconf.dataFactor);
       renderString(str,
                    isVLong*(xend+dx)+isHLong*(y+dy),
                    isHLong*(xend+dx)+isVLong*(y+dy),

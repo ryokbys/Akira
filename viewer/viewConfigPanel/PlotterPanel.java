@@ -240,8 +240,8 @@ public class PlotterPanel extends JPanel implements ActionListener{
             float sx=atoms.hinv[drawType-1][0]*atoms.r[i][0]+atoms.hinv[drawType-1][1]*atoms.r[i][1]+atoms.hinv[drawType-1][2]*atoms.r[i][2];
 
             int x=w1+(int)(w12*sx);
-            int y=h2-(int)((atoms.data[i][rw.renderingAtomDataIndex-1]-atoms.originalDataRange[rw.renderingAtomDataIndex-1][0])*h12
-                           /(atoms.originalDataRange[rw.renderingAtomDataIndex-1][1]-atoms.originalDataRange[rw.renderingAtomDataIndex-1][0]));
+            int y=h2-(int)((atoms.data[i][rw.renderingAtomDataIndex-1]-ctrl.vconf.dataRange[rw.renderingAtomDataIndex-1][0])*h12
+                           /(ctrl.vconf.dataRange[rw.renderingAtomDataIndex-1][1]-ctrl.vconf.dataRange[rw.renderingAtomDataIndex-1][0]));
             g.drawOval(x-r/2,y-r/2,r,r);
           }
           //y-axis
@@ -250,11 +250,11 @@ public class PlotterPanel extends JPanel implements ActionListener{
           g.drawLine(w1-r,h1,w1+r,h1);
           g.drawLine(w1-r,h2,w1+r,h2);
           //number
-          String str=String.format("%.2e",atoms.originalDataRange[rw.renderingAtomDataIndex-1][1]);
+          String str=String.format("%.2e",ctrl.vconf.dataRange[rw.renderingAtomDataIndex-1][1]);
           g2.drawString(str, offset, h1+offset);
-          str=String.format("%.2e",(atoms.originalDataRange[rw.renderingAtomDataIndex-1][1]-atoms.originalDataRange[rw.renderingAtomDataIndex-1][0])*0.5f);
+          str=String.format("%.2e",(ctrl.vconf.dataRange[rw.renderingAtomDataIndex-1][1]+ctrl.vconf.dataRange[rw.renderingAtomDataIndex-1][0])*0.5f);
           g2.drawString(str, offset, half+offset);
-          str=String.format("%.2e",atoms.originalDataRange[rw.renderingAtomDataIndex-1][0]);
+          str=String.format("%.2e",ctrl.vconf.dataRange[rw.renderingAtomDataIndex-1][0]);
           g2.drawString(str, offset, h2+offset);
 
         }
