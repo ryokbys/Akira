@@ -237,6 +237,10 @@ public class PlotterPanel extends JPanel implements ActionListener{
         viewer.renderer.Atoms atoms=rw.getAtoms();
         if(rw.renderingAtomDataIndex>0){
           for(int i=0;i<atoms.n;i++){
+            int itag=atoms.tag[i]-1;
+            if(!ctrl.vconf.tagOnOff[itag])continue;
+            if(atoms.isSetVtag && atoms.vtag[i]<0)continue;
+
             float sx=atoms.hinv[drawType-1][0]*atoms.r[i][0]+atoms.hinv[drawType-1][1]*atoms.r[i][1]+atoms.hinv[drawType-1][2]*atoms.r[i][2];
 
             int x=w1+(int)(w12*sx);
