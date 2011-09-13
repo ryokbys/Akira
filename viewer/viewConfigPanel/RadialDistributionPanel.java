@@ -178,23 +178,18 @@ public class RadialDistributionPanel extends JPanel implements ActionListener,
     requestFocusInWindow();
   }
 
-  private viewer.renderer.Atoms atoms;
   public void actionPerformed( ActionEvent e ){
     if( e.getSource() == btnCal ){
-      this.atoms=ctrl.getActiveRW().atoms;
       myRender = new MyRender();
       myRender.start();
     }else if( e.getSource() == btnPause ){
-      /*
-       * try{
-       *     myRender.wait();
-       * }
-       * catch (InterruptedException ie){
-       *     System.out.println(ie);
-       * }
-       */
+      try{
+        myRender.wait();
+      }catch (InterruptedException ie){
+        System.out.println(ie);
+      }
     }else if( e.getSource() == btnResume ){
-      //myRender.notify();
+      myRender.notify();
     }else if( e.getSource() == btnClear ){
       nc=0;
       for(int i=0;i<ncmax;i++) count[i]=0;
@@ -207,8 +202,10 @@ public class RadialDistributionPanel extends JPanel implements ActionListener,
     requestFocusInWindow();
   }
 
+  private viewer.renderer.Atoms atoms;
   class MyRender extends Thread {
     public void run(){
+      atoms=ctrl.getActiveRW().atoms;
       pbCal.setValue(0);
       pbCal.setMaximum(atoms.n-1);
       calRadialDis();
@@ -236,7 +233,6 @@ public class RadialDistributionPanel extends JPanel implements ActionListener,
     float dr, r2,volume;
     float diameter=1.f;
 
-    RenderingWindow rw=ctrl.getActiveRW();
 
 
     for(int i=0;i<3;i++){
@@ -270,10 +266,15 @@ public class RadialDistributionPanel extends JPanel implements ActionListener,
     //brute force
 
      for(int i=0;i<atoms.n-1;i++){
-       if(rw.atoms.vtag[i]<0)continue;
+       int itag=atoms.tag[i]-1;
+       if(!ctrl.vconf.tagOnOff[itag])continue;
+       if(atoms.vtag[i]<0)continue;
 
         for(int j=i+1;j<atoms.n;j++){
-          if(rw.atoms.vtag[j]<0)continue;
+          int jtag=atoms.tag[j]-1;
+          if(!ctrl.vconf.tagOnOff[jtag])continue;
+
+          if(atoms.vtag[j]<0)continue;
 
         //consider PBC
         for(int k=0;k<3;k++){

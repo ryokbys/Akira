@@ -104,7 +104,6 @@ public class Atoms extends data.Atoms implements Renderer{
       int itag=tag[i]-1;
       if(!vconf.tagOnOff[itag])continue;
 
-
       //
       if(isSetVtag && vtag[i]<0)continue;
 

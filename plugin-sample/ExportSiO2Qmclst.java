@@ -78,11 +78,15 @@ public class ExportSiO2Qmclst implements ExportPluginInterface {
 
 
       int nn=0;
+      double[] xt={0.,0.,0.};
       for(int i=0;i<n;i++){
         if(vtag[i]<0)continue;
         nn++;
+        for(int k=0; k<3; k++)xt[k] += hinv[k][0]*r[i][0]+hinv[k][1]*r[i][1]+hinv[k][2]*r[i][2];
       }
       System.out.println(String.format("output Natom: %d",nn));
+
+      pw.println(String.format("%e %e %e",xt[0],xt[1],xt[2]));//xtarget
       pw.println(String.format("%d",nn));
 
       for(int i=0;i<n;i++){

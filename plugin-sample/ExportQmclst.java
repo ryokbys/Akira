@@ -31,15 +31,22 @@ public class ExportQmclst implements ExportPluginInterface {
 
 
       int nv=0;
+      double[] xt={0.,0.,0.};
       for(int i=0;i<n;i++){
         if(vtag[i]<0)continue;
         nv++;
+        for(int k=0; k<3; k++)xt[k] += hinv[k][0]*r[i][0]+hinv[k][1]*r[i][1]+hinv[k][2]*r[i][2];
       }
+      for(int k=0; k<3; k++)xt[k]/=nv;
+
       System.out.println(String.format("output Natom: %d",nv));
 
+      pw.println(String.format("%e %e %e",xt[0],xt[1],xt[2]));//xtarget
       pw.println(String.format("%d",n));
 
       for(int i=0;i<n;i++){
+        //int itag=atoms.tag[i]-1;
+        //if(!ctrl.vconf.tagOnOff[itag])continue;
         if(vtag[i]<0)continue;
 
         float[] out = new float[3];
