@@ -61,6 +61,7 @@ public class PlotterPanel extends JPanel implements ActionListener{
 
     cbWrite =new JCheckBox("Auto write",ctrl.vconf.plotterExport);
     cbWrite.setFocusable(false);
+    cbWrite.addActionListener(this);
 
     String[] type = {"Energy", "x", "y", "z"};
     drawTypeCmb=new JComboBox(type);
