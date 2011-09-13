@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #set directories
-AKIRADIR="$HOME/myLocal/Akira"
-JOGL="$HOME/myLocal/javalib/jogl"
+AKIRADIR="$HOME/Akira"
+JOGL="$HOME/myLocal/jogl"
 JARS="$JOGL/gluegen-rt.jar:\
 $JOGL/gluegen-rt.jar:\
 $JOGL/newt.all.jar:\

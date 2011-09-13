@@ -1,5 +1,5 @@
 #!/bin/bash
-AKIRADIR="$HOME/myLocal/Akira"
+AKIRADIR="$HOME/Akira"
 
 if [ ! -f $PWD/AkiraConverter.conf ]; then
     cp $AKIRADIR/AkiraConverter.conf $PWD/
