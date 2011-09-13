@@ -21,10 +21,11 @@ import viewer.renderer.*;
 
 public class PlotterPanel extends JPanel implements ActionListener{
 
-  int drawType=0;
+
   public void actionPerformed( ActionEvent ae){
-    drawType=drawTypeCmb.getSelectedIndex();
-    if(drawType==0){
+    ctrl.vconf.plotterDrawType=drawTypeCmb.getSelectedIndex();
+    ctrl.vconf.plotterExport=cbWrite.isSelected();
+    if(ctrl.vconf.plotterDrawType==0){
       if(rdCanv!=null){
         String currentDir=System.getProperty("user.dir");
         JFileChooser jfc = new JFileChooser( (new File(currentDir)).getAbsolutePath() );
@@ -54,13 +55,17 @@ public class PlotterPanel extends JPanel implements ActionListener{
 
 
   private JComboBox drawTypeCmb;
+  private JCheckBox cbWrite;
 
   private void createPanel(){
+
+    cbWrite =new JCheckBox("Auto write",ctrl.vconf.plotterExport);
+    cbWrite.setFocusable(false);
 
     String[] type = {"Energy", "x", "y", "z"};
     drawTypeCmb=new JComboBox(type);
     drawTypeCmb.addActionListener(this);
-    drawTypeCmb.setSelectedIndex(0);
+    drawTypeCmb.setSelectedIndex(ctrl.vconf.plotterDrawType);
     drawTypeCmb.setFocusable(false);
     //canvas
     rdCanv= new RDCanvas();
@@ -72,12 +77,18 @@ public class PlotterPanel extends JPanel implements ActionListener{
 
     layout.putConstraint( SpringLayout.NORTH, drawTypeCmb, 10, SpringLayout.NORTH, this );
     layout.putConstraint( SpringLayout.EAST, drawTypeCmb, -10, SpringLayout.EAST, this );
+    layout.putConstraint( SpringLayout.NORTH, cbWrite, 10, SpringLayout.SOUTH, drawTypeCmb);
+    layout.putConstraint( SpringLayout.WEST, cbWrite, 0, SpringLayout.WEST, drawTypeCmb);
+
+
+
     //canvas
     layout.putConstraint( SpringLayout.SOUTH, rdCanv, -5, SpringLayout.SOUTH, this );
     layout.putConstraint( SpringLayout.NORTH, rdCanv, 5, SpringLayout.NORTH, this );
     layout.putConstraint( SpringLayout.EAST, rdCanv, -5,SpringLayout.WEST, drawTypeCmb);
     layout.putConstraint( SpringLayout.WEST, rdCanv, 10,SpringLayout.WEST, this );
 
+    this.add(cbWrite);
     this.add(drawTypeCmb);
     this.add(rdCanv);
 
@@ -130,6 +141,33 @@ public class PlotterPanel extends JPanel implements ActionListener{
 
   }
 
+  int filenum=0;
+  FileWriter fw;
+  BufferedWriter bw;
+  PrintWriter pw;
+  private void wopen(){
+    String filename=ctrl.getActiveRW().getFileDirectory()+String.format("plotter-%03d.d",filenum);
+    filenum++;
+
+    try {
+      //open
+      fw = new FileWriter( filename );
+      bw = new BufferedWriter( fw );
+      pw = new PrintWriter( bw );
+    }
+    catch ( IOException e ){
+    }
+  }
+  private void wclose(){
+    try {
+      //close
+      pw.close();
+      bw.close();
+      fw.close();
+    }
+    catch ( IOException e ){
+    }
+  }
 
   ///////////////////////////////////////////////////////////////////
   class RDCanvas extends JPanel{
@@ -169,7 +207,7 @@ public class PlotterPanel extends JPanel implements ActionListener{
       g.drawLine(w1-r,h2,w1+r,h2);
 
 
-      if(drawType==0){
+      if(ctrl.vconf.plotterDrawType==0){
         //energy
         int n=energy.size()/3;
         if(n<1)return;
@@ -236,18 +274,26 @@ public class PlotterPanel extends JPanel implements ActionListener{
         if(rw==null)return;
         viewer.renderer.Atoms atoms=rw.getAtoms();
         if(rw.renderingAtomDataIndex>0){
+
+          if(ctrl.vconf.plotterExport)wopen();
+
+
+          float ddr=ctrl.vconf.dataRange[rw.renderingAtomDataIndex-1][1]-ctrl.vconf.dataRange[rw.renderingAtomDataIndex-1][0];
           for(int i=0;i<atoms.n;i++){
             int itag=atoms.tag[i]-1;
             if(!ctrl.vconf.tagOnOff[itag])continue;
             if(atoms.isSetVtag && atoms.vtag[i]<0)continue;
 
-            float sx=atoms.hinv[drawType-1][0]*atoms.r[i][0]+atoms.hinv[drawType-1][1]*atoms.r[i][1]+atoms.hinv[drawType-1][2]*atoms.r[i][2];
-
+            float sx=atoms.hinv[ctrl.vconf.plotterDrawType-1][0]*atoms.r[i][0]+atoms.hinv[ctrl.vconf.plotterDrawType-1][1]*atoms.r[i][1]+atoms.hinv[ctrl.vconf.plotterDrawType-1][2]*atoms.r[i][2];
+            float sy=(atoms.data[i][rw.renderingAtomDataIndex-1]-ctrl.vconf.dataRange[rw.renderingAtomDataIndex-1][0]);
             int x=w1+(int)(w12*sx);
-            int y=h2-(int)((atoms.data[i][rw.renderingAtomDataIndex-1]-ctrl.vconf.dataRange[rw.renderingAtomDataIndex-1][0])*h12
-                           /(ctrl.vconf.dataRange[rw.renderingAtomDataIndex-1][1]-ctrl.vconf.dataRange[rw.renderingAtomDataIndex-1][0]));
+            int y=h2-(int)(sy*h12/ddr);
             g.drawOval(x-r/2,y-r/2,r,r);
+
+            if(ctrl.vconf.plotterExport)pw.println( String.format( "%f %f",sx,sy/ddr) );
           }
+          if(ctrl.vconf.plotterExport)wclose();
+
           //y-axis
           g.drawLine(w1,0,w1,height);
           //y-tics
