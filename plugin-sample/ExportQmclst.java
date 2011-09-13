@@ -16,7 +16,7 @@ public class ExportQmclst implements ExportPluginInterface {
                    int[] vtag
                    ){
 
-    String filePath=String.format(dir+"/%04d.qmclst",fn);
+    String filePath=String.format(dir+"/%04d.qmclst00",fn);
     FileWriter fw;
     BufferedWriter bw;
     PrintWriter pw;
@@ -53,7 +53,7 @@ public class ExportQmclst implements ExportPluginInterface {
       bw.close();
       fw.close();
     }catch( IOException e ){
-      System.out.println("---> Failed to write MD init file");
+      System.out.println("---> Failed to write qmclst file");
       //System.out.println(e.getMessage());
     }
 

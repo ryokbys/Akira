@@ -5,7 +5,7 @@ import viewer.viewConfigPanel.plugin.ExportPluginInterface;
 
 public class ExportSiO2Qmclst implements ExportPluginInterface {
   public String getName(){
-    return "qmclst SiO2 Format";
+    return "SiO2 qmclst Format";
   }
   public void exec(String dir, int fn,
                    float[][] h,
@@ -16,7 +16,7 @@ public class ExportSiO2Qmclst implements ExportPluginInterface {
                    int[] vtag
                    ){
 
-    String filePath=String.format(dir+"/%04d.qmclst",fn);
+    String filePath=String.format(dir+"/%04d-sio2.qmclst00",fn);
 
     FileWriter fw;
     BufferedWriter bw;

@@ -834,10 +834,18 @@ public class RenderingWindow extends JFrame implements GLEventListener,
         ctrl.setPickedID4Trj(pickedAtomID);
 
         // Write information of picked atom
-        System.out.println(String.format(" pos=(%12.4e,%12.4e,%12.4e)"
+        float[] out = new float[3];
+        for(int k=0; k<3; k++)
+          out[k] =
+            atoms.hinv[k][0]*atoms.r[pickedAtomID][0]+
+            atoms.hinv[k][1]*atoms.r[pickedAtomID][1]+
+            atoms.hinv[k][2]*atoms.r[pickedAtomID][2];
+
+        System.out.println(String.format(" pos=(%12.4e,%12.4e,%12.4e) =(%12.4e,%12.4e,%12.4e)"
                                          ,atoms.r[pickedAtomID][0]
                                          ,atoms.r[pickedAtomID][1]
-                                         ,atoms.r[pickedAtomID][2]));
+                                         ,atoms.r[pickedAtomID][2]
+                                         ,out[0],out[1],out[2]));
         if(renderingAtomDataIndex>0){
           System.out.println(String.format(" data[%1d]=%12.4e"
                                            ,renderingAtomDataIndex

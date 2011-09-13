@@ -14,7 +14,7 @@ public class ExportMTS implements ExportPluginInterface {
                    byte[] tag,
                    int[] vtag
                    ){
-    String filePath=String.format(dir+"/%04d.init.d",fn);
+    String filePath=String.format(dir+"/%04d.mts000",fn);
 
     FileWriter fw;
     BufferedWriter bw;
@@ -55,14 +55,14 @@ public class ExportMTS implements ExportPluginInterface {
                                  hinv[k][0]*r[i][0]+
                                  hinv[k][1]*r[i][1]+
                                  hinv[k][2]*r[i][2];
-        pw.println(String.format("%d %e %e %e",(int)tag[i],out[0],out[1],out[2]));
+        pw.println(String.format("%d %e %e %e %e %e %e",(int)tag[i],out[0],out[1],out[2],0.0,0.0,0.0));
       }
 
       pw.close();
       bw.close();
       fw.close();
     }catch( IOException e ){
-      System.out.println("---> Failed to write MD init file");
+      System.out.println("---> Failed to write mts file");
       //System.out.println(e.getMessage());
     }
   }
