@@ -319,7 +319,7 @@ public class RadialDistributionPanel extends JPanel implements ActionListener,
     FileWriter fw;
     BufferedWriter bw;
     PrintWriter pw;
-    String filename=ctrl.getActiveRW().getFileDirectory()+String.format("%03dRD.d",filenum);
+    String filename=ctrl.getActiveRW().getFileDirectory()+File.separator+String.format("%03dRD.d",filenum);
     filenum++;
 
     try {

@@ -147,7 +147,7 @@ public class PlotterPanel extends JPanel implements ActionListener{
   BufferedWriter bw;
   PrintWriter pw;
   private void wopen(){
-    String filename=ctrl.getActiveRW().getFileDirectory()+String.format("plotter-%03d.d",filenum);
+    String filename=ctrl.getActiveRW().getFileDirectory()+File.separator+String.format("plotter-%03d.d",filenum);
     filenum++;
 
     try {
