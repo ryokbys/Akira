@@ -59,6 +59,7 @@ public class PlotterPanel extends JPanel implements ActionListener{
 
   private void createPanel(){
 
+    ctrl.vconf.plotterExport=false;
     cbWrite =new JCheckBox("Auto write",ctrl.vconf.plotterExport);
     cbWrite.setFocusable(false);
     cbWrite.addActionListener(this);
