@@ -136,27 +136,38 @@ public class ExportPanel extends JPanel implements ActionListener{
       dir=ctrl.getActiveRW().getFileDirectory();
 
     JFileChooser chooser = new JFileChooser(dir);
-    chooser.setDialogTitle("set saving-directory");
-    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    chooser.setAcceptAllFileFilterUsed(false);
-    int s = chooser.showOpenDialog( null );
-    if( s == JFileChooser.APPROVE_OPTION ){
-      dir= chooser.getSelectedFile().getAbsolutePath();
-    }else{
-      return;
-    }
-    fileNo++;
+    chooser.setDialogTitle("save to ...");
+    //chooser.setAcceptAllFileFilterUsed(false);
 
+    fileNo++;
     if( e.getSource() == btnWriteAkira ){
-      writeAKiraFile(dir,fileNo,
+      chooser.setSelectedFile(new File(String.format("%04d.akr",fileNo)));
+      if( chooser.showSaveDialog( null ) == JFileChooser.APPROVE_OPTION )
+        dir= chooser.getSelectedFile().getAbsolutePath();
+      else
+        return;
+      writeAKiraFile(dir,
                      atoms.h,atoms.hinv,atoms.n,atoms.r,
                      atoms.tag,atoms.vtag);
     }else if( e.getSource() == btnWriteEPS ){
-      writeEPSFile(dir,fileNo,
+      chooser.setSelectedFile(new File(String.format("%04d.eps",fileNo)));
+      if( chooser.showSaveDialog( null ) == JFileChooser.APPROVE_OPTION )
+        dir= chooser.getSelectedFile().getAbsolutePath();
+      else
+        return;
+
+      writeEPSFile(dir,
                    atoms.h,atoms.hinv,atoms.n,atoms.r,
                    atoms.tag,atoms.vtag);
     }else if( e.getSource() == btnWritePOV ){
-      writePOVFile(dir,fileNo,
+      chooser.setSelectedFile(new File(String.format("%04d.pov",fileNo)));
+      if( chooser.showSaveDialog( null ) == JFileChooser.APPROVE_OPTION ){
+        dir= chooser.getSelectedFile().getAbsolutePath();
+      }else{
+        return;
+      }
+
+      writePOVFile(dir,
                    atoms.h,atoms.hinv,atoms.n,atoms.r,
                    atoms.tag,atoms.vtag);
     }
@@ -164,7 +175,14 @@ public class ExportPanel extends JPanel implements ActionListener{
     //plugin
     for(int i=0;i<plugins.size();i++){
       if(e.getActionCommand().equals(plugins.get(i).getName())){
-        (plugins.get(i)).exec(dir,fileNo,
+        chooser.setSelectedFile(new File(String.format("%04d.%s",fileNo,plugins.get(i).getName())));
+        if( chooser.showSaveDialog( null ) == JFileChooser.APPROVE_OPTION ){
+          dir= chooser.getSelectedFile().getAbsolutePath();
+        }else{
+          return;
+        }
+
+        (plugins.get(i)).exec(dir,
                               atoms.h,atoms.hinv,atoms.n,atoms.r,
                               atoms.tag,atoms.vtag);
         break;
@@ -172,7 +190,7 @@ public class ExportPanel extends JPanel implements ActionListener{
     }
   }//actionp
 
-  private void writeAKiraFile(String dir,int fn,
+  private void writeAKiraFile(String saveFile,
                               float[][] h,
                               float[][] hinv,
                               int n,
@@ -181,7 +199,6 @@ public class ExportPanel extends JPanel implements ActionListener{
                               int[] vtag
                               ){
 
-    String filePath=String.format(dir+"/%04d.akr",fn);
 
     FileWriter fw;
     BufferedWriter bw;
@@ -190,7 +207,7 @@ public class ExportPanel extends JPanel implements ActionListener{
 
     // open
     try{
-      fw = new FileWriter( filePath );
+      fw = new FileWriter( saveFile );
       bw = new BufferedWriter( fw );
       pw = new PrintWriter( bw );
 
@@ -230,7 +247,7 @@ public class ExportPanel extends JPanel implements ActionListener{
     }
   }
 
-  private void writeEPSFile(String dir,int fn,
+  private void writeEPSFile(String filePath,
                             float[][] h,
                             float[][] hinv,
                             int n,
@@ -239,7 +256,6 @@ public class ExportPanel extends JPanel implements ActionListener{
                             int[] vtag
                             ){
 
-    String filePath=String.format(dir+"/%04d.eps",fn);
     float[] mvm =ctrl.getActiveRW().vp.mvm;
 
     // open
@@ -343,7 +359,7 @@ public class ExportPanel extends JPanel implements ActionListener{
   }
 
   //about POV file
-  private void writePOVFile(String dir,int fn,
+  private void writePOVFile(String filePath,
                             float[][] h,
                             float[][] hinv,
                             int n,
@@ -352,7 +368,6 @@ public class ExportPanel extends JPanel implements ActionListener{
                             int[] vtag
                             ){
 
-    String filePath=String.format(dir+"/%04d.pov",fn);
     FileWriter fw;
     BufferedWriter bw;
     PrintWriter pw;

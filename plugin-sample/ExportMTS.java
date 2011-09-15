@@ -4,9 +4,9 @@ import viewer.viewConfigPanel.plugin.ExportPluginInterface;
 
 public class ExportMTS implements ExportPluginInterface {
   public String getName(){
-    return "mts Format";
+    return "mts000";
   }
-  public void exec(String dir, int fn,
+  public void exec(String saveFile,
                    float[][] h,
                    float[][] hinv,
                    int n,
@@ -14,7 +14,6 @@ public class ExportMTS implements ExportPluginInterface {
                    byte[] tag,
                    int[] vtag
                    ){
-    String filePath=String.format(dir+"/%04d.mts000",fn);
 
     FileWriter fw;
     BufferedWriter bw;
@@ -23,7 +22,7 @@ public class ExportMTS implements ExportPluginInterface {
 
     // open
     try{
-      fw = new FileWriter( filePath );
+      fw = new FileWriter( saveFile);
       bw = new BufferedWriter( fw );
       pw = new PrintWriter( bw );
 

@@ -5,9 +5,9 @@ import viewer.viewConfigPanel.plugin.ExportPluginInterface;
 
 public class ExportQmclst implements ExportPluginInterface {
   public String getName(){
-    return "qmclst Format";
+    return "qmclst00";
   }
-  public void exec(String dir, int fn,
+  public void exec(String saveFile,
                    float[][] h,
                    float[][] hinv,
                    int n,
@@ -16,7 +16,6 @@ public class ExportQmclst implements ExportPluginInterface {
                    int[] vtag
                    ){
 
-    String filePath=String.format(dir+"/%04d.qmclst00",fn);
     FileWriter fw;
     BufferedWriter bw;
     PrintWriter pw;
@@ -24,7 +23,7 @@ public class ExportQmclst implements ExportPluginInterface {
 
     // open
     try{
-      fw = new FileWriter( filePath );
+      fw = new FileWriter( saveFile );
       bw = new BufferedWriter( fw );
       pw = new PrintWriter( bw );
 
@@ -37,12 +36,11 @@ public class ExportQmclst implements ExportPluginInterface {
         nv++;
         for(int k=0; k<3; k++)xt[k] += hinv[k][0]*r[i][0]+hinv[k][1]*r[i][1]+hinv[k][2]*r[i][2];
       }
-      for(int k=0; k<3; k++)xt[k]/=nv;
 
       System.out.println(String.format("output Natom: %d",nv));
 
-      pw.println(String.format("%e %e %e",xt[0],xt[1],xt[2]));//xtarget
-      pw.println(String.format("%d",n));
+      pw.println(String.format("%e %e %e",xt[0]/nv,xt[1]/nv,xt[2]/nv));//xtarget
+      pw.println(String.format("%d",nv));
 
       for(int i=0;i<n;i++){
         //int itag=atoms.tag[i]-1;
