@@ -62,7 +62,7 @@ public class ExportSiO2Qmclst implements ExportPluginInterface {
       //-----delete isolated Si
       for(int i=0;i<n;i++){
         if(vtag[i]<0)continue;
-        if(tag[i]==1 && icoord[i]<4)vtag[i]=-1;
+        if(tag[i]==1 && icoord[i]<3)vtag[i]=-1;
       }
       //-----recal coordinatio num
       for(int i=0;i<n;i++)icoord[i]=0;

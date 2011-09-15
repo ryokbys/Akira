@@ -463,12 +463,11 @@ public class ComboPanel extends JPanel implements ActionListener{
 
     private String getSaveFilename(){
       String str = null;
+      jfc.setSelectedFile(new File("test.AkiraCmb"));
       int s = jfc.showSaveDialog( null );
       if( s == JFileChooser.APPROVE_OPTION ){
-        File file = jfc.getSelectedFile();
-        str = file.getAbsolutePath();
-        if(str.endsWith(".akrcmb") ==false)str+=".akrcmb";
-      }else if( s == JFileChooser.CANCEL_OPTION ){
+        str = jfc.getSelectedFile().getAbsolutePath();
+        if(str.endsWith(".AkiraCmb") ==false)str+=".AkiraCmb";
       }else if( s == JFileChooser.ERROR_OPTION ){
       }
       return str;
