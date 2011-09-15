@@ -3,8 +3,11 @@ import java.io.*;
 import viewer.viewConfigPanel.plugin.ExportPluginInterface;
 
 public class ExportMTS implements ExportPluginInterface {
-  public String getName(){
+  public String getSaveFileName(){
     return "mts000";
+  }
+  public String getPluginName(){
+    return "mts";
   }
   public void exec(String saveFile,
                    float[][] h,

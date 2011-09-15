@@ -1,7 +1,8 @@
 package viewer.viewConfigPanel.plugin;
 
 public interface ExportPluginInterface {
-  public String getName();
+  public String getSaveFileName();
+  public String getPluginName();
   public void exec(String saveFile,
                    float[][] h,
                    float[][] hinv,

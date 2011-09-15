@@ -41,7 +41,7 @@ public class ModelingPanel extends JPanel implements ActionListener{
 
     //plugin
     for(int i=0;i<plugins.size();i++){
-      if(e.getActionCommand().equals(plugins.get(i).getName())){
+      if(e.getActionCommand().equals(plugins.get(i).getPluginName())){
         fnum++;
         String dir;
         if(ctrl.getActiveRW()==null)
@@ -50,17 +50,16 @@ public class ModelingPanel extends JPanel implements ActionListener{
           dir=ctrl.getActiveRW().getFileDirectory();
 
         JFileChooser chooser = new JFileChooser(dir);
-        chooser.setDialogTitle("set saving-directory");
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        chooser.setAcceptAllFileFilterUsed(false);
-        int s = chooser.showOpenDialog( null );
+        chooser.setDialogTitle("save to ...");
+        chooser.setSelectedFile(new File(String.format("%04d.%s.Akira",fnum,plugins.get(i).getSaveFileName())));
+        int s = chooser.showSaveDialog( null );
         if( s == JFileChooser.APPROVE_OPTION ){
           dir= chooser.getSelectedFile().getAbsolutePath();
         }else{
           return;
         }
 
-        (plugins.get(i)).make(dir,fnum,nx,ny,nz);
+        (plugins.get(i)).make(dir,nx,ny,nz);
         break;
       }
     }
@@ -155,8 +154,8 @@ public class ModelingPanel extends JPanel implements ActionListener{
     JPanel jp=new JPanel();
     jp.setLayout(new GridLayout(0,6));
     for(int i=0;i<plugins.size();i++){
-      JButton btn=new JButton(plugins.get(i).getName());
-      btn.setActionCommand(plugins.get(i).getName());
+      JButton btn=new JButton(plugins.get(i).getPluginName());
+      btn.setActionCommand(plugins.get(i).getPluginName());
       btn.addActionListener( this );
       jp.add(btn);
     }

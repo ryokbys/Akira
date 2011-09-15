@@ -4,8 +4,11 @@ import java.io.*;
 import viewer.viewConfigPanel.plugin.ExportPluginInterface;
 
 public class ExportQmclst implements ExportPluginInterface {
-  public String getName(){
+  public String getSaveFileName(){
     return "qmclst00";
+  }
+  public String getPluginName(){
+    return "qmclst";
   }
   public void exec(String saveFile,
                    float[][] h,

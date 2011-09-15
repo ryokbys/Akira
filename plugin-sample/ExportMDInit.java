@@ -3,8 +3,11 @@ import java.io.*;
 import viewer.viewConfigPanel.plugin.ExportPluginInterface;
 
 public class ExportMDInit implements ExportPluginInterface {
-  public String getName(){
-    return "md-init.d";
+  public String getSaveFileName(){
+    return "init.d";
+  }
+  public String getPluginName(){
+    return "MD init";
   }
   public void exec(String saveFile,
                    float[][] h,

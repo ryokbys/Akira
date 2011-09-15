@@ -4,8 +4,11 @@ import java.io.*;
 import viewer.viewConfigPanel.plugin.ExportPluginInterface;
 
 public class ExportSiO2Qmclst implements ExportPluginInterface {
-  public String getName(){
+  public String getSaveFileName(){
     return "sio2-qmclst00";
+  }
+  public String getPluginName(){
+    return "qmclst: Si-terminate";
   }
   public void exec(String saveFile,
                    float[][] h,

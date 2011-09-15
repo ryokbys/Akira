@@ -118,8 +118,8 @@ public class ExportPanel extends JPanel implements ActionListener{
 
     //add
     for(int i=0;i<plugins.size();i++){
-      JButton btn=new JButton(plugins.get(i).getName());
-      btn.setActionCommand(plugins.get(i).getName());
+      JButton btn=new JButton(plugins.get(i).getPluginName());
+      btn.setActionCommand(plugins.get(i).getPluginName());
       btn.addActionListener( this );
       add(btn);
     }
@@ -174,8 +174,8 @@ public class ExportPanel extends JPanel implements ActionListener{
 
     //plugin
     for(int i=0;i<plugins.size();i++){
-      if(e.getActionCommand().equals(plugins.get(i).getName())){
-        chooser.setSelectedFile(new File(String.format("%04d.%s",fileNo,plugins.get(i).getName())));
+      if(e.getActionCommand().equals(plugins.get(i).getPluginName())){
+        chooser.setSelectedFile(new File(String.format("%04d.%s",fileNo,plugins.get(i).getSaveFileName())));
         if( chooser.showSaveDialog( null ) == JFileChooser.APPROVE_OPTION ){
           dir= chooser.getSelectedFile().getAbsolutePath();
         }else{

@@ -5,12 +5,14 @@ import tools.*;
 import viewer.viewConfigPanel.plugin.ModelingPluginInterface;
 
 public class MakeFCCAl implements ModelingPluginInterface {
-  public String getName(){
+  public String getSaveFileName(){
+    return "Al-fcc";
+  }
+  public String getPluginName(){
     return "FCC Al";
   }
 
-  public void make(String dir, int fnum,
-                   int Nx, int Ny, int Nz){
+  public void make(String dir, int Nx, int Ny, int Nz){
     Atoms atoms=new Atoms();
 
     //header
@@ -57,7 +59,7 @@ public class MakeFCCAl implements ModelingPluginInterface {
     }//i
 
     //write
-    MyFileIO atomFileIO= new MyFileIO(dir+File.separator+String.format("%04d-fcc-Al.Akira",fnum));
+    MyFileIO atomFileIO= new MyFileIO(dir);
     atomFileIO.wopen();
     atomFileIO.writeHeader(1,0.f,1.f,false);
     atomFileIO.existBonds=false;
