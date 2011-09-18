@@ -152,7 +152,7 @@ public class ModelingPanel extends JPanel implements ActionListener{
 
     //add
     JPanel jp=new JPanel();
-    jp.setLayout(new GridLayout(0,6));
+    jp.setLayout(new GridLayout(0,4));
     for(int i=0;i<plugins.size();i++){
       JButton btn=new JButton(plugins.get(i).getPluginName());
       btn.setActionCommand(plugins.get(i).getPluginName());

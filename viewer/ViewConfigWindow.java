@@ -57,7 +57,7 @@ public class ViewConfigWindow extends JFrame{
   }
 
   JTabbedPane tabbedPane;
-  private StatusPanel statusPanel;
+  StatusPanel statusPanel;
   private ManipulationPanel maniPanel;
   private AtomPanel atom;
   private DataPanel data;

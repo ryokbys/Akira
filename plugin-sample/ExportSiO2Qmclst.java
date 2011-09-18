@@ -8,7 +8,7 @@ public class ExportSiO2Qmclst implements ExportPluginInterface {
     return "sio2-qmclst00";
   }
   public String getPluginName(){
-    return "qmclst: Si-terminate";
+    return "SiO2-qmclst format";
   }
   public void exec(String saveFile,
                    float[][] h,
@@ -38,6 +38,8 @@ public class ExportSiO2Qmclst implements ExportPluginInterface {
       //convert Ang to a.u. and square
       double bond2=(bond/0.529)*(bond/0.529);
 
+      System.out.println(String.format("bond threshold value=%f Ang",bond));
+
       int nv=0;
       int[] icoord=new int[n];
       for(int i=0;i<n;i++){
@@ -58,6 +60,8 @@ public class ExportSiO2Qmclst implements ExportPluginInterface {
             icoord[j]++;
           }
         }
+        if(icoord[i]>4)System.out.println(String.format("  id=%d has %d neighbors.\n ---- ARE YOU OK? ----",i,icoord[i]));
+
       }
       //-----delete isolated Si
       for(int i=0;i<n;i++){

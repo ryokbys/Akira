@@ -7,7 +7,7 @@ public class ExportMDInit implements ExportPluginInterface {
     return "init.d";
   }
   public String getPluginName(){
-    return "MD init";
+    return "nkmd-init format";
   }
   public void exec(String saveFile,
                    float[][] h,

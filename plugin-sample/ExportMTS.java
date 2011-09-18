@@ -7,7 +7,7 @@ public class ExportMTS implements ExportPluginInterface {
     return "mts000";
   }
   public String getPluginName(){
-    return "mts";
+    return "mts format";
   }
   public void exec(String saveFile,
                    float[][] h,

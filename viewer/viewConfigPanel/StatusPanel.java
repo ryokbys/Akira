@@ -11,7 +11,7 @@ import viewer.*;
 import tools.*;
 import viewer.renderer.*;
 
-public class StatusPanel extends JPanel implements ChangeListener{
+public class StatusPanel extends JPanel implements ActionListener,ChangeListener{
 
   /* accesser starts*/
 
@@ -35,6 +35,25 @@ public class StatusPanel extends JPanel implements ChangeListener{
   }
   /* accesser ends*/
 
+  public JFrame statusFrame=new JFrame("Status Frame");
+  public void actionPerformed( ActionEvent ae){
+    if( ae.getSource() == popoutButton ){
+      if(statusFrame.isVisible()){
+        //set vcWin
+        statusFrame.setVisible(false);
+        statusFrame.remove(stdOutErrPane);
+        sPanel.add(stdOutErrPane);
+      }else{
+        //frame popout
+        statusFrame.setBounds(vconf.rectStatusWin);
+        sPanel.remove(stdOutErrPane);
+        statusFrame.add(stdOutErrPane);
+        statusFrame.setVisible(true);
+      }
+      this.repaint();
+    }
+
+  }
 
   // called when the event happens
   public void stateChanged(ChangeEvent ce){
@@ -61,10 +80,13 @@ public class StatusPanel extends JPanel implements ChangeListener{
   private JLabel lNatm,lBox1,lBox2,lBox3;
   private JLabel lFPS,lFrame;
   private JSlider slFrame,slFPS;
+  private JButton popoutButton;
 
   //right panel
 
 
+  JPanel sPanel;
+  JScrollPane stdOutErrPane;
   public void create(){
     //General panel
     setFocusable( false );
@@ -109,6 +131,9 @@ public class StatusPanel extends JPanel implements ChangeListener{
     slFPS.setPaintTicks(true);
     slFPS.setSnapToTicks(true);
 
+    popoutButton = new JButton( "Popout Status Panel" );
+    popoutButton.addActionListener( this );
+    popoutButton.setFocusable(false);
 
 
     //-----left column: num of atoms, box matrix
@@ -133,11 +158,14 @@ public class StatusPanel extends JPanel implements ChangeListener{
     outArea.setLineWrap(true);
     outArea.setCaretPosition(outArea.getText().length());
     outArea.setFocusable(false);
-    JScrollPane stdOutErrPane =
-      new JScrollPane(outArea,
-                      ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
-                      ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+    stdOutErrPane = new JScrollPane(outArea,
+                                    ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+                                    ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
     stdOutErrPane.setFocusable(false);
+    sPanel= new JPanel();
+    sPanel.setLayout(new GridLayout(1, 1));
+    sPanel.add(stdOutErrPane);
+
 
     setLayout(new GridLayout(1, 1));
     //print streamを乗っ取る．かならずこの順で乗っ取る．
@@ -152,13 +180,14 @@ public class StatusPanel extends JPanel implements ChangeListener{
     double p= TableLayout.PREFERRED;
     double hb= 10;//10px?
     double colSizeTL[]= {hb,p,hb,p,hb,f,hb};
-    double rowSizeTL[]= {hb,f,hb};
+    double rowSizeTL[]= {hb,f,hb,p,hb};
 
     setLayout(new TableLayout(colSizeTL,rowSizeTL));
 
-    this.add(leftPanel,    "1,1,f,f");
+    this.add(leftPanel,    "1,1,1,3");
     this.add(rightPanel,   "3,1,f,f");
-    this.add(stdOutErrPane,"5,1,f,f");
+    this.add(popoutButton, "3,3,r,b");
+    this.add(sPanel,"5,1,5,3");
 
   }
 

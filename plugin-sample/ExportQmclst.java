@@ -8,7 +8,7 @@ public class ExportQmclst implements ExportPluginInterface {
     return "qmclst00";
   }
   public String getPluginName(){
-    return "qmclst";
+    return "qmclst format";
   }
   public void exec(String saveFile,
                    float[][] h,
