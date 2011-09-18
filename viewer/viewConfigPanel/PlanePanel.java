@@ -78,18 +78,19 @@ public class PlanePanel extends JPanel implements ActionListener{
     sp = new JScrollPane( table );
     sp.setFocusable(false);
     sp.setWheelScrollingEnabled( true );
-    sp.setPreferredSize( new Dimension(400,100) );
+    sp.setPreferredSize( new Dimension(430,100) );
     addTable();
 
     DefaultTableColumnModel columnModel
       = (DefaultTableColumnModel)table.getColumnModel();
-    columnModel.getColumn(0).setPreferredWidth(2);
-    columnModel.getColumn(1).setPreferredWidth(4);
-    columnModel.getColumn(2).setPreferredWidth(4);
-    columnModel.getColumn(3).setPreferredWidth(4);
+    columnModel.getColumn(0).setPreferredWidth(8);
+    columnModel.getColumn(1).setPreferredWidth(5);
+    columnModel.getColumn(2).setPreferredWidth(5);
+    columnModel.getColumn(3).setPreferredWidth(5);
     columnModel.getColumn(4).setPreferredWidth(4);
     columnModel.getColumn(5).setPreferredWidth(4);
     columnModel.getColumn(6).setPreferredWidth(4);
+    columnModel.getColumn(7).setPreferredWidth(4);
 
     //reset button
     resetButton=new JButton("Reset");
