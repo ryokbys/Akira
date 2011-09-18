@@ -826,7 +826,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
                                     pressedMouseX, pressedMouseY );
 
       if(pickedAtomID>=0){
-        ctrl.vcWin.tabbedPane.setSelectedIndex(0);
+        ctrl.vcWin.focusOnStatus();
         System.out.println(String.format("picked id: %d",pickedAtomID));
         atoms.makePickedAtom(pickedAtomID);
         if(vconf.isDeletionMode)atoms.deletePickedAtom(pickedAtomID);
