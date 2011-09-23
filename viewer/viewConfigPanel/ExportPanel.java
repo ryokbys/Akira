@@ -228,13 +228,12 @@ public class ExportPanel extends JPanel implements ActionListener{
       //shpere as atom
       for(int i=0;i<n;i++){
         //skip
+        int itag=tag[i]-1;
         if(vtag[i]<0)continue;
+        if(!ctrl.vconf.tagOnOff[itag])continue;
 
         float[] out = new float[3];
-        for(int k=0; k<3; k++) out[k] =
-                                 hinv[k][0]*r[i][0]+
-                                 hinv[k][1]*r[i][1]+
-                                 hinv[k][2]*r[i][2];
+        for(int k=0; k<3; k++)out[k]=hinv[k][0]*r[i][0]+hinv[k][1]*r[i][1]+hinv[k][2]*r[i][2];
         pw.println(String.format("%d %e %e %e",(int)tag[i],out[0],out[1],out[2]));
       }
 
@@ -257,6 +256,7 @@ public class ExportPanel extends JPanel implements ActionListener{
                             ){
 
     float[] mvm =ctrl.getActiveRW().vp.mvm;
+    viewer.renderer.Atoms atoms=ctrl.getActiveRW().atoms;
 
     // open
     try{
@@ -275,27 +275,23 @@ public class ExportPanel extends JPanel implements ActionListener{
 
       //draw atom
       for(int i=0;i<n;i++){
-        /*
-         * progressBar.setValue(i);
-         * int itag = atoms.getTag(i);
-         * if( itag<=0 || itag>Const.TAG) continue; //skip negative tag
-         * itag--;//itag is set [1-10]. But array index is [0-9]
-         * if(!ctrl.vconf.tagOnOff[itag])continue;//skip if radius ==0
-         * float[] color = atoms.getAtomColor(i,itag);
-         *
-         * g.setColor(new Color(color[0],color[1],color[2],color[3]));
-         * float x=(mvm[0]*atoms.ra[i][0]+
-         *          mvm[4]*atoms.ra[i][1]+
-         *          mvm[8]*atoms.ra[i][2])*scale;
-         * float y=(mvm[1]*atoms.ra[i][0]+
-         *          mvm[5]*atoms.ra[i][1]+
-         *          mvm[9]*atoms.ra[i][2])*scale;
-         * float z=(mvm[2]*atoms.ra[i][0]+
-         *          mvm[6]*atoms.ra[i][1]+
-         *          mvm[10]*atoms.ra[i][2])/scale;
-         * //g.fillOval(ox+x,oy-y, z,z);
-         * g.draw(new Ellipse2D.Float(ox+x,oy-y, z,z));
-         */
+        int itag=tag[i]-1;
+        if(vtag[i]<0)continue;
+        if(!ctrl.vconf.tagOnOff[itag])continue;
+
+        float[] color = atoms.getAtomColor(i);
+        g.setColor(new Color(color[0],color[1],color[2],color[3]));
+        float x=(mvm[0]*r[i][0]+
+                 mvm[4]*r[i][1]+
+                 mvm[8]*r[i][2])*scale;
+        float y=(mvm[1]*r[i][0]+
+                 mvm[5]*r[i][1]+
+                 mvm[9]*r[i][2])*scale;
+        float z=(mvm[2]*r[i][0]+
+                 mvm[6]*r[i][1]+
+                 mvm[10]*r[i][2])/scale;
+        //g.fillOval(ox+x,oy-y, z,z);
+        g.draw(new Ellipse2D.Float(ox+x,oy-y, z,z));
       }
 
 
@@ -374,6 +370,7 @@ public class ExportPanel extends JPanel implements ActionListener{
     String str;
 
     float[] mvm =ctrl.getActiveRW().vp.mvm;
+    viewer.renderer.Atoms atoms=ctrl.getActiveRW().atoms;
 
     // open
     try{
@@ -419,10 +416,13 @@ public class ExportPanel extends JPanel implements ActionListener{
         + "  sky <0, 0, 1>\n"
         + "}";
 
-      //float ex=mvm[0]*a+mvm[4]*b+mvm[8]*c;
-      //float ey=mvm[1]*a+mvm[5]*b+mvm[9]*c;
-      //float ez=mvm[2]*a+mvm[6]*b+mvm[10]*c;
-      //pw.println(String.format(str,ex,ey,ez));
+      /*
+       * float ex=mvm[0]*a+mvm[4]*b+mvm[8]*c;
+       * float ey=mvm[1]*a+mvm[5]*b+mvm[9]*c;
+       * float ez=mvm[2]*a+mvm[6]*b+mvm[10]*c;
+       * pw.println(String.format(str,ex,ey,ez));
+       */
+
       pw.println(String.format(str,a*1.2f,b*1.2f,c*1.2f));
       pw.println("");
 
@@ -460,11 +460,10 @@ public class ExportPanel extends JPanel implements ActionListener{
 
       //shpere as atom
       for(int i=0;i<n;i++){
-        //int itag = getTag(i);
-        //if( itag<=0 || itag>Const.TAG) continue; //skip negative tag
-        //itag--;//itag is set [1-10]. But array index is [0-9]
-        //if(!ctrl.vconf.tagOnOff[itag])continue;//skip if radius ==0
-        //float[] color = getAtomColor(i,itag);
+        int itag=tag[i]-1;
+        if(vtag[i]<0)continue;
+        if(!ctrl.vconf.tagOnOff[itag])continue;
+        float[] color = atoms.getAtomColor(i);
 
         str="sphere {\n"
           + "  <%.3f, %.3f, %.3f>, %.3f\n"
@@ -478,13 +477,9 @@ public class ExportPanel extends JPanel implements ActionListener{
           + "  }\n"
           + "}";
 
-        /*
-         * pw.println(String.format(str
-         *                          ,ra[i][0],ra[i][1],ra[i][2]
-         *                          ,(float)ctrl.vconf.tagRadius[itag]
-         *                          ,color[0],color[1],color[2]
-         *                          ));
-         */
+        pw.println(String.format(str,r[i][0],r[i][1],r[i][2]
+                                 ,(float)ctrl.vconf.tagRadius[itag]
+                                 ,color[0],color[1],color[2]));
 
       }
 
