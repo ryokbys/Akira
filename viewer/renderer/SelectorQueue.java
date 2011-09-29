@@ -2,9 +2,9 @@ package viewer.renderer;
 import java.util.*;
 import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
-import com.sun.opengl.util.*;
+import com.jogamp.opengl.util.*;
 
-import com.sun.opengl.util.gl2.*;
+import com.jogamp.opengl.util.gl2.*;
 import javax.media.opengl.awt.*;
 
 import viewer.*;

@@ -6,10 +6,10 @@ import java.util.*;
 import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
 import javax.media.opengl.awt.*;
-import com.sun.opengl.util.*;
-import com.sun.opengl.util.gl2.*;
-import com.sun.opengl.util.awt.*;
-import com.sun.opengl.util.glsl.*;
+import com.jogamp.opengl.util.*;
+import com.jogamp.opengl.util.gl2.*;
+import com.jogamp.opengl.util.awt.*;
+import com.jogamp.opengl.util.glsl.*;
 
 public class Toon {
 
@@ -72,7 +72,7 @@ public class Toon {
     ShaderCode rsFp = new ShaderCode( GL2ES2.GL_FRAGMENT_SHADER,
                                       1,
                                       readShaderCode(fpfile) );
-    /* 
+    /*
      * ShaderCode rsVp = ShaderCode.create( glsl, GL2ES2.GL_VERTEX_SHADER,
      *                                      1, RenderingWindow.class,
      *                                      "viewer/renderer/src", "bin",
@@ -93,10 +93,10 @@ public class Toon {
   }
 
   public void set() {
-    st.glUseProgram( glsl, true );
+    st.useProgram( glsl, true );
   }
   public void unset() {
-    st.glUseProgram( glsl, false );
+    st.useProgram( glsl, false );
   }
 
 }
