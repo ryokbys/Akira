@@ -748,7 +748,7 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
     for(int i=0;i<sorted.size();i++)System.out.println(" "+sorted.get(i));
 
     for(int i=2;i<nRing.length;i++){
-      if(nRing[i]!=0)printInfo(String.format(" %d-ring: %d",i+1,nRing[i]));
+      printInfo(String.format(" %d-ring: %d",i+1,nRing[i]));
     }
 
 
