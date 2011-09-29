@@ -140,7 +140,7 @@ public class ViewConfig implements Serializable{
   public float   planeColor[][]   = new float[Const.PLANE][4];
   public boolean isTetrahedronMode=false;
   public int tetrahedronCenter=1;
-  public float planeRcut=2.f;
+  public float planeRcut=4.f;
   public float   singlePlaneColor[]   = new float[4];
 
   //light
@@ -191,8 +191,6 @@ public class ViewConfig implements Serializable{
 
 
 
-
-
   //constructor
   public ViewConfig(){
     if(System.getProperty("os.name").startsWith("Win")){
@@ -235,7 +233,7 @@ public class ViewConfig implements Serializable{
     isTrjMode=false;
   }
   public void resetNeighbor(){
-    neighborAnalysisRcut=1.8f;
+    neighborAnalysisRcut=4f;
     isShowRing=true;
     isPBC=false;
     ringCalType=1;
@@ -1246,7 +1244,7 @@ public class ViewConfig implements Serializable{
     bondCNRange[0]       = 0.f;
     bondCNRange[1]       = 1.f;
     bondLegend           = "bond";
-    bondColorTableFormat = "%.2e";
+    bondColorTableFormat = "%.1e";
   }
 
   //reset vector
@@ -1334,7 +1332,7 @@ public class ViewConfig implements Serializable{
     }
     isTetrahedronMode=false;
     tetrahedronCenter=1;
-    planeRcut=2.f;
+    planeRcut=4.f;
     singlePlaneColor[0]=1.0f;
     singlePlaneColor[1]=0.0f;
     singlePlaneColor[2]=0.0f;
