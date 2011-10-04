@@ -39,6 +39,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   //Controller variables
   public int currentFrame;
 
+
   boolean isKeyZoom=true;
   boolean primitiveObjectMakeFlag=true;
   boolean remakeFlag=true;
@@ -826,6 +827,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
                                     pressedMouseX, pressedMouseY );
 
       if(pickedAtomID>=0){
+
         ctrl.vcWin.focusOnStatus();
         System.out.println(String.format("picked id: %d",pickedAtomID));
         atoms.makePickedAtom(pickedAtomID);
@@ -1226,10 +1228,30 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     //isAtomSelecting=true;
   }//mouseClicked
 
+
   public void mouseDragged( MouseEvent me ){
+
     int x = me.getX();
     int y = me.getY();
     Dimension size = me.getComponent().getSize();
+
+
+
+    if(vconf.isModificationMode){
+      if(pickedAtomID>=0){
+        int id=pickedAtomID;
+        int drc=vconf.modifyDirection;
+        int dx= prevMouseX - x;
+        //atoms.tag[id]=33;
+        atoms.r[id][drc]+=(float)(atoms.h[drc][drc]/20f*dx/size.width);
+
+        this.refresh();
+      }
+
+      return;
+    }
+
+
 
     if(isTrackBallMode){
       trackB.trackball( vp.lastquat,
@@ -1238,6 +1260,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
                         (2.0f*x-size.width)/size.width,
                         (size.height-2.0f*y)/size.height );
     }
+
     int dx =  prevMouseX - x;
     int dy = -prevMouseY + y;
     prevMouseX = x;

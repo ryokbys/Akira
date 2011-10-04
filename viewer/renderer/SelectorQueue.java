@@ -179,13 +179,11 @@ public class SelectorQueue{
     gl.glMaterialfv( GL2.GL_FRONT_AND_BACK,GL2.GL_AMBIENT_AND_DIFFUSE,color, 0 );
 
 
-    if(vconf.isSelectionLength){
-      if(id[0]!=EMPTY && id[1]!=EMPTY){
+    if(vconf.isSelectionLength && isFull2()){
         gl.glBegin(GL2.GL_LINES);
         gl.glVertex3f(pos[0][0],pos[0][1],pos[0][2]);
         gl.glVertex3f(pos[1][0],pos[1][1],pos[1][2]);
         gl.glEnd();
-      }
     }
     if(vconf.isSelectionAngle && isFull3()){
       gl.glBegin(GL2.GL_LINES);
@@ -227,6 +225,12 @@ public class SelectorQueue{
     id[0]=i+1;
   }
 
+  public boolean isFull2(){
+    if(id[0]!=EMPTY && id[1]!=EMPTY)
+      return true;
+    else
+      return false;
+  }
   public boolean isFull3(){
     if(id[0]!=EMPTY && id[1]!=EMPTY && id[2]!=EMPTY)return true;
     else return false;

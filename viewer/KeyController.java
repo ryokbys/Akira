@@ -30,8 +30,8 @@ class KeyController extends KeyAdapter{
 
     if(rw==null)return;
 
-    //when caps_lock is on, atoms are invisible
-    //if(ctrl.javaVer>=1.6)rw.visibleAtoms=!Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
+    //when caps_lock is on, modification mode
+    //if(ctrl.javaVer>=1.6)rw.isModificationMode=Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
 
     switch ( ke.getKeyCode() ){
     case KeyEvent.VK_ESCAPE:
@@ -583,6 +583,7 @@ class KeyController extends KeyAdapter{
       break;
     }
 
+    ctrl.updateStatusString();
   }
 
   public void keyReleased( KeyEvent ke ){
