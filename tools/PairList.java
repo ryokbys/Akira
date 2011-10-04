@@ -1,7 +1,11 @@
 package tools;
 
 import java.util.*;
+import java.io.*;
+
 import data.*;
+import tools.*;
+
 /**
  * create pair list
  */
@@ -249,4 +253,45 @@ public class PairList{
     return lspr;
   }
 
+
+  public static ArrayList readPairList(String bondFile,Atoms atoms){
+    ArrayList<ArrayList<Integer>> lspr= new ArrayList<ArrayList<Integer>>();
+
+    try {
+      FileReader fr = new FileReader(bondFile);
+      BufferedReader br = new BufferedReader( fr );
+      String line;
+      String[] elem;
+      Tokens tokens = new Tokens();
+      tokens.setDelim( " " );
+      Exponent epnum = new Exponent();
+
+      //read
+      for(int i=0; i<atoms.n; i++){
+        if(atoms.tag[i]==Const.VOLUME_DATA_TAG)break;
+
+        ArrayList<Integer> iList = new ArrayList<Integer>();
+
+        //read
+        line = br.readLine();
+        //parse
+        tokens.setString( line );
+        elem = tokens.getTokens();
+        for( int j=0; j<elem.length; j++ ){
+          epnum.setString( elem[j] );
+          iList.add((int)(epnum.getNumber()));
+        }
+        lspr.add(iList);
+      }
+
+
+      br.close();
+      fr.close();
+    }
+    catch ( IOException e ){
+      System.out.println("no read: "+bondFile);
+    }
+
+    return lspr;
+  }
 }

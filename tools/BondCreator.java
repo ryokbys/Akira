@@ -22,22 +22,33 @@ public class BondCreator{
 
   //called kvsconv or bondpanel
   boolean normalCreating;
+  boolean existBondFile=false;
+  String bondfile="bond000";
 
   public BondCreator(ConvConfig cconf){
     normalCreating=true;
     atom1List=cconf.atom1List;
     atom2List=cconf.atom2List;
     lengthList=cconf.lengthList;
+    existBondFile=cconf.existBondFile;
   }
   public BondCreator(){
     normalCreating=false;
     atom1List = new ArrayList<Integer>();
     atom2List = new ArrayList<Integer>();
     lengthList = new ArrayList<Float>();
+    existBondFile=false;
   }
 
 
   public void create(Atoms atoms,Bonds bonds){
+    if(existBondFile){
+      this.createWithBondList(atoms,bonds);
+    }else{
+      this.createWithBondLength(atoms,bonds);
+    }
+  }
+  private void createWithBondLength(Atoms atoms,Bonds bonds){
     System.out.print("\r");
     System.out.print("creating bonds starts");
 
@@ -51,13 +62,9 @@ public class BondCreator{
 
     float lmax2= maxLength*maxLength;
 
-    //set color
-    //bonds.nSpecies=lengthList.size();
-
-    // make lspr
+    // make pair-list
     ArrayList<ArrayList<Integer>> lspr= PairList.makePairList(atoms,maxLength,true,false);
-    //System.out.println(String.format("lspr: %d",lspr.size()));
-    //System.out.println(String.format("atoms: %d",atoms.n));
+
 
     int inc=0;
     for(int i=0;i<maxBondSpecies;i++)nBond[i]=0;
@@ -144,6 +151,51 @@ public class BondCreator{
       System.out.print("\b\b )\n");
     }
   }
+
+  private void createWithBondList(Atoms atoms,Bonds bonds){
+    float[] dr = new float[3];
+    int a1, a2;
+    float len, len2;
+    float maxLength=-1.f;
+    for(int i=0;i<lengthList.size();i++)
+      if(maxLength<lengthList.get(i))maxLength=lengthList.get(i);
+
+    float lmax2= maxLength*maxLength;
+
+    // set pair-list
+    ArrayList<ArrayList<Integer>> lspr= PairList.readPairList(bondfile,atoms);
+
+
+    int inc=0;
+    for(int i=0;i<maxBondSpecies;i++)nBond[i]=0;
+    // with lspr
+    for(int i=0; i<atoms.n; i++){
+      int itag = atoms.tag[i];
+      if( itag < 0 || itag==Const.VOLUME_DATA_TAG)continue;
+      ArrayList<Integer> iList = lspr.get(i);
+
+      for(int k=0; k<iList.size(); k++){
+        int j= iList.get(k);// obtain neighbor from lspr
+        if( j <= i ) continue;// disable double-count
+        int jtag = atoms.tag[j];
+        if( jtag < 0 || jtag==Const.VOLUME_DATA_TAG)continue;
+        dr[0] = atoms.r[j][0] -atoms.r[i][0];
+        dr[1] = atoms.r[j][1] -atoms.r[i][1];
+        dr[2] = atoms.r[j][2] -atoms.r[i][2];
+
+        float[] v = Coordinate.xyz2rtp(dr[0],dr[1],dr[2]);
+        //set
+        bonds.add(i,j,atoms.r[i],v);
+        if(bonds.maxBondLength<v[0])bonds.maxBondLength=v[0];
+      }//k-loop
+
+
+    }//i-loop
+
+    System.out.println("");
+    System.out.println(String.format("  |- BONDS        : %8d",bonds.getN()));
+  }
+
 
 
 }
