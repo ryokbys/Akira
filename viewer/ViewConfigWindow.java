@@ -22,10 +22,8 @@ public class ViewConfigWindow extends JFrame{
   }
 
   public void focusOnStatus(){
-    if(statusPanel.statusFrame.isVisible())
-      statusPanel.statusFrame.toFront();
-    else
-      tabbedPane.setSelectedIndex(0);
+    if(statusPanel.statusFrame.isVisible()) statusPanel.statusFrame.toFront();
+    //else tabbedPane.setSelectedIndex(0);
   }
   public void setAtomsTable(){
     atom.addTableRow();

@@ -38,7 +38,7 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     cbLength.setSelected(vconf.isSelectionLength);
     cbAngle.setSelected(vconf.isSelectionAngle);
     cbTorsion.setSelected(vconf.isSelectionTorsion);
-    cbModification.setSelected(vconf.isModificationMode);
+    cbDragMove.setSelected(vconf.isDragMoveMode);
   }
   /* accesser */
 
@@ -48,18 +48,17 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     vconf.isSelectionLength=cbLength.isSelected();
     vconf.isSelectionAngle=cbAngle.isSelected();
     vconf.isSelectionTorsion=cbTorsion.isSelected();
-    vconf.isModificationMode=cbModification.isSelected();
-    vconf.modifyDirection=modDirectionCmb.getSelectedIndex();
-
+    vconf.isDragMoveMode=cbDragMove.isSelected();
+    vconf.moveDirection=moveDrcCmb.getSelectedIndex();
+    vconf.moveDirection=moveDrcCmb.getSelectedIndex();
+    vconf.moveVal=((Double)spMove.getValue()).floatValue();
   }
 
   // called when the event happens
   public void actionPerformed( ActionEvent ae){
-    vconf.modifyDirection=modDirectionCmb.getSelectedIndex();
-
+    RenderingWindow rw=ctrl.getActiveRW();
+    if(rw==null)return;
     if( ae.getSource() == applyButton){
-      RenderingWindow rw=ctrl.getActiveRW();
-      if(rw==null)return;
       switch(atomType.getSelectedIndex()){
       case 0:
         rw.visibleAtoms=false;
@@ -104,11 +103,13 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
         break;
       }
 
-
-
       updateList();
       ctrl.remakePrimitiveObjects();
       ctrl.RWinRefresh();
+    }else if( ae.getSource() == moveButton ){
+      vconf.moveDirection=moveDrcCmb.getSelectedIndex();
+      vconf.moveVal=((Double)spMove.getValue()).floatValue();
+      rw.modifyAtom();
     }else if( ae.getSource() == resetButton ){
       vconf.resetAtom();
       applyModification2Table();
@@ -148,8 +149,12 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
   JCheckBox cbLength;
   JCheckBox cbAngle;
   JCheckBox cbTorsion;
-  JCheckBox cbModification;
-  private JComboBox modDirectionCmb;
+  JCheckBox cbDragMove;
+  private JComboBox moveDrcCmb;
+  private JSpinner spMove;
+
+
+  JButton moveButton;
 
   JComboBox labelType;
 
@@ -201,16 +206,24 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     cbTorsion.setFocusable(false);
     cbTorsion.addChangeListener(this);
 
-    vconf.isModificationMode=false;
-    cbModification =new JCheckBox("Modify Selected in",vconf.isModificationMode);
-    cbModification.setFocusable(false);
-    cbModification.addChangeListener(this);
-    String[] type = {"x", "y", "z"};
-    modDirectionCmb=new JComboBox(type);
-    modDirectionCmb.addActionListener(this);
-    modDirectionCmb.setSelectedIndex(vconf.modifyDirection);
-    modDirectionCmb.setFocusable(false);
+    vconf.isDragMoveMode=false;
+    cbDragMove =new JCheckBox("Drag Move",vconf.isDragMoveMode);
+    cbDragMove.setFocusable(false);
+    cbDragMove.addChangeListener(this);
 
+    JLabel moveLabel=new JLabel("Move Atom in");
+
+    String[] type = {"x", "y", "z"};
+    moveDrcCmb=new JComboBox(type);
+    moveDrcCmb.setSelectedIndex(vconf.moveDirection);
+    moveDrcCmb.addActionListener(this);
+    moveDrcCmb.setFocusable(false);
+    spMove = new JSpinner(new SpinnerNumberModel((double)vconf.moveVal, null, null, 1.0));
+    spMove.setFocusable(false);
+    spMove.setPreferredSize(new Dimension(70, 25));
+    moveButton = new JButton( "Move" );
+    moveButton.addActionListener( this );
+    moveButton.setFocusable(false);
 
 
     tableModel = new MyTableModel( colNames, 0 );
@@ -245,6 +258,7 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     setLayout( layout );
 
     JLabel atomTypeLabel=new JLabel("Rendering Type");
+
     layout.putConstraint( SpringLayout.NORTH, atomTypeLabel, 10, SpringLayout.NORTH, this );
     layout.putConstraint( SpringLayout.WEST,  atomTypeLabel, 10, SpringLayout.WEST, this );
     layout.putConstraint( SpringLayout.NORTH, atomType, 0, SpringLayout.SOUTH, atomTypeLabel);
@@ -296,15 +310,27 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     layout.putConstraint( SpringLayout.WEST, cbTorsion, 0,
                           SpringLayout.WEST, cbAngle);
 
-    layout.putConstraint( SpringLayout.NORTH, cbModification, 0,
-                          SpringLayout.SOUTH, cbTorsion);
-    layout.putConstraint( SpringLayout.WEST, cbModification, 0,
-                          SpringLayout.WEST, cbTorsion);
+    layout.putConstraint( SpringLayout.NORTH, moveLabel, 10,
+                          SpringLayout.NORTH, this);
+    layout.putConstraint( SpringLayout.WEST, moveLabel, 7,
+                          SpringLayout.EAST, cbLength);
+    layout.putConstraint( SpringLayout.NORTH, moveDrcCmb, 0,
+                          SpringLayout.NORTH, moveLabel);
+    layout.putConstraint( SpringLayout.WEST, moveDrcCmb, 5,
+                          SpringLayout.EAST, moveLabel);
+    layout.putConstraint( SpringLayout.NORTH, spMove, 0,
+                          SpringLayout.NORTH, moveDrcCmb);
+    layout.putConstraint( SpringLayout.WEST, spMove, 5,
+                          SpringLayout.EAST, moveDrcCmb);
+    layout.putConstraint( SpringLayout.NORTH, moveButton, 0,
+                          SpringLayout.NORTH, spMove);
+    layout.putConstraint( SpringLayout.WEST, moveButton, 5,
+                          SpringLayout.EAST, spMove);
 
-    layout.putConstraint( SpringLayout.NORTH, modDirectionCmb, 0,
-                          SpringLayout.NORTH, cbModification);
-    layout.putConstraint( SpringLayout.WEST, modDirectionCmb, 5,
-                          SpringLayout.EAST, cbModification);
+    layout.putConstraint( SpringLayout.NORTH, cbDragMove, 0,
+                          SpringLayout.SOUTH, moveDrcCmb);
+    layout.putConstraint( SpringLayout.WEST, cbDragMove, 0,
+                          SpringLayout.WEST, moveDrcCmb);
 
 
     add(labelType);
@@ -321,8 +347,11 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     add(cbTorsion);
 
     if(ctrl.isEnjoyMode){
-      add(cbModification);
-      add(modDirectionCmb);
+      add(moveLabel);
+      add(moveDrcCmb);
+      add(spMove);
+      add(moveButton);
+      add(cbDragMove);
     }
     add( applyButton );
     add( resetButton );

@@ -38,18 +38,8 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
   public JFrame statusFrame=new JFrame("Status Frame");
   public void actionPerformed( ActionEvent ae){
     if( ae.getSource() == popoutButton ){
-      if(statusFrame.isVisible()){
-        //set vcWin
-        statusFrame.setVisible(false);
-        statusFrame.remove(stdOutErrPane);
-        sPanel.add(stdOutErrPane);
-      }else{
-        //frame popout
-        statusFrame.setBounds(vconf.rectStatusWin);
-        sPanel.remove(stdOutErrPane);
-        statusFrame.add(stdOutErrPane);
-        statusFrame.setVisible(true);
-      }
+      vconf.isPopStatus=!vconf.isPopStatus;
+      showStatusFrame();
       this.repaint();
     }
 
@@ -74,6 +64,8 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
     this.ctrl=ctrl;
     this.vconf=ctrl.vconf;
     create();
+
+    showStatusFrame();
   }
 
   //global variables
@@ -82,11 +74,12 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
   private JSlider slFrame,slFPS;
   private JButton popoutButton;
 
-  //right panel
 
 
-  JPanel sPanel;
-  JScrollPane stdOutErrPane;
+  private JPanel sPanel;
+  private JScrollPane stdOutErrPane;
+  private JLabel stdOutErrLabel=new JLabel("STDOUT, STDERR is popouted");
+
   public void create(){
     //General panel
     setFocusable( false );
@@ -215,5 +208,23 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
     }
   }
 
+  void showStatusFrame(){
+    if(vconf.isPopStatus){
+      //frame popout
+      statusFrame.setBounds(vconf.rectStatusWin);
+      sPanel.remove(stdOutErrPane);
+      sPanel.add(stdOutErrLabel);
+      statusFrame.add(stdOutErrPane);
+      statusFrame.setVisible(true);
+    }else{
+      //set vcWin
+      vconf.rectStatusWin = statusFrame.getBounds();
+      statusFrame.setVisible(false);
+      statusFrame.remove(stdOutErrPane);
+      sPanel.remove(stdOutErrLabel);
+      sPanel.add(stdOutErrPane);
+    }
+
+  }
 
 }

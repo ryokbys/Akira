@@ -24,6 +24,8 @@ public class ViewConfig implements Serializable{
 
   public String pluginDir;
 
+  //status
+  public boolean isPopStatus=false;
   //manipulation
   public float   ControllerValue;
   public int     viewMode;
@@ -61,8 +63,9 @@ public class ViewConfig implements Serializable{
   public boolean isSelectionAngle;
   public boolean isSelectionTorsion;
   public boolean isDeletionMode;
-  public boolean isModificationMode;
-  public int modifyDirection=0;
+  public boolean isDragMoveMode;
+  public int moveDirection=0;
+  public float moveVal=0.1f;
 
   //data
   public float  dataRange[][]  = new float[Const.DATA][2];
@@ -1283,8 +1286,9 @@ public class ViewConfig implements Serializable{
     spherecutPos[2]=0.5f;
     spherecutRadius=10.f;
     isDeletionMode=false;
-    isModificationMode=false;
-    modifyDirection=0;
+    isDragMoveMode=false;
+    moveDirection=0;
+    moveVal=0.1f;
     isRegionSelectMode=false;
     isRectangleSelectMode=false;
   }
@@ -1414,7 +1418,7 @@ public class ViewConfig implements Serializable{
   public Rectangle rectRWin = new Rectangle(2,  277, d.width-350, d.height-290 );
 
   public Rectangle rect2DPlot = new Rectangle(40,  100, 730, 550 );
-  public Rectangle rectStatusWin = new Rectangle(d.width-350, 80, 450, 700 );
+  public Rectangle rectStatusWin = new Rectangle(350, 80, 450, 700 );
 
   // exiting process; write pos and size of all windows
   void saveWin(Controller ctrl){
@@ -1422,7 +1426,8 @@ public class ViewConfig implements Serializable{
     rectViewConfigWin      = ctrl.vcWin.getBounds();
     isVisibleViewConfigWin = true;
     viewConfigWinTabIndex  = ctrl.vcWin.tabbedPane.getSelectedIndex();
-    rectStatusWin = ctrl.vcWin.statusPanel.statusFrame.getBounds();
+
+    //if(ctrl.vcWin.statusPanel.statusFrame!=null)rectStatusWin = ctrl.vcWin.statusPanel.statusFrame.getBounds();
     //rw
     if(ctrl.getActiveRW()!=null)rectRWin  = ctrl.getActiveRW().getBounds();
 
