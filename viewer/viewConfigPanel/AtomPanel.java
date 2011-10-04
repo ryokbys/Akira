@@ -34,6 +34,11 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
       labelType.setSelectedIndex(0);
     }
 
+    cbSelectionMode.setSelected(vconf.isSelectionInfo);
+    cbLength.setSelected(vconf.isSelectionLength);
+    cbAngle.setSelected(vconf.isSelectionAngle);
+    cbTorsion.setSelected(vconf.isSelectionTorsion);
+    cbModification.setSelected(vconf.isModificationMode);
   }
   /* accesser */
 
@@ -43,10 +48,14 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     vconf.isSelectionLength=cbLength.isSelected();
     vconf.isSelectionAngle=cbAngle.isSelected();
     vconf.isSelectionTorsion=cbTorsion.isSelected();
+    vconf.isModificationMode=cbModification.isSelected();
+    vconf.modifyDirection=modDirectionCmb.getSelectedIndex();
+
   }
 
   // called when the event happens
   public void actionPerformed( ActionEvent ae){
+    vconf.modifyDirection=modDirectionCmb.getSelectedIndex();
 
     if( ae.getSource() == applyButton){
       RenderingWindow rw=ctrl.getActiveRW();
@@ -139,6 +148,8 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
   JCheckBox cbLength;
   JCheckBox cbAngle;
   JCheckBox cbTorsion;
+  JCheckBox cbModification;
+  private JComboBox modDirectionCmb;
 
   JComboBox labelType;
 
@@ -189,6 +200,17 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     cbTorsion =new JCheckBox("Select Torsion",vconf.isSelectionTorsion);
     cbTorsion.setFocusable(false);
     cbTorsion.addChangeListener(this);
+
+    vconf.isModificationMode=false;
+    cbModification =new JCheckBox("Modify Selected in",vconf.isModificationMode);
+    cbModification.setFocusable(false);
+    cbModification.addChangeListener(this);
+    String[] type = {"x", "y", "z"};
+    modDirectionCmb=new JComboBox(type);
+    modDirectionCmb.addActionListener(this);
+    modDirectionCmb.setSelectedIndex(vconf.modifyDirection);
+    modDirectionCmb.setFocusable(false);
+
 
 
     tableModel = new MyTableModel( colNames, 0 );
@@ -274,6 +296,16 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     layout.putConstraint( SpringLayout.WEST, cbTorsion, 0,
                           SpringLayout.WEST, cbAngle);
 
+    layout.putConstraint( SpringLayout.NORTH, cbModification, 0,
+                          SpringLayout.SOUTH, cbTorsion);
+    layout.putConstraint( SpringLayout.WEST, cbModification, 0,
+                          SpringLayout.WEST, cbTorsion);
+
+    layout.putConstraint( SpringLayout.NORTH, modDirectionCmb, 0,
+                          SpringLayout.NORTH, cbModification);
+    layout.putConstraint( SpringLayout.WEST, modDirectionCmb, 5,
+                          SpringLayout.EAST, cbModification);
+
 
     add(labelType);
 
@@ -287,6 +319,11 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     add(cbLength);
     add(cbAngle);
     add(cbTorsion);
+
+    if(ctrl.isEnjoyMode){
+      add(cbModification);
+      add(modDirectionCmb);
+    }
     add( applyButton );
     add( resetButton );
 

@@ -37,6 +37,7 @@ public class ConvConfig {
   public float[] cutCenter=new float[3];
 
   public boolean isCreatingBonds=false;
+  public boolean existBondFile=false;
 
   //bond info
   public ArrayList<Integer> atom1List = new ArrayList<Integer>();
@@ -155,6 +156,16 @@ public class ConvConfig {
       sc = new Scanner( line );
       isCreatingBonds= sc.nextBoolean();
 
+      // skip comment line
+      do{
+        line = br.readLine();
+      }while(line.startsWith("#") || line.equals(""));
+      sc = new Scanner( line );
+      existBondFile= sc.nextBoolean();
+      if(isCreatingBonds && existBondFile)
+        System.out.println(" |- Create bond with bond file");
+
+
       //skip comment line
       do{
         line = br.readLine();
@@ -172,7 +183,7 @@ public class ConvConfig {
 
         line = br.readLine();
 
-        if(isCreatingBonds){
+        if(isCreatingBonds && !existBondFile){
           System.out.println(" |- Create bond");
           System.out.println(String.format
                              ("  \\== between %d-%d with length= %.2f Ang."
