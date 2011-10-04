@@ -47,6 +47,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   boolean clearTmpBond=false;//for dynamic bond creation
 
 
+
   public boolean visibleAtoms=true;
   boolean tmpVisibleAtoms=true;//for acceleration
   static final public int renderingAtomTypeMAX=3;//point or sphere or sphere(toon)
@@ -55,7 +56,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   public int renderingAtomDataIndex=0;//this means data index
 
   //private boolean isAtomSelecting=false;
-  private int pickedAtomID=-1;
+  public int pickedAtomID=-1;
 
   public boolean visibleBonds=false;
   static final public int renderingBondTypeMAX=2;//line, cylinder
@@ -307,6 +308,23 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     isKeyZoom=true;
     vp.setObjectScale( add );
     this.repaint();
+  }
+  public void modifyAtom(){
+    if(pickedAtomID>=0){
+      int id=pickedAtomID;
+      int drc=vconf.moveDirection;
+      atoms.r[id][drc]+=vconf.moveVal;
+
+      if(drc==0)
+        System.out.println(String.format("%d-atom is moved: %f in x",id,vconf.moveVal));
+      else if(drc==1)
+        System.out.println(String.format("%d-atom is moved: %f in y",id,vconf.moveVal));
+      else if(drc==2)
+        System.out.println(String.format("%d-atom is moved: %f in z",id,vconf.moveVal));
+
+      refresh();
+    }
+
   }
   public void setViewMode(){
     vp.setViewportMode();
@@ -1237,10 +1255,10 @@ public class RenderingWindow extends JFrame implements GLEventListener,
 
 
 
-    if(vconf.isModificationMode){
+    if(vconf.isDragMoveMode){
       if(pickedAtomID>=0){
         int id=pickedAtomID;
-        int drc=vconf.modifyDirection;
+        int drc=vconf.moveDirection;
         int dx= prevMouseX - x;
         //atoms.tag[id]=33;
         atoms.r[id][drc]+=(float)(atoms.h[drc][drc]/20f*dx/size.width);
