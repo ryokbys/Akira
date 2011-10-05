@@ -279,7 +279,7 @@ public class PairList{
         elem = tokens.getTokens();
         for( int j=0; j<elem.length; j++ ){
           epnum.setString( elem[j] );
-          iList.add((int)(epnum.getNumber()));
+          iList.add((int)(epnum.getNumber())-1);//NOTE: index begin with 0
         }
         lspr.add(iList);
       }
