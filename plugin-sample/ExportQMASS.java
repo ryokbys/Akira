@@ -23,6 +23,9 @@ public class ExportQMASS implements ExportPluginInterface {
     PrintWriter pw;
     String str;
 
+
+    String type={"H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al","Si","P","S","Kr","K","Ca"};
+
     // open
     try{
       fw = new FileWriter( saveFile);
@@ -58,7 +61,7 @@ public class ExportQMASS implements ExportPluginInterface {
                                  hinv[k][0]*r[i][0]+
                                  hinv[k][1]*r[i][1]+
                                  hinv[k][2]*r[i][2];
-        pw.println(String.format("%d %e, %e, %e, %d, %d",(int)tag[i],out[0],out[1],out[2],1,1));
+        pw.println(String.format("%s %e, %e, %e, %d, %d",type[(int)tag[i]],out[0],out[1],out[2],(int)tag[i],0));
       }
 
       pw.close();
