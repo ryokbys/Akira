@@ -80,8 +80,8 @@ public class BondPanel extends JPanel implements ActionListener{
       setListFromTable();
       if(ctrl.activeRWinID>=0 && ctrl.RWin[ctrl.activeRWinID] != null){
         ctrl.RWin[ctrl.activeRWinID].bonds.clear();
-        bondCreator.create(ctrl.RWin[ctrl.activeRWinID].atoms,
-                           ctrl.RWin[ctrl.activeRWinID].bonds);
+        bondCreator.createWithBondLength(ctrl.RWin[ctrl.activeRWinID].atoms,
+                                         ctrl.RWin[ctrl.activeRWinID].bonds);
 
         ctrl.RWinRefresh();
       }

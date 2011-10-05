@@ -75,7 +75,7 @@ public class AkiraConverter{
     atomFileIO.writeHeader(cconf.getTotalFrame(),
                            cconf.getStartTime(),
                            cconf.getTimeInterval(),
-                           cconf.isCreatingBonds );
+                           (cconf.createBondsWithLength || cconf.createBondsWithFile) );
 
     //read and write body
     for(int itarget=0;itarget<cconf.readFilePath.size();itarget++){

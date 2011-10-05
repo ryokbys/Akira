@@ -146,9 +146,13 @@ public class XYZ{
       }
 
       //create bonds
-      if(cconf.isCreatingBonds){
+      if(cconf.createBondsWithLength){
         BondCreator bondCreator=new BondCreator(cconf);
-        bondCreator.create(atoms,bonds);
+        bondCreator.createWithBondLength(atoms,bonds);
+        atomFileIO.existBonds=true;
+      }else if(cconf.createBondsWithFile){
+        BondCreator bondCreator=new BondCreator(cconf);
+        bondCreator.createWithBondList(atoms,bonds,cconf,itarget,ifrm);
         atomFileIO.existBonds=true;
       }else{
         System.out.println("  |- NO BONDS");

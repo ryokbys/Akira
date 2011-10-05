@@ -20,35 +20,19 @@ public class BondCreator{
   public ArrayList<Integer> atom2List;
   public ArrayList<Float> lengthList;
 
-  //called kvsconv or bondpanel
-  boolean normalCreating;
-  boolean existBondFile=false;
-  String bondfile="bond000";
-
   public BondCreator(ConvConfig cconf){
-    normalCreating=true;
     atom1List=cconf.atom1List;
     atom2List=cconf.atom2List;
     lengthList=cconf.lengthList;
-    existBondFile=cconf.existBondFile;
   }
   public BondCreator(){
-    normalCreating=false;
     atom1List = new ArrayList<Integer>();
     atom2List = new ArrayList<Integer>();
     lengthList = new ArrayList<Float>();
-    existBondFile=false;
   }
 
 
-  public void create(Atoms atoms,Bonds bonds){
-    if(existBondFile){
-      this.createWithBondList(atoms,bonds);
-    }else{
-      this.createWithBondLength(atoms,bonds);
-    }
-  }
-  private void createWithBondLength(Atoms atoms,Bonds bonds){
+  public void createWithBondLength(Atoms atoms,Bonds bonds){
     System.out.print("\r");
     System.out.print("creating bonds starts");
 
@@ -152,7 +136,7 @@ public class BondCreator{
     }
   }
 
-  private void createWithBondList(Atoms atoms,Bonds bonds){
+  public void createWithBondList(Atoms atoms,Bonds bonds,ConvConfig cconf,int itarget, int ifrm){
     float[] dr = new float[3];
     int a1, a2;
     float len, len2;
@@ -162,8 +146,13 @@ public class BondCreator{
 
     float lmax2= maxLength*maxLength;
 
+
+
+    String readFile=String.format(cconf.readFilePath.get(itarget)+"/"
+                                  +cconf.bondFile,ifrm);
+
     // set pair-list
-    ArrayList<ArrayList<Integer>> lspr= PairList.readPairList(bondfile,atoms);
+    ArrayList<ArrayList<Integer>> lspr= PairList.readPairList(readFile,atoms);
 
 
     int inc=0;
@@ -192,7 +181,6 @@ public class BondCreator{
 
     }//i-loop
 
-    System.out.println("");
     System.out.println(String.format("  |- BONDS        : %8d",bonds.getN()));
   }
 

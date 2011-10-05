@@ -36,8 +36,9 @@ public class ConvConfig {
   public float cutRadius;
   public float[] cutCenter=new float[3];
 
-  public boolean isCreatingBonds=false;
-  public boolean existBondFile=false;
+  public boolean createBondsWithLength=false;
+  public boolean createBondsWithFile=false;
+  public String bondFile;
 
   //bond info
   public ArrayList<Integer> atom1List = new ArrayList<Integer>();
@@ -154,17 +155,7 @@ public class ConvConfig {
       }while(line.startsWith("#") || line.equals(""));
       //write bonds
       sc = new Scanner( line );
-      isCreatingBonds= sc.nextBoolean();
-
-      // skip comment line
-      do{
-        line = br.readLine();
-      }while(line.startsWith("#") || line.equals(""));
-      sc = new Scanner( line );
-      existBondFile= sc.nextBoolean();
-      if(isCreatingBonds && existBondFile)
-        System.out.println(" |- Create bond with bond file");
-
+      createBondsWithLength= sc.nextBoolean();
 
       //skip comment line
       do{
@@ -183,13 +174,35 @@ public class ConvConfig {
 
         line = br.readLine();
 
-        if(isCreatingBonds && !existBondFile){
-          System.out.println(" |- Create bond");
+        if(createBondsWithLength){
+          System.out.println(" |- Create bonds with length");
           System.out.println(String.format
                              ("  \\== between %d-%d with length= %.2f Ang."
                               ,tag1,tag2,length));
         }
       }
+
+
+      // skip comment line
+      do{
+        line = br.readLine();
+      }while(line.startsWith("#") || line.equals(""));
+      sc = new Scanner( line );
+      createBondsWithFile= sc.nextBoolean();
+
+      // skip comment line
+      do{
+        line = br.readLine();
+      }while(line.startsWith("#") || line.equals(""));
+      bondFile=line;
+
+      if(createBondsWithFile)System.out.println(" |- Create bond with "+bondFile);
+
+      if(createBondsWithLength && createBondsWithFile){
+        System.out.println("only one flag. ");
+        System.exit(1);
+      }
+
 
       // skip comment line
       do{
