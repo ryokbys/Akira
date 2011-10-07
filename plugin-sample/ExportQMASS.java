@@ -24,7 +24,7 @@ public class ExportQMASS implements ExportPluginInterface {
     String str;
 
 
-    String type={"H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al","Si","P","S","Kr","K","Ca"};
+    String[] type={"H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al","Si","P","S","Kr","K","Ca"};
 
     // open
     try{

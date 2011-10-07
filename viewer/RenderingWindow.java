@@ -39,7 +39,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   //Controller variables
   public int currentFrame;
 
-
+  boolean tmpSelect=false;
   boolean isKeyZoom=true;
   boolean primitiveObjectMakeFlag=true;
   boolean remakeFlag=true;
@@ -308,6 +308,11 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     isKeyZoom=true;
     vp.setObjectScale( add );
     this.repaint();
+  }
+  public void selectByHuman(int id){
+    pickedAtomID=id;
+    tmpSelect=true;
+    refresh();
   }
   public void modifyAtom(){
     if(pickedAtomID>=0){
@@ -839,15 +844,20 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     if(//isAtomSelecting&&
        (vconf.isSelectionInfo ||vconf.isSelectionLength  ||
         vconf.isSelectionAngle  ||vconf.isSelectionTorsion  ||
-        vconf.isDeletionMode)){
+        vconf.isDeletionMode || tmpSelect)){
 
-      pickedAtomID = selector.getID(gl,glu,glut,atoms,vp,
-                                    pressedMouseX, pressedMouseY );
+
+      if(tmpSelect){
+        //System.out.println(String.format("id=%d",pickedAtomID));
+      }else{
+        tmpSelect=false;
+        pickedAtomID = selector.getID(gl,glu,glut,atoms,vp,pressedMouseX, pressedMouseY );
+      }
 
       if(pickedAtomID>=0){
 
         ctrl.vcWin.focusOnStatus();
-        System.out.println(String.format("picked id: %d",pickedAtomID));
+        System.out.println(String.format("picked id: %d",pickedAtomID+1));
         atoms.makePickedAtom(pickedAtomID);
         if(vconf.isDeletionMode)atoms.deletePickedAtom(pickedAtomID);
 
@@ -877,6 +887,11 @@ public class RenderingWindow extends JFrame implements GLEventListener,
         if(vconf.isSelectionLength)System.out.println(sq.showLength());
         if(vconf.isSelectionAngle)System.out.println(sq.showAngle());
         if(vconf.isSelectionTorsion)System.out.println(sq.showTorsion());
+
+    //lines
+    if(vconf.isSelectionInfo ||vconf.isSelectionLength  ||
+       vconf.isSelectionAngle  ||vconf.isSelectionTorsion  ||vconf.isDeletionMode)sq.show();
+
       }
     }
     //isAtomSelecting=false;
@@ -936,9 +951,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
       atoms.makeTrajectory(ctrl.getTrj());
     }
 
-    //lines
-    if(vconf.isSelectionInfo ||vconf.isSelectionLength  ||
-       vconf.isSelectionAngle  ||vconf.isSelectionTorsion  ||vconf.isDeletionMode)sq.show();
 
     //atoms
     if(visibleAtoms && tmpVisibleAtoms) {
@@ -958,8 +970,9 @@ public class RenderingWindow extends JFrame implements GLEventListener,
 
     //picked atom
     if(vconf.isSelectionInfo ||vconf.isSelectionLength  || vconf.isSelectionAngle  ||
-       vconf.isSelectionTorsion  ||vconf.isDeletionMode
-       ) atoms.showPickedAtom();
+       vconf.isSelectionTorsion  ||vconf.isDeletionMode|| tmpSelect
+       )atoms.showPickedAtom();
+
 
     //trj
     if(vconf.isTrjMode)atoms.trajectoryShow();

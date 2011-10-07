@@ -110,6 +110,9 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
       vconf.moveDirection=moveDrcCmb.getSelectedIndex();
       vconf.moveVal=((Double)spMove.getValue()).floatValue();
       rw.modifyAtom();
+    }else if( ae.getSource() ==  selectButton){
+      int id=((Integer)spSelect.getValue()).intValue();
+      rw.selectByHuman(id-1);//note: input id starts with 1, but java id starts with 0.
     }else if( ae.getSource() == resetButton ){
       vconf.resetAtom();
       applyModification2Table();
@@ -146,6 +149,8 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
   JComboBox atomColor;
 
   JCheckBox cbSelectionMode;
+  private JSpinner spSelect;
+  JButton selectButton;
   JCheckBox cbLength;
   JCheckBox cbAngle;
   JCheckBox cbTorsion;
@@ -185,11 +190,22 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     resetButton.setFocusable(false);
     resetButton.addActionListener( this );
 
+    selectButton  = new JButton( "Select" );
+    selectButton.setFocusable(false);
+    selectButton.addActionListener( this );
+
+
     ///
     vconf.isSelectionInfo=false;
     cbSelectionMode =new JCheckBox("Select Info",vconf.isSelectionInfo);
     cbSelectionMode.setFocusable(false);
     cbSelectionMode.addChangeListener(this);
+
+    spSelect = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
+    spSelect.setFocusable(false);
+    spSelect.setPreferredSize(new Dimension(70, 25));
+    //spSelect.addChangeListener(this);
+
 
     vconf.isSelectionLength=false;
     cbLength =new JCheckBox("Select Length",vconf.isSelectionLength);
@@ -218,9 +234,11 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     moveDrcCmb.setSelectedIndex(vconf.moveDirection);
     moveDrcCmb.addActionListener(this);
     moveDrcCmb.setFocusable(false);
+
     spMove = new JSpinner(new SpinnerNumberModel((double)vconf.moveVal, null, null, 1.0));
     spMove.setFocusable(false);
     spMove.setPreferredSize(new Dimension(70, 25));
+    //spMove.addChangeListener(this);
     moveButton = new JButton( "Move" );
     moveButton.addActionListener( this );
     moveButton.setFocusable(false);
@@ -297,6 +315,7 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
                           SpringLayout.NORTH, this);
     layout.putConstraint( SpringLayout.WEST, cbSelectionMode, 10,
                           SpringLayout.EAST, labelType);
+
     layout.putConstraint( SpringLayout.NORTH, cbLength, 0,
                           SpringLayout.SOUTH, cbSelectionMode);
     layout.putConstraint( SpringLayout.WEST, cbLength, 0,
@@ -310,10 +329,21 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     layout.putConstraint( SpringLayout.WEST, cbTorsion, 0,
                           SpringLayout.WEST, cbAngle);
 
-    layout.putConstraint( SpringLayout.NORTH, moveLabel, 10,
-                          SpringLayout.NORTH, this);
-    layout.putConstraint( SpringLayout.WEST, moveLabel, 7,
+
+    layout.putConstraint( SpringLayout.NORTH, spSelect, 0,
+                          SpringLayout.NORTH, cbSelectionMode);
+    layout.putConstraint( SpringLayout.WEST, spSelect, 10,
                           SpringLayout.EAST, cbLength);
+    layout.putConstraint( SpringLayout.NORTH, selectButton, 0,
+                          SpringLayout.NORTH, spSelect);
+    layout.putConstraint( SpringLayout.WEST, selectButton, 0,
+                          SpringLayout.EAST, spSelect);
+
+
+    layout.putConstraint( SpringLayout.NORTH, moveLabel, 5,
+                          SpringLayout.SOUTH, spSelect);
+    layout.putConstraint( SpringLayout.WEST, moveLabel, 0,
+                          SpringLayout.WEST, spSelect);
     layout.putConstraint( SpringLayout.NORTH, moveDrcCmb, 0,
                           SpringLayout.NORTH, moveLabel);
     layout.putConstraint( SpringLayout.WEST, moveDrcCmb, 5,
@@ -326,7 +356,6 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
                           SpringLayout.NORTH, spMove);
     layout.putConstraint( SpringLayout.WEST, moveButton, 5,
                           SpringLayout.EAST, spMove);
-
     layout.putConstraint( SpringLayout.NORTH, cbDragMove, 0,
                           SpringLayout.SOUTH, moveDrcCmb);
     layout.putConstraint( SpringLayout.WEST, cbDragMove, 0,
@@ -342,6 +371,8 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     add( sp );
 
     add(cbSelectionMode);
+    add(spSelect);
+    add(selectButton);
     add(cbLength);
     add(cbAngle);
     add(cbTorsion);
