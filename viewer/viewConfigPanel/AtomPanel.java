@@ -190,7 +190,7 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     resetButton.setFocusable(false);
     resetButton.addActionListener( this );
 
-    selectButton  = new JButton( "Select" );
+    selectButton  = new JButton( "ID Select" );
     selectButton.setFocusable(false);
     selectButton.addActionListener( this );
 
@@ -340,10 +340,10 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
                           SpringLayout.EAST, spSelect);
 
 
-    layout.putConstraint( SpringLayout.NORTH, moveLabel, 5,
-                          SpringLayout.SOUTH, spSelect);
+    layout.putConstraint( SpringLayout.NORTH, moveLabel, 0,
+                          SpringLayout.SOUTH, cbTorsion);
     layout.putConstraint( SpringLayout.WEST, moveLabel, 0,
-                          SpringLayout.WEST, spSelect);
+                          SpringLayout.WEST, cbTorsion);
     layout.putConstraint( SpringLayout.NORTH, moveDrcCmb, 0,
                           SpringLayout.NORTH, moveLabel);
     layout.putConstraint( SpringLayout.WEST, moveDrcCmb, 5,
