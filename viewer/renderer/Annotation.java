@@ -217,13 +217,11 @@ public class Annotation{
       gl.glColor3fv( vconf.txtColor, 0 );
       y = ystart;
       str = getFormat(format, range[0]*vconf.dataFactor );
-
-      //if(Math.abs(range[0])>1e-4)
       renderString(str,
                    isVLong*(xend+dx)+isHLong*(y+dy),
                    isHLong*(xend+dx)+isVLong*(y+dy),
                    0.f,legendScale,vconf.txtColor);
-
+      //middle
       y = ystart + Math.abs( range[0])/dr*(yend-ystart);
       str = getFormat(format,(range[1]+range[0])*0.5f*vconf.dataFactor);
 
@@ -234,7 +232,6 @@ public class Annotation{
 
       y = yend;
       str = getFormat(format, range[1]*vconf.dataFactor );
-      //if(Math.abs(range[1])>1e-4)
       renderString(str,
                    isVLong*(xend+dx)+isHLong*(y+dy),
                    isHLong*(xend+dx)+isVLong*(y+dy),

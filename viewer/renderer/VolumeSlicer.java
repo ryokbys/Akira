@@ -44,6 +44,7 @@ public class VolumeSlicer extends JFrame implements ActionListener,
   JButton btnRawData;
   JButton btnDebug;
   JButton btnDrawtype;
+  JButton btnWrite;
   public void createPanel(){
     //canvas
     myCanv= new MyCanvas(ctable);
@@ -53,6 +54,10 @@ public class VolumeSlicer extends JFrame implements ActionListener,
     btnContour=new JButton("contour");
     btnContour.addActionListener( this );
     btnContour.setFocusable(false);
+
+    btnWrite=new JButton("Write");
+    btnWrite.addActionListener( this );
+    btnWrite.setFocusable(false);
 
     btnRawData=new JButton("data");
     btnRawData.addActionListener( this );
@@ -149,8 +154,10 @@ public class VolumeSlicer extends JFrame implements ActionListener,
     layout.putConstraint(SpringLayout.EAST, myCanv, -20, SpringLayout.EAST, jp);
     layout.putConstraint(SpringLayout.WEST, myCanv, 30, SpringLayout.EAST, spNX);
 
-    layout.putConstraint(SpringLayout.NORTH,btnContour, 10, SpringLayout.SOUTH, spPointSize);
-    layout.putConstraint(SpringLayout.WEST,btnContour, 0, SpringLayout.WEST, lSplit);
+    layout.putConstraint(SpringLayout.NORTH,btnWrite, 10, SpringLayout.SOUTH, spPointSize);
+    layout.putConstraint(SpringLayout.WEST,btnWrite, 0, SpringLayout.WEST, lSplit);
+    layout.putConstraint(SpringLayout.NORTH,btnContour, 0, SpringLayout.SOUTH, btnWrite);
+    layout.putConstraint(SpringLayout.WEST,btnContour, 0, SpringLayout.WEST, btnWrite);
     layout.putConstraint(SpringLayout.NORTH,btnRawData, 5, SpringLayout.SOUTH, btnContour);
     layout.putConstraint(SpringLayout.WEST,btnRawData, 0, SpringLayout.WEST, btnContour);
     layout.putConstraint(SpringLayout.NORTH,btnDrawtype, 5, SpringLayout.SOUTH, btnRawData);
@@ -166,7 +173,7 @@ public class VolumeSlicer extends JFrame implements ActionListener,
     jp.add(spNSplit);
     jp.add(lPointSize);
     jp.add(spPointSize);
-
+    jp.add(btnWrite);
     jp.add(btnContour);
     jp.add(btnRawData);
     jp.add(btnDebug);
@@ -181,11 +188,25 @@ public class VolumeSlicer extends JFrame implements ActionListener,
   public void stateChanged( ChangeEvent ce ){
   }
 
+  int fileNo=0;
   public void actionPerformed( ActionEvent ae ){
     if( ae.getSource() == btnRawData){
       myCanv.visibleRawData();
     }else if( ae.getSource() == btnContour){
       myCanv.visibleContour();
+    }else if( ae.getSource() == btnWrite){
+      JFileChooser chooser = new JFileChooser();
+      chooser.setDialogTitle("save to ...");
+      //chooser.setAcceptAllFileFilterUsed(false);
+
+      fileNo++;
+      chooser.setSelectedFile(new File(String.format("%04d.contor.d",fileNo)));
+      if( chooser.showSaveDialog( null ) == JFileChooser.APPROVE_OPTION ){
+        String dir= chooser.getSelectedFile().getAbsolutePath();
+        myCanv.write(dir);
+      }else{
+        return;
+      }
     }else if( ae.getSource() == btnDrawtype){
       myCanv.changeDrawtype();
     }else if( ae.getSource() == btnDebug){
@@ -207,6 +228,7 @@ public class VolumeSlicer extends JFrame implements ActionListener,
       System.exit(0);
     }
   }
+
 
 }
 
@@ -638,5 +660,38 @@ class MyCanvas extends Canvas{
          */
       }
     }
+  }//drawcontour2
+
+  void write(String saveFile){
+
+
+    FileWriter fw;
+    BufferedWriter bw;
+    PrintWriter pw;
+    String str;
+
+    // open
+    try{
+      fw = new FileWriter( saveFile );
+      bw = new BufferedWriter( fw );
+      pw = new PrintWriter( bw );
+
+
+
+      for(int i=0;i<pp.size()/3;i++){
+        float x0=(pp.get(3*i)-range[0][0])/(range[0][1]-range[0][0]);
+        float y0=(pp.get(3*i+1)-range[1][0])/(range[1][1]-range[1][0]);
+        pw.println(String.format("%f %f %f",x0,y0,pp.get(3*i+2)));
+      }
+
+      pw.close();
+      bw.close();
+      fw.close();
+    }catch( IOException e ){
+      System.out.println("---> Failed to write contour data");
+      //System.out.println(e.getMessage());
+    }
   }
-}
+
+
+}//MyCanvas
