@@ -76,15 +76,24 @@ public class MyFileIO{
       for(int k=0; k<Const.DATA; k++){
         for(int l=0; l<2; l++)dos.writeFloat( range[k][l] );
       }
-      //involved tags
+
+      //involved tags num.
       dos.writeInt(involvedTags.size());
+      //sort involved tags
       Set set = involvedTags.keySet();
       Iterator iterator = set.iterator();
       Integer object;
+      int[] tags=new int[involvedTags.size()];
+      int inc=0;
       while(iterator.hasNext()){
         object = (Integer)iterator.next();
-        dos.writeInt(object.intValue());
+        tags[inc]=object.intValue();
+        inc++;
       }
+      java.util.Arrays.sort(tags);//modified-quick sort!
+      //write
+      for(int i=0;i<inc;i++)dos.writeInt(tags[i]);
+
 
     }catch ( IOException e ){
       System.out.println("error at write footer");
