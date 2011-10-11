@@ -27,24 +27,34 @@ public class MakeCubeAlphaQuartzSiO2 implements ModelingPluginInterface {
     //normalized
     float[][] si={{0.500000f,0.000000f,0.000000f},
                   {0.000000f,0.500000f,0.666667f},
-                  {0.500000f,0.500000f,0.333333f}};
+                  {0.500000f,0.500000f,0.333333f},
+                  {0.500000f,1.000000f,0.000000f},//copy
+                  {0.000000f,1.500000f,0.666667f},
+                  {0.500000f,1.500000f,0.333333f}};
 
     float[][] o={{0.415700f,0.207800f,0.166667f},
                  {0.792200f,0.207900f,0.833333f},
                  {0.792100f,0.584300f,0.500000f},
                  {0.207800f,0.415700f,0.500000f},
                  {0.207900f,0.792200f,0.833333f},
-                 {0.584300f,0.792100f,0.166667f}};
+                 {0.584300f,0.792100f,0.166667f},
+                 {0.415700f,1.207800f,0.166667f},//copy
+                 {0.792200f,1.207900f,0.833333f},
+                 {0.792100f,1.584300f,0.500000f},
+                 {0.207800f,1.415700f,0.500000f},
+                 {0.207900f,1.792200f,0.833333f},
+                 {0.584300f,1.792100f,0.166667f}};
 
-    atoms.n=9*Nx*Ny*Nz;
+
+    atoms.n=9*2*Nx*Ny*Nz;
     atoms.nData=1;
     atoms.allocate(atoms.n);
 
     atoms.h[0][0]=a*Nx;
     atoms.h[1][0]=0.f;
     atoms.h[2][0]=0.f;
-    atoms.h[0][1]=a*(float)Math.cos(120*Math.PI/180)*Ny;
-    atoms.h[1][1]=a*(float)Math.sin(120*Math.PI/180)*Ny;
+    atoms.h[0][1]=a*(float)Math.cos(120*Math.PI/180)*Ny*2;
+    atoms.h[1][1]=a*(float)Math.sin(120*Math.PI/180)*Ny*2;
     atoms.h[2][1]=0.f;
     atoms.h[0][2]=0.f;
     atoms.h[1][2]=0.f;
@@ -56,20 +66,21 @@ public class MakeCubeAlphaQuartzSiO2 implements ModelingPluginInterface {
     for(int i=0;i<Nx;i++){
       for(int j=0;j<Ny;j++){
         for(int k=0;k<Nz;k++){
-          for(int l=0;l<3;l++){
+          for(int l=0;l<6;l++){
             atoms.tag[inc]=1;
-            atoms.r[inc]=mulH(atoms.h,(si[l][0]+i)/Nx,(si[l][1]+j)/Ny,(si[l][2]+k)/Nz);
+            atoms.r[inc]=mulH(atoms.h,(si[l][0]+i)/Nx,(si[l][1]+2*j)/2/Ny,(si[l][2]+k)/Nz);
             inc++;
           }//l
-          for(int l=0;l<6;l++){
+          for(int l=0;l<12;l++){
             atoms.tag[inc]=2;
-            atoms.r[inc]=mulH(atoms.h,(o[l][0]+i)/Nx,(o[l][1]+j)/Ny,(o[l][2]+k)/Nz);
+            atoms.r[inc]=mulH(atoms.h,(o[l][0]+i)/Nx,(o[l][1]+2*j)/2/Ny,(o[l][2]+k)/Nz);
             inc++;
           }//l
         }//k
       }//j
     }//i
 
+    //confine
     for(int i=0;i<atoms.n;i++){
       if(atoms.r[i][0]<0.f)
         atoms.r[i][0]+=atoms.h[0][0];

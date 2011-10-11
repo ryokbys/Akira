@@ -374,6 +374,7 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
     spExtendX1.setValue((double)vconf.extendRenderingFactor[0][0]);
     spExtendY1.setValue((double)vconf.extendRenderingFactor[0][1]);
     spExtendZ1.setValue((double)vconf.extendRenderingFactor[0][2]);
+
     spExtendX2.setValue((double)vconf.extendRenderingFactor[1][0]);
     spExtendY2.setValue((double)vconf.extendRenderingFactor[1][1]);
     spExtendZ2.setValue((double)vconf.extendRenderingFactor[1][2]);

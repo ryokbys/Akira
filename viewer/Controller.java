@@ -198,7 +198,7 @@ public class Controller implements WindowListener{
   }
 
 
-  void createRenderingWindow(String filePath){
+  public void createRenderingWindow(String filePath){
     //check
     if(filePath==null) return;
     File file=new File(filePath);

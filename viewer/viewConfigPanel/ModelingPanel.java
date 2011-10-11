@@ -60,6 +60,7 @@ public class ModelingPanel extends JPanel implements ActionListener{
         }
 
         (plugins.get(i)).make(dir,nx,ny,nz);
+        ctrl.createRenderingWindow(dir);
         break;
       }
     }

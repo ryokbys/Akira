@@ -39,9 +39,10 @@ public class ExportMTS implements ExportPluginInterface {
       System.out.println(String.format("output Natom: %d",nv));
 
       pw.println(String.format("%d",nv));
-      pw.println(String.format("%e %e %e",h[0][0],h[0][1],h[0][2]));
-      pw.println(String.format("%e %e %e",h[1][0],h[1][1],h[1][2]));
-      pw.println(String.format("%e %e %e",h[2][0],h[2][1],h[2][2]));
+      //NOTE: fortran program is transpose for fast reading!
+      pw.println(String.format("%e %e %e",h[0][0],h[1][0],h[2][0]));
+      pw.println(String.format("%e %e %e",h[0][1],h[1][1],h[2][1]));
+      pw.println(String.format("%e %e %e",h[0][2],h[1][2],h[2][2]));
 
       pw.println(String.format("%e %e %e",0.,0.,0.));
       pw.println(String.format("%e %e %e",0.,0.,0.));
