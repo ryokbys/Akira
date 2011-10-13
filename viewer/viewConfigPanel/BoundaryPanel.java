@@ -132,6 +132,7 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
 
 
     //sphere cut
+    vconf.isSphereCut=false;
     cbSphereCut =new JCheckBox("Sphere Cut",vconf.isSphereCut);
     cbSphereCut.setFocusable(false);
 

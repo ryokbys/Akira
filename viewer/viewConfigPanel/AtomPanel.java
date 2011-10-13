@@ -247,6 +247,7 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     tableModel = new MyTableModel( colNames, 0 );
     //tableModel.setFocusable(false);
     table = new JTable( tableModel );
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
     table.setRowHeight( 20 );
     table.setIntercellSpacing( new Dimension(2,2) );
     table.setColumnSelectionAllowed( true );
@@ -258,19 +259,20 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     JScrollPane sp = new JScrollPane( table );
     sp.setFocusable(false);
     sp.setWheelScrollingEnabled( true );
-    sp.setPreferredSize( new Dimension(500,100) );
+    //sp.setPreferredSize( new Dimension(500,100) );
 
 
     addTableRow();
 
     DefaultTableColumnModel columnModel
       = (DefaultTableColumnModel)table.getColumnModel();
-    columnModel.getColumn(0).setPreferredWidth(2);
-    columnModel.getColumn(1).setPreferredWidth(10);
-    columnModel.getColumn(2).setPreferredWidth(4);
-    columnModel.getColumn(3).setPreferredWidth(4);
-    columnModel.getColumn(4).setPreferredWidth(4);
-    columnModel.getColumn(5).setPreferredWidth(4);
+    columnModel.getColumn(0).setPreferredWidth(20);
+    columnModel.getColumn(1).setPreferredWidth(60);
+    columnModel.getColumn(2).setPreferredWidth(20);
+    columnModel.getColumn(3).setPreferredWidth(20);
+    columnModel.getColumn(4).setPreferredWidth(20);
+    columnModel.getColumn(5).setPreferredWidth(20);
+    columnModel.getColumn(6).setPreferredWidth(4);
 
     SpringLayout layout = new SpringLayout();
     setLayout( layout );

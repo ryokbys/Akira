@@ -93,7 +93,14 @@ public class DataPanel extends JPanel implements ActionListener{
     table.setFocusable(false);
     table.setRowHeight( 20 );
     table.setIntercellSpacing( new Dimension(2,2) );
+
+    table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+    table.setCellSelectionEnabled( true);
     table.setColumnSelectionAllowed( true );
+
+    //table.setCellSelectionEnabled( false);
+    //table.setColumnSelectionAllowed( false );
+
 
     table.setDefaultRenderer( Color.class, new MyColorRenderer(true) );
     table.setDefaultEditor( Color.class, new MyColorEditor() );
@@ -105,15 +112,15 @@ public class DataPanel extends JPanel implements ActionListener{
 
     addTable();
 
-    DefaultTableColumnModel columnModel
-      = (DefaultTableColumnModel)table.getColumnModel();
-    columnModel.getColumn(0).setPreferredWidth(2);
-    columnModel.getColumn(1).setPreferredWidth(8);
-    columnModel.getColumn(2).setPreferredWidth(5);
-    columnModel.getColumn(3).setPreferredWidth(5);
-    columnModel.getColumn(4).setPreferredWidth(5);
-    columnModel.getColumn(5).setPreferredWidth(5);
-    columnModel.getColumn(6).setPreferredWidth(5);
+    DefaultTableColumnModel columnModel = (DefaultTableColumnModel)table.getColumnModel();
+    columnModel.getColumn(0).setPreferredWidth(5);
+    columnModel.getColumn(1).setPreferredWidth(16);
+    columnModel.getColumn(2).setPreferredWidth(10);
+    columnModel.getColumn(3).setPreferredWidth(10);
+    columnModel.getColumn(4).setPreferredWidth(10);
+    columnModel.getColumn(5).setPreferredWidth(10);
+    columnModel.getColumn(6).setPreferredWidth(10);
+
 
     JLabel cutRangeMinLabel=new JLabel("Cut Min");
     cutRangeMinSpinner = new JSpinner(new SpinnerNumberModel((double)vconf.dataCutRange[0], 0, 1, 0.1));

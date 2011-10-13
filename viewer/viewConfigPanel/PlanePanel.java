@@ -78,7 +78,7 @@ public class PlanePanel extends JPanel implements ActionListener{
     sp = new JScrollPane( table );
     sp.setFocusable(false);
     sp.setWheelScrollingEnabled( true );
-    sp.setPreferredSize( new Dimension(430,100) );
+    //sp.setPreferredSize( new Dimension(430,100) );
     addTable();
 
     DefaultTableColumnModel columnModel
