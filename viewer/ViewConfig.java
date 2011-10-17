@@ -161,7 +161,6 @@ public class ViewConfig implements Serializable{
   public float rdSlice=0.2f;
   public float rdCut=10.f;
 
-  public boolean plotterExport=false;
   public int plotterDrawType=0;
 
   //neighbor

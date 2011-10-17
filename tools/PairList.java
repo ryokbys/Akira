@@ -133,8 +133,15 @@ public class PairList{
       if(deleteVoxel &&  itag==Const.VOLUME_DATA_TAG)break;//原子，volumedataの順で格納されているのを仮定
       float[] tp=mulH(atoms.hinv,atoms.r[i]);
       int ix= (int)(tp[0]/dx);
+      if(ix<0)ix=0;
+      if(ix>=nx)ix=nx-1;
       int iy= (int)(tp[1]/dy);
+      if(iy<0)iy=0;
+      if(iy>=ny)iy=ny-1;
       int iz= (int)(tp[2]/dz);
+      if(iz<0)iz=0;
+      if(iz>=nz)iz=nz-1;
+
       int ii= ix*ny*nz +iy*nz +iz;
       int j= llist[atoms.n +ii];
       llist[i]= j;

@@ -34,7 +34,7 @@ public class Controller implements WindowListener{
   private ViewConfigWindowMenuController vcWinMenu;
 
   //key listener
-  private KeyController keyCtrl;
+  public KeyController keyCtrl;
 
   //enjoy mode flag
   public boolean isEnjoyMode=false;

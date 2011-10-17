@@ -24,7 +24,7 @@ public class PlotterPanel extends JPanel implements ActionListener{
 
   public void actionPerformed( ActionEvent ae){
     ctrl.vconf.plotterDrawType=drawTypeCmb.getSelectedIndex();
-    ctrl.vconf.plotterExport=cbWrite.isSelected();
+
     if(ctrl.vconf.plotterDrawType==0){
       if(rdCanv!=null){
         String currentDir=System.getProperty("user.dir");
@@ -38,6 +38,11 @@ public class PlotterPanel extends JPanel implements ActionListener{
         readFile(str);
       }
     }
+
+    if(ae.getSource() == writeButton){
+      isExport=true;
+    }
+
     update();
   }
 
@@ -55,14 +60,12 @@ public class PlotterPanel extends JPanel implements ActionListener{
 
 
   private JComboBox drawTypeCmb;
-  private JCheckBox cbWrite;
-
+  boolean isExport=false;
+  JButton writeButton;
   private void createPanel(){
-
-    ctrl.vconf.plotterExport=false;
-    cbWrite =new JCheckBox("Auto write",ctrl.vconf.plotterExport);
-    cbWrite.setFocusable(false);
-    cbWrite.addActionListener(this);
+    writeButton=new JButton("Write");
+    writeButton.addActionListener(this);
+    writeButton.addKeyListener(ctrl.keyCtrl);
 
     String[] type = {"Energy", "x", "y", "z"};
     drawTypeCmb=new JComboBox(type);
@@ -73,14 +76,15 @@ public class PlotterPanel extends JPanel implements ActionListener{
     rdCanv= new RDCanvas();
     rdCanv.setPreferredSize(new Dimension(500, 150));
     rdCanv.setBackground(Color.white);
-    rdCanv.setFocusable(false);
+    //rdCanv.setFocusable(false);
+    rdCanv.addKeyListener(ctrl.keyCtrl);
     SpringLayout layout = new SpringLayout();
     this.setLayout( layout );
 
     layout.putConstraint( SpringLayout.NORTH, drawTypeCmb, 10, SpringLayout.NORTH, this );
     layout.putConstraint( SpringLayout.EAST, drawTypeCmb, -10, SpringLayout.EAST, this );
-    layout.putConstraint( SpringLayout.NORTH, cbWrite, 10, SpringLayout.SOUTH, drawTypeCmb);
-    layout.putConstraint( SpringLayout.WEST, cbWrite, 0, SpringLayout.WEST, drawTypeCmb);
+    layout.putConstraint( SpringLayout.NORTH, writeButton, 10, SpringLayout.SOUTH, drawTypeCmb);
+    layout.putConstraint( SpringLayout.WEST, writeButton, 0, SpringLayout.WEST, drawTypeCmb);
 
 
 
@@ -90,7 +94,7 @@ public class PlotterPanel extends JPanel implements ActionListener{
     layout.putConstraint( SpringLayout.EAST, rdCanv, -5,SpringLayout.WEST, drawTypeCmb);
     layout.putConstraint( SpringLayout.WEST, rdCanv, 10,SpringLayout.WEST, this );
 
-    this.add(cbWrite);
+    this.add(writeButton);
     this.add(drawTypeCmb);
     this.add(rdCanv);
 
@@ -277,7 +281,7 @@ public class PlotterPanel extends JPanel implements ActionListener{
         viewer.renderer.Atoms atoms=rw.getAtoms();
         if(rw.renderingAtomDataIndex>0){
 
-          if(ctrl.vconf.plotterExport)wopen();
+          if(isExport)wopen();
 
 
           float ddr=ctrl.vconf.dataRange[rw.renderingAtomDataIndex-1][1]-ctrl.vconf.dataRange[rw.renderingAtomDataIndex-1][0];
@@ -292,9 +296,12 @@ public class PlotterPanel extends JPanel implements ActionListener{
             int y=h2-(int)(sy*h12/ddr);
             g.drawOval(x-r/2,y-r/2,r,r);
 
-            if(ctrl.vconf.plotterExport)pw.println( String.format( "%f %f",sx,sy/ddr) );
+            if(isExport)pw.println( String.format( "%f %f",sx,sy/ddr) );
           }
-          if(ctrl.vconf.plotterExport)wclose();
+          if(isExport){
+            wclose();
+            isExport=false;
+          }
 
           //y-axis
           g.drawLine(w1,0,w1,height);
