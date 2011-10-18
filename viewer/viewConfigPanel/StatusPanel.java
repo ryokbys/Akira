@@ -38,6 +38,7 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
   public void actionPerformed( ActionEvent ae){
     if( ae.getSource() == popoutButton ){
       vconf.isPopStatus=!vconf.isPopStatus;
+      vconf.isPopStatusAlwaysTop=cbAlwaysTop.isSelected();
       updateStatusFrame();
     }
 
@@ -49,6 +50,9 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
       ctrl.setFPS(slFPS.getValue());
     }else if( ce.getSource() == slFrame ){
       ctrl.setFrame(slFrame.getValue());
+    }else if( ce.getSource() == cbAlwaysTop ){
+      vconf.isPopStatusAlwaysTop=cbAlwaysTop.isSelected();
+      statusFrame.setAlwaysOnTop(vconf.isPopStatusAlwaysTop);
     }
   }
 
@@ -71,7 +75,7 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
   private JLabel lFPS,lFrame;
   private JSlider slFrame,slFPS;
   private JButton popoutButton;
-
+  private JCheckBox cbAlwaysTop;
 
 
   private JPanel sPanel;
@@ -83,6 +87,7 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
 
     statusFrame.addWindowListener(new java.awt.event.WindowAdapter() {
         public void windowClosing(WindowEvent e) {
+          vconf.rectStatusWin = statusFrame.getBounds();
           vconf.isPopStatus=false;
           updateStatusFrame();
         }
@@ -135,6 +140,9 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
     popoutButton.addActionListener( this );
     popoutButton.setFocusable(false);
 
+    cbAlwaysTop =new JCheckBox("Always Top",vconf.isPopStatusAlwaysTop);
+    cbAlwaysTop.setFocusable(false);
+    cbAlwaysTop.addChangeListener(this);
 
     //-----left column: num of atoms, box matrix
     JPanel leftPanel= new JPanel();
@@ -178,14 +186,15 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
     //-----constants for TableLayout
     double f= TableLayout.FILL;
     double p= TableLayout.PREFERRED;
-    double hb= 10;//10px?
+    double hb= 10;//10px
     double colSizeTL[]= {hb,p,hb,p,hb,f,hb};
-    double rowSizeTL[]= {hb,f,hb,p,hb};
+    double rowSizeTL[]= {hb,f,p,p,hb};
 
     setLayout(new TableLayout(colSizeTL,rowSizeTL));
 
     this.add(leftPanel,    "1,1,1,3");
     this.add(rightPanel,   "3,1,f,f");
+    this.add(cbAlwaysTop,  "3,2,r,b");
     this.add(popoutButton, "3,3,r,b");
     this.add(sPanel,"5,1,5,3");
 
@@ -222,10 +231,11 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
       sPanel.remove(stdOutErrPane);
       sPanel.add(stdOutErrLabel);
       statusFrame.add(stdOutErrPane);
+      statusFrame.setAlwaysOnTop(vconf.isPopStatusAlwaysTop);
       statusFrame.setVisible(true);
     }else{
       //set vcWin
-      vconf.rectStatusWin = statusFrame.getBounds();
+      //vconf.rectStatusWin = statusFrame.getBounds();
       statusFrame.setVisible(false);
       statusFrame.remove(stdOutErrPane);
       sPanel.remove(stdOutErrLabel);

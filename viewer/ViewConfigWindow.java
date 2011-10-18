@@ -53,7 +53,6 @@ public class ViewConfigWindow extends JFrame{
   public ViewConfigWindow(Controller ctrl){
     this.ctrl=ctrl;
     setTitle("View Configuration");
-
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
     //tabbed Pane

@@ -26,6 +26,7 @@ public class ViewConfig implements Serializable{
 
   //status
   public boolean isPopStatus=false;
+  public boolean isPopStatusAlwaysTop=false;
   //manipulation
   public float   ControllerValue;
   public int     viewMode;
@@ -1426,7 +1427,7 @@ public class ViewConfig implements Serializable{
     isVisibleViewConfigWin = true;
     viewConfigWinTabIndex  = ctrl.vcWin.tabbedPane.getSelectedIndex();
 
-    //if(ctrl.vcWin.statusPanel.statusFrame!=null)rectStatusWin = ctrl.vcWin.statusPanel.statusFrame.getBounds();
+    rectStatusWin = ctrl.vcWin.statusPanel.statusFrame.getBounds();
     //rw
     if(ctrl.getActiveRW()!=null)rectRWin  = ctrl.getActiveRW().getBounds();
 

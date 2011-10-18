@@ -177,7 +177,6 @@ public class Controller implements WindowListener{
     //save vconf
     vconf.saveWin(this);
 
-
     File cdir = new File(vconf.configDir);
     if(!cdir.exists())cdir.mkdir();
 
@@ -276,24 +275,28 @@ public class Controller implements WindowListener{
   public void windowDeactivated(WindowEvent we){
   }
   public void windowClosing(WindowEvent we){
-    if(we.getWindow() instanceof RenderingWindow){
+    if(we.getWindow() ==vcWin){
+      System.out.println("saving configuration");
+      myExit();
+    }else if(we.getWindow() instanceof RenderingWindow){
       RenderingWindow rw = (RenderingWindow)we.getWindow();
       vconf.rectRWin=rw.getBounds();
       vcWinMenu.miRenderWin[rw.getID()].setText(rw.getID()+": null");
       vcWinMenu.miRenderWin[rw.getID()].setEnabled(false);
       RWin[rw.getID()]=null;
     }
-    if(we.getWindow() ==vcWin) myExit();
   }
   public void windowClosed(WindowEvent we){
-    if(we.getWindow() instanceof RenderingWindow){
-      RenderingWindow rw = (RenderingWindow)we.getWindow();
-      vconf.rectRWin=rw.getBounds();
-      vcWinMenu.miRenderWin[rw.getID()].setText(rw.getID()+": null");
-      vcWinMenu.miRenderWin[rw.getID()].setEnabled(false);
-      RWin[rw.getID()]=null;
-    }
-    if(we.getWindow() ==vcWin) myExit();
+    /*
+     * if(we.getWindow() instanceof RenderingWindow){
+     *   RenderingWindow rw = (RenderingWindow)we.getWindow();
+     *   vconf.rectRWin=rw.getBounds();
+     *   vcWinMenu.miRenderWin[rw.getID()].setText(rw.getID()+": null");
+     *   vcWinMenu.miRenderWin[rw.getID()].setEnabled(false);
+     *   RWin[rw.getID()]=null;
+     * }
+     * if(we.getWindow() ==vcWin) myExit();
+     */
   }
 
   public void windowOpened(WindowEvent we){
