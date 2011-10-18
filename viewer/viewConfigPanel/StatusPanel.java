@@ -35,12 +35,10 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
   }
   /* accesser ends*/
 
-  public JFrame statusFrame=new JFrame("Status Frame");
   public void actionPerformed( ActionEvent ae){
     if( ae.getSource() == popoutButton ){
       vconf.isPopStatus=!vconf.isPopStatus;
-      showStatusFrame();
-      this.repaint();
+      updateStatusFrame();
     }
 
   }
@@ -65,7 +63,7 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
     this.vconf=ctrl.vconf;
     create();
 
-    showStatusFrame();
+    updateStatusFrame();
   }
 
   //global variables
@@ -79,8 +77,17 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
   private JPanel sPanel;
   private JScrollPane stdOutErrPane;
   private JLabel stdOutErrLabel=new JLabel("STDOUT, STDERR is popouted");
+  public JFrame statusFrame=new JFrame("Status Frame");
 
   public void create(){
+
+    statusFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+        public void windowClosing(WindowEvent e) {
+          vconf.isPopStatus=false;
+          updateStatusFrame();
+        }
+      });
+
     //General panel
     setFocusable( false );
 
@@ -208,7 +215,7 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
     }
   }
 
-  void showStatusFrame(){
+  void updateStatusFrame(){
     if(vconf.isPopStatus){
       //frame popout
       statusFrame.setBounds(vconf.rectStatusWin);
@@ -224,7 +231,7 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
       sPanel.remove(stdOutErrLabel);
       sPanel.add(stdOutErrPane);
     }
-
+    this.repaint();
   }
 
 }
