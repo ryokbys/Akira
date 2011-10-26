@@ -83,6 +83,7 @@ public class Snapshot {
     //save
     try {
       ImageIO.write( buf, imageformat, new File(filename) );
+      System.out.println("write "+filename);
     }
     catch ( IOException e ){
     }

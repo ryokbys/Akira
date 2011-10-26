@@ -348,14 +348,11 @@ public class RenderingWindow extends JFrame implements GLEventListener,
 
   public void writeImage(){
     imageSave=true;
-    System.out.println(String.format("write image: %d",
-                                     snapshot.stepOne));
     remakeFlag=true;
     this.repaint();
   }
   public void writeSequentialImage(){
     sequentialImageSave=true;
-    System.out.println("sequential image");
     remakeFlag=true;
     this.repaint();
   }
@@ -429,6 +426,9 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   }
   public void incrementFrame(){
     moveFrame(currentFrame+1);
+  }
+  public void incrementFrame(int d){
+    moveFrame(currentFrame+d);
   }
   public void moveFrame(int next){
     if(currentFrame==next)return;
@@ -1050,7 +1050,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     vp.rotX = vp.rotY = vp.rotZ = 0.0f;
 
 
-    combo.running();
+    combo.running(this);
 
     ctrl.updateStatusString();
     requestFocus();

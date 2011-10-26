@@ -56,6 +56,7 @@ public class ComboPanel extends JPanel implements ActionListener{
   static final String ROTATE_Y     = "ROTATE_Y";
   static final String ROTATE_Z     = "ROTATE_Z";
   static final String SAVE_IMAGE   = "SAVE_IMAGE";
+  static final String SAVE_PLOT_DATA   = "SAVE_PLOT_DATA";
   static final String HOME         = "HOME";
 
 
@@ -113,6 +114,7 @@ public class ComboPanel extends JPanel implements ActionListener{
     cb.addItem( ROTATE_Y );
     cb.addItem( ROTATE_Z );
     cb.addItem( SAVE_IMAGE );
+    cb.addItem( SAVE_PLOT_DATA );
     cb.addItem( HOME );
 
     TableColumn table_com = jtable.getColumn( new String("Command") );
@@ -386,7 +388,7 @@ public class ComboPanel extends JPanel implements ActionListener{
       start();
     }
   }
-  private void run(){
+  private void processProgressBar(){
     jtable.setRowSelectionInterval( step, step );
     progressBar.setValue( step );
     step += 1;
@@ -408,17 +410,14 @@ public class ComboPanel extends JPanel implements ActionListener{
   }
 
 
-  public void running(){
+  public void running(RenderingWindow RW){
     if( isRunning ){
       String s = getCommand( step );
       float val = getValue( step );
       //System.out.println("val= " + val );
 
-      if(ctrl.activeRWinID>=0 && ctrl.RWin[ctrl.activeRWinID] != null){
-        RenderingWindow RW=ctrl.RWin[ctrl.activeRWinID];
-
         if( s.equals( NEXT_STEP ) ){
-          RW.moveFrame((int)val);
+          RW.incrementFrame((int)val);
         }else if( s.equals( OBJ_CENTER_X ) ){
           RW.setObjectCenter(val, 0.f,0.f);
         }else if( s.equals( OBJ_CENTER_Y ) ){
@@ -435,13 +434,14 @@ public class ComboPanel extends JPanel implements ActionListener{
           RW.setObjectRotate(0.f,0.f,val);
         }else if( s.equals( SAVE_IMAGE ) ){
           RW.writeImage();
+        }else if( s.equals( SAVE_PLOT_DATA ) ){
+          ctrl.vcWin.plotterPanel.exportFile();
         }else if( s.equals( HOME ) ){
           RW.setVPHome();
+        }else {
         }
-        else {
-        }
-        run();
-      }//
+        processProgressBar();
+        RW.refresh();
     }//isRunning
   }
 

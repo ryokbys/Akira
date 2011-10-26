@@ -59,7 +59,7 @@ public class ViewConfigWindow extends JFrame{
     createTabbedPane();
   }
 
-  JTabbedPane tabbedPane;
+  public JTabbedPane tabbedPane;
   StatusPanel statusPanel;
   private ManipulationPanel maniPanel;
   private AtomPanel atom;
@@ -68,7 +68,7 @@ public class ViewConfigWindow extends JFrame{
   private VectorPanel vec;
   private BoundaryPanel boundary;
   private VolumeRenderPanel volumerender;
-  private PlotterPanel plotterPanel;
+  public PlotterPanel plotterPanel;
   private ComboPanel combo;
   private TrajectoryPanel trj;
   private RadialDistributionPanel rdst;

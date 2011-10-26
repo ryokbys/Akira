@@ -46,6 +46,10 @@ public class PlotterPanel extends JPanel implements ActionListener{
     update();
   }
 
+  public void exportFile(){
+    isExport=true;
+    rdCanv.repaint();
+  }
   public void update(){
     if(rdCanv!=null)rdCanv.repaint();
   }
@@ -63,6 +67,8 @@ public class PlotterPanel extends JPanel implements ActionListener{
   boolean isExport=false;
   JButton writeButton;
   private void createPanel(){
+    this.addKeyListener(ctrl.keyCtrl);
+
     writeButton=new JButton("Write");
     writeButton.addActionListener(this);
     writeButton.addKeyListener(ctrl.keyCtrl);
@@ -70,6 +76,7 @@ public class PlotterPanel extends JPanel implements ActionListener{
     String[] type = {"Energy", "x", "y", "z"};
     drawTypeCmb=new JComboBox(type);
     drawTypeCmb.addActionListener(this);
+    drawTypeCmb.addKeyListener(ctrl.keyCtrl);
     drawTypeCmb.setSelectedIndex(ctrl.vconf.plotterDrawType);
     drawTypeCmb.setFocusable(false);
     //canvas
@@ -153,6 +160,7 @@ public class PlotterPanel extends JPanel implements ActionListener{
   PrintWriter pw;
   private void wopen(){
     String filename=ctrl.getActiveRW().getFileDirectory()+File.separator+String.format("plotter-%03d.d",filenum);
+    System.out.println("write "+filename);
     filenum++;
 
     try {
