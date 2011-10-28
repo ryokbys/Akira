@@ -2,12 +2,12 @@ package plugin;
 import java.io.*;
 import viewer.viewConfigPanel.plugin.ExportPluginInterface;
 
-public class ExportQMASS implements ExportPluginInterface {
+public class ExportQMAS implements ExportPluginInterface {
   public String getSaveFileName(){
-    return "qmass.inp";
+    return "qmas.inp";
   }
   public String getPluginName(){
-    return "QMASS coord.";
+    return "QMAS coord.";
   }
   public void exec(String saveFile,
                    float[][] h,
@@ -24,8 +24,7 @@ public class ExportQMASS implements ExportPluginInterface {
     String str;
 
 
-    String[] type={"H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al","Si","P","S","Kr","K","Ca"};
-
+    String[] type={"AA","BB","CC","DD","EE","FF","GG","HH","II","JJ","KK","LL","MM","NN","OO","PP","QQ","RR","SS","TT","UU","VV","WW","XX","YY","ZZ"};
     // open
     try{
       fw = new FileWriter( saveFile);
@@ -61,7 +60,7 @@ public class ExportQMASS implements ExportPluginInterface {
                                  hinv[k][0]*r[i][0]+
                                  hinv[k][1]*r[i][1]+
                                  hinv[k][2]*r[i][2];
-        pw.println(String.format("%s %e, %e, %e, %d, %d",type[(int)tag[i]],out[0],out[1],out[2],(int)tag[i],0));
+        pw.println(String.format("%s %e, %e, %e, %d, %d",type[(int)tag[i]-1],out[0],out[1],out[2],(int)tag[i],0));
       }
 
       pw.close();
