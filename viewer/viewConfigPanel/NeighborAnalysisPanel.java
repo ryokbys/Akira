@@ -29,7 +29,7 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
     createPanel();
   }
 
-  private JButton cnaButton,ringButton,aveButton,threadRingButton;
+  private JButton cnaButton,ringButton,aveButton,threadRingButton,sfButton;
   private JSpinner spRcut;
   private JTextArea outArea;
   private JCheckBox cbShowRing;
@@ -84,6 +84,10 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
     aveButton.setFocusable(false);
     aveButton.addActionListener( this );
 
+    sfButton=new JButton("Structure Factor");
+    sfButton.setFocusable(false);
+    sfButton.addActionListener( this );
+
 
 
     spRcut = new JSpinner(new SpinnerNumberModel((double)ctrl.vconf.neighborAnalysisRcut, 0.1, null, 0.2));
@@ -131,6 +135,9 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
     layout.putConstraint( SpringLayout.NORTH, threadRingButton, 0,SpringLayout.NORTH, ringButton);
     layout.putConstraint( SpringLayout.WEST,  threadRingButton, 5,SpringLayout.EAST,ringButton);
 
+    layout.putConstraint( SpringLayout.NORTH, sfButton, 5,SpringLayout.SOUTH, aveButton);
+    layout.putConstraint( SpringLayout.WEST,  sfButton, 0,SpringLayout.WEST,aveButton);
+
 
     layout.putConstraint( SpringLayout.NORTH, cbShowRing, 5,SpringLayout.SOUTH, ringButton);
     layout.putConstraint( SpringLayout.WEST,  cbShowRing, 5,SpringLayout.WEST,ringButton);
@@ -166,6 +173,7 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
     add(spRingRangeMax);
     add(ringRangeMaxLabel);
     add(cbPBC);
+    add(sfButton);
 
     requestFocusInWindow();
   }
@@ -180,6 +188,8 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
 
     if( e.getSource() == cnaButton ){
       CNAStatistic();
+    }else if( e.getSource() == sfButton ){
+      structureFactor();
     }else if( e.getSource() == threadRingButton ){
       long start = System.currentTimeMillis();
       ringStatisticParallel();
@@ -200,6 +210,11 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
       average();
     }
     requestFocusInWindow();
+  }
+
+  private void printInfo(String str){
+    outArea.append(str+"\n");
+    System.out.println(str);
   }
 
 
@@ -634,6 +649,7 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
       }
     }
   }
+
   /**
    * search n-ring in serial
    */
@@ -755,10 +771,32 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
     return sorted;
   }
 
-  private void printInfo(String str){
-    outArea.append(str+"\n");
-    System.out.println(str);
+  private void structureFactor(){
+    if(ctrl.getActiveRW()==null)return;
+    viewer.renderer.Atoms atoms =ctrl.getActiveRW().getAtoms();
+
+    int nx=10;
+    int ny=10;
+    int nz=10;
+    double pi2=Math.PI*2;
+    double rhocos=0.;
+    double rhosin=0.;
+    for(int lx=0;lx<nx;lx++){
+      for(int ly=0;ly<ny;ly++){
+        for(int lz=0;lz<nz;lz++){
+          double[] ak=new double[3];
+          for(int j=0;j<3;j++)ak[j]=pi2*(lx*atoms.hinv[0][j]+ly*atoms.hinv[1][j]+lz*atoms.hinv[2][j]);
+          for(int i=0;i<atoms.n;i++){
+            double arg=ak[0]*atoms.r[i][0]+ak[1]*atoms.r[i][1]+ak[2]*atoms.r[i][2];
+            rhocos+=Math.cos(arg);
+            rhosin+=Math.sin(arg);
+          }
+        }
+      }//ly
+    }//lx
+    printInfo(String.format("%f %f",rhocos,rhosin));
   }
+
 
 
 }
