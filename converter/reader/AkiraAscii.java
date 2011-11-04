@@ -79,6 +79,7 @@ public class AkiraAscii{
       elem = tokens.getTokens();
       int natm=Integer.parseInt( elem[0] );
       atoms.nData = Integer.parseInt( elem[1] );
+      if(atoms.nData>9)atoms.nData=9;
       int nvolBlock=Integer.parseInt( elem[2] );
       int nvolume=Integer.parseInt( elem[3] );
 

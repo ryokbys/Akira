@@ -14,11 +14,13 @@ public class ColorTable {
   private float[] rgba = new float[4];
 
   ArrayList<ColorType> tables = new ArrayList<ColorType>();
-  static public final int maxColorType=9;
+  static public final int maxColorType=10;
   public static final String colorName[]={
     "Blue-Gray-Red 0.8",
     "Blue-Gray-Red 0.3",
     "Blue-Gray-Red 0.1",
+    "ThermoGraphy",
+    "Cycle ThermoGraphy",
     "Rainbow",
     "White-Black",
     "Black-White",
@@ -29,6 +31,7 @@ public class ColorTable {
   private BlueGrayRed                bgr2    = new BlueGrayRed(0.3f);
   private BlueGrayRed                bgr1    = new BlueGrayRed(0.1f);
   private Rainbow                    rainbow = new Rainbow();
+  private CycleRainbow               cyclerainbow = new CycleRainbow();
   private BlueGreenRedYellow         bgry    = new BlueGreenRedYellow();
   private GrayScaleWB                grayWB  = new GrayScaleWB();
   private GrayScaleBW                grayBW  = new GrayScaleBW();
@@ -42,6 +45,7 @@ public class ColorTable {
     tables.add( bgr2 );
     tables.add( bgr1 );
     tables.add( rainbow );
+    tables.add( cyclerainbow );
     tables.add( bgry );
     tables.add( grayWB );
     tables.add( grayBW );
@@ -141,7 +145,7 @@ public class ColorTable {
       rgba[2] = n;
       break;
     default:
-      System.out.println("Error: hsv[0]=" + hsv[0]+ " " + i );
+      System.out.println("Error: hsv[0]=" + hsv[0]+ " at " + i );
       rgba[0] = 0.0f;
       rgba[1] = 0.0f;
       rgba[2] = 0.0f;
@@ -261,6 +265,29 @@ public class ColorTable {
       return rgba;
     }
   }
+  class CycleRainbow implements ColorType {
+    public CycleRainbow(){
+    }
+    public void setRange(){}
+    public float[] getColor(float val ){
+      float[] hsv  = new float[3];
+      hsv[1] = 1.0f;
+      hsv[2] = 1.0f;
+
+      int ndiv=5;
+      float v=(val-range[0])*drRangei;
+      if(v>1f)v=1f;
+      if(v<0f)v=0f;
+      int i=(int)(v*ndiv);
+      if(i<0)i=0;
+      if(i>ndiv)i=ndiv-1;
+      hsv[0]=240.0f *( 1.f -(v-i/(float)ndiv)*ndiv);
+
+      rgba = convertHSVtoRGB( hsv );
+      rgba[3]=getAlpha(val);
+      return rgba;
+    }
+  }
 
   class BlueGrayRed implements ColorType {
     private float[] rknotx = new float[5];
@@ -357,6 +384,7 @@ public class ColorTable {
       return rgba;
     }
   }
+
 
   class DiscreteBlueGreenYellowRed implements ColorType {
     private float[] rknoty = { 0.0f, 0.0f, 1.0f, 1.0f };

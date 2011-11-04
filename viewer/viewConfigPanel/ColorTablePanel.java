@@ -37,8 +37,18 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
 
   private void makePanel(){
     JLabel colorLabel=new JLabel("Color Type");
-    String[] cTableStr = {"Max-Min-Enhaced3","Max-Min-Enhaced2","Max-Min-Enhanced1","Thermography","Rainbow","White-Black","Black-White","Discrete BGYR","Discrete BGR"};
-    ctableType = new JComboBox(cTableStr);
+    String[] cTableStr = {"Max-Min-Enhaced3",
+                          "Max-Min-Enhaced2",
+                          "Max-Min-Enhanced1",
+                          "Thermography",
+                          "Rainbow",
+                          "Cycle Rainbow",
+                          "White-Black",
+                          "Black-White",
+                          "Discrete BGYR",
+                          "Discrete BGR"};
+
+    ctableType = new JComboBox(viewer.renderer.ColorTable.colorName);
     ctableType.setPreferredSize(new Dimension(150, 25));
     ctableType.addActionListener(this);
     ctableType.setFocusable(false);

@@ -103,12 +103,14 @@ public class AkiraConverter{
         KVS.conv(atomFileIO,cconf,itarget,ithFrame);
       }else if(format.equalsIgnoreCase("xcrysden")){
         XCrysDen.conv(atomFileIO,cconf,itarget,ithFrame);
+      }else if(format.equalsIgnoreCase("nkmd")){
+        NkmdAscii.conv(atomFileIO,cconf,itarget,ithFrame);
+      }else if(format.equalsIgnoreCase("akira")){
+        AkiraAscii.conv(atomFileIO,cconf,itarget,ithFrame);
       }else if(format.equalsIgnoreCase("akiratgz")){
         AkiraAsciiTgz.conv(atomFileIO,cconf,itarget,ithFrame);
       }else if(format.equalsIgnoreCase("akiratbz2")){
         AkiraAsciiTbz2.conv(atomFileIO,cconf,itarget,ithFrame);
-      }else if(format.equalsIgnoreCase("akira")){
-        AkiraAscii.conv(atomFileIO,cconf,itarget,ithFrame);
       }else if(format.equalsIgnoreCase("akirabintgz")){
         AkiraBinaryTgz.conv(atomFileIO,cconf,itarget,ithFrame);
       }else if(format.equalsIgnoreCase("akirabintbz2")){

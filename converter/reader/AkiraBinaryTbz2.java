@@ -87,6 +87,7 @@ public class AkiraBinaryTbz2{
           bb.order(ByteOrder.LITTLE_ENDIAN);
         int natm=bb.getInt(4);
         atoms.nData=bb.getInt(8);
+        if(atoms.nData>9)atoms.nData=9;
         int nvolBlock=bb.getInt(12);
         int nvolume=bb.getInt(16);
         atoms.allocate(natm+nvolume);

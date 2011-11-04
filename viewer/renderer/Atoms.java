@@ -30,6 +30,7 @@ public class Atoms extends data.Atoms implements Renderer{
   public boolean isSetVtag=false;
 
 
+
   //override
   public void allocate(int n){
     if(maxNatom==0 || maxNatom<n){
@@ -121,17 +122,26 @@ public class Atoms extends data.Atoms implements Renderer{
       float[] tmp=mulH(hinv,r[i]);
 
       for(int ix=extendNx1;ix<=extendNx2;ix++){
-        if(!(ext[0][0]<=ix+tmp[0] && ix+tmp[0]<ext[1][0]))continue;
+        if(!(ext[0][0]<=ix+tmp[0] && ix+tmp[0]<ext[1][0])){
+          //vtag[i]=-Math.abs(vtag[i]);
+          continue;
+        }
 
         rw.gl.glPushMatrix();
         rw.gl.glTranslatef( ix*h[0][0], ix*h[1][0], ix*h[2][0]);
         for(int iy=extendNy1;iy<=extendNy2;iy++){
-          if(!(ext[0][1]<=iy+tmp[1] && iy+tmp[1]<ext[1][1]))continue;
+          if(!(ext[0][1]<=iy+tmp[1] && iy+tmp[1]<ext[1][1])){
+            //vtag[i]=-Math.abs(vtag[i]);
+            continue;
+          }
 
           rw.gl.glPushMatrix();
           rw.gl.glTranslatef(iy*h[0][1],iy*h[1][1],iy*h[2][1]);
           for(int iz=extendNz1;iz<=extendNz2;iz++){
-            if(!(ext[0][2]<=iz+tmp[2] && iz+tmp[2]<ext[1][2]))continue;
+            if(!(ext[0][2]<=iz+tmp[2] && iz+tmp[2]<ext[1][2])){
+              //vtag[i]=-Math.abs(vtag[i]);
+              continue;
+            }
 
             rw.gl.glPushMatrix();
             rw.gl.glTranslatef(iz*h[0][2],iz*h[1][2],iz*h[2][2]);
@@ -170,6 +180,7 @@ public class Atoms extends data.Atoms implements Renderer{
     }//iatom
 
     rw.gl.glEndList();
+    isSetVtag=true;
   }
 
   //display list of point object
@@ -228,7 +239,7 @@ public class Atoms extends data.Atoms implements Renderer{
   }
 
   public void resetVisualTag(){
-    for( int i=0; i<n; i++ )vtag[i]=0;
+    for( int i=0; i<n; i++ )vtag[i]=1;
     specialTag.clear();
   }
 
