@@ -88,8 +88,6 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
     sfButton.setFocusable(false);
     sfButton.addActionListener( this );
 
-
-
     spRcut = new JSpinner(new SpinnerNumberModel((double)ctrl.vconf.neighborAnalysisRcut, 0.1, null, 0.2));
     spRcut.setPreferredSize(new Dimension(60, 23));
     spRcut.setFocusable(false);
@@ -125,25 +123,21 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
     layout.putConstraint( SpringLayout.NORTH, cnaButton, 10,SpringLayout.NORTH, this);
     layout.putConstraint( SpringLayout.WEST,  cnaButton, 10,SpringLayout.EAST,cmbRingType);
     //ave
-    layout.putConstraint( SpringLayout.NORTH, aveButton, 0,SpringLayout.SOUTH, cnaButton);
-    layout.putConstraint( SpringLayout.WEST,  aveButton, 0,SpringLayout.WEST,cnaButton);
+    layout.putConstraint( SpringLayout.NORTH, aveButton, 0,SpringLayout.NORTH, cnaButton);
+    layout.putConstraint( SpringLayout.WEST,  aveButton, 5,SpringLayout.EAST,cnaButton);
+
+    layout.putConstraint( SpringLayout.NORTH, sfButton, 5,SpringLayout.SOUTH, cnaButton);
+    layout.putConstraint( SpringLayout.WEST,  sfButton, 0,SpringLayout.WEST,cnaButton);
 
     //ring
-    layout.putConstraint( SpringLayout.NORTH, ringButton, 0,SpringLayout.NORTH, cnaButton);
-    layout.putConstraint( SpringLayout.WEST,  ringButton, 20,SpringLayout.EAST,cnaButton);
-
+    layout.putConstraint( SpringLayout.NORTH, ringButton, 5,SpringLayout.SOUTH, sfButton);
+    layout.putConstraint( SpringLayout.WEST,  ringButton, 0,SpringLayout.WEST,sfButton);
+    layout.putConstraint( SpringLayout.NORTH, cbShowRing, 5,SpringLayout.SOUTH, ringButton);
+    layout.putConstraint( SpringLayout.WEST,  cbShowRing, 5,SpringLayout.WEST,ringButton);
     layout.putConstraint( SpringLayout.NORTH, threadRingButton, 0,SpringLayout.NORTH, ringButton);
     layout.putConstraint( SpringLayout.WEST,  threadRingButton, 5,SpringLayout.EAST,ringButton);
 
-    layout.putConstraint( SpringLayout.NORTH, sfButton, 5,SpringLayout.SOUTH, aveButton);
-    layout.putConstraint( SpringLayout.WEST,  sfButton, 0,SpringLayout.WEST,aveButton);
 
-
-    layout.putConstraint( SpringLayout.NORTH, cbShowRing, 5,SpringLayout.SOUTH, ringButton);
-    layout.putConstraint( SpringLayout.WEST,  cbShowRing, 5,SpringLayout.WEST,ringButton);
-
-    add(ringCalLabel);
-    add(cmbRingType);
 
     //range
     JLabel ringRangeMaxLabel=new JLabel("Ring Length Max");
@@ -162,6 +156,8 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
     layout.putConstraint( SpringLayout.EAST,  sp, -10,SpringLayout.EAST, this);
     layout.putConstraint( SpringLayout.WEST,  sp, 10,SpringLayout.EAST, threadRingButton);
 
+    add(ringCalLabel);
+    add(cmbRingType);
     add(rcutLabel);
     add(spRcut);
     add(sp);

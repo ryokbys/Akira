@@ -144,7 +144,6 @@ public class BondCreator{
     for(int i=0;i<lengthList.size();i++)
       if(maxLength<lengthList.get(i))maxLength=lengthList.get(i);
 
-    float lmax2= maxLength*maxLength;
 
 
 
@@ -163,9 +162,11 @@ public class BondCreator{
       if( itag < 0 || itag==Const.VOLUME_DATA_TAG)continue;
       ArrayList<Integer> iList = lspr.get(i);
 
-      for(int k=0; k<iList.size(); k++){
-        int j= iList.get(k);// obtain neighbor from lspr
-        if( j <= i ) continue;// disable double-count
+      for(int jj=0; jj<iList.size(); jj++){
+        int j= iList.get(jj);// obtain neighbor from lspr
+        if(j<0)continue;
+        //if( j <= i ) continue;// disable double-count
+
         int jtag = atoms.tag[j];
         if( jtag < 0 || jtag==Const.VOLUME_DATA_TAG)continue;
         dr[0] = atoms.r[j][0] -atoms.r[i][0];

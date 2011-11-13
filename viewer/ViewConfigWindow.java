@@ -202,6 +202,19 @@ public class ViewConfigWindow extends JFrame{
                         new ImageIcon(this.getClass().getResource("/img/tab/neighbor.png")),
                         na,
                         "Neighbor Analysis");
+      SymmetryAnalyzePanel sym=new SymmetryAnalyzePanel(ctrl);
+      sym.setFocusable(false);
+      tabbedPane.addTab(null,
+                        new ImageIcon(this.getClass().getResource("/img/tab/symmetry.png")),
+                        sym,
+                        "Symmetry Analyzer");
+      //Modeling
+      ModelingPanel model=new ModelingPanel(ctrl);
+      model.setFocusable(false);
+      tabbedPane.addTab(null,
+                        new ImageIcon(this.getClass().getResource("/img/tab/model.png")),
+                        model,
+                        "Modeling");
       //light
       LightPanel light= new LightPanel(ctrl);
       light.setFocusable(false);
@@ -215,13 +228,6 @@ public class ViewConfigWindow extends JFrame{
       tabbedPane.addTab(null,
                         new ImageIcon(this.getClass().getResource("/img/tab/viewpoint.png")),
                         vpPanel,"ViewPoint Setting");
-      //Modeling
-      ModelingPanel model=new ModelingPanel(ctrl);
-      model.setFocusable(false);
-      tabbedPane.addTab(null,
-                        new ImageIcon(this.getClass().getResource("/img/tab/model.png")),
-                        model,
-                        "Modeling");
       //MD
       MDPanel md=new MDPanel(ctrl);
       md.setFocusable(false);

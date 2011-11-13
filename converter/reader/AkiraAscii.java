@@ -194,7 +194,7 @@ public class AkiraAscii{
         System.out.print("\b\b )\n");
       }
       //written atoms info
-      System.out.print(String.format("  |- ATOMS        : %8d",natm));
+      System.out.print(String.format("  |- ATOMS        : %8d",atoms.n));
       System.out.print(" (");
       Set set = tagCount.keySet();
       Iterator iterator = set.iterator();

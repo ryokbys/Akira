@@ -21,7 +21,7 @@ public class AkiraViewer{
 
   public static void main(String[] args){
     //print java.library.path
-    //System.out.println(System.getProperty("java.library.path"));
+    System.out.println("java.library.path= "+System.getProperty("java.library.path"));
 
     //switch LOOK&FEELS according to OSNAME
     final String OSNAME = System.getProperty("os.name");
