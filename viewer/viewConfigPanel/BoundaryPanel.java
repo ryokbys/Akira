@@ -95,6 +95,7 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
 
 
   public void createPanel(){
+    this.addKeyListener(ctrl.keyCtrl);
 
     JLabel lExtendX=new JLabel("<= a <");
     lExtendX.setFocusable(false);

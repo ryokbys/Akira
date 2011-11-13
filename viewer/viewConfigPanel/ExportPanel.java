@@ -47,14 +47,17 @@ public class ExportPanel extends JPanel implements ActionListener{
     btnWriteAkira=new JButton("Akira Format");
     btnWriteAkira.setFocusable(false);
     btnWriteAkira.addActionListener( this );
+    btnWriteAkira.addKeyListener(ctrl.keyCtrl);
 
     btnWritePOV=new JButton("POV Format");
     btnWritePOV.setFocusable(false);
     btnWritePOV.addActionListener( this );
+    btnWritePOV.addKeyListener(ctrl.keyCtrl);
 
     btnWriteEPS=new JButton("EPS Format");
     btnWriteEPS.setFocusable(false);
     btnWriteEPS.addActionListener( this );
+    btnWriteEPS.addKeyListener(ctrl.keyCtrl);
 
     this.setLayout(new GridLayout(0,5));
     add(btnWriteAkira);
@@ -119,6 +122,7 @@ public class ExportPanel extends JPanel implements ActionListener{
     //add
     for(int i=0;i<plugins.size();i++){
       JButton btn=new JButton(plugins.get(i).getPluginName());
+      btn.addKeyListener(ctrl.keyCtrl);
       btn.setActionCommand(plugins.get(i).getPluginName());
       btn.addActionListener( this );
       add(btn);

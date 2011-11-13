@@ -382,6 +382,7 @@ class SimpleEditor extends JFrame implements ActionListener{
 
   //
   JPanel createPanel(){
+    this.addKeyListener(ctrl.keyCtrl);
     //text area
     textArea = new JTextArea();
     textArea.setFont(new Font("courier",Font.PLAIN,14));

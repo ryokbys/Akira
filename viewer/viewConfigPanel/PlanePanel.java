@@ -62,6 +62,7 @@ public class PlanePanel extends JPanel implements ActionListener{
 
 
   public void createPanel(){
+    this.addKeyListener(ctrl.keyCtrl);
     tableModel = new MyTableModel( colNames, 0 );
     //tableModel.setFocusable(false);
     table = new JTable( tableModel );
@@ -78,6 +79,7 @@ public class PlanePanel extends JPanel implements ActionListener{
     sp = new JScrollPane( table );
     sp.setFocusable(false);
     sp.setWheelScrollingEnabled( true );
+    sp.addKeyListener(ctrl.keyCtrl);
     //sp.setPreferredSize( new Dimension(430,100) );
     addTable();
 
@@ -96,16 +98,17 @@ public class PlanePanel extends JPanel implements ActionListener{
     resetButton=new JButton("Reset");
     resetButton.setFocusable(false);
     resetButton.addActionListener( this );
-
+    resetButton.addKeyListener(ctrl.keyCtrl);
 
     applyButton=new JButton("Apply");
     applyButton.setFocusable(false);
     applyButton.addActionListener( this );
+    applyButton.addKeyListener(ctrl.keyCtrl);
 
     calAllVoronoiButton=new JButton("Cal. All Voronoi");
     calAllVoronoiButton.setFocusable(false);
     calAllVoronoiButton.addActionListener( this );
-
+    calAllVoronoiButton.addKeyListener(ctrl.keyCtrl);
 
 
     //check box

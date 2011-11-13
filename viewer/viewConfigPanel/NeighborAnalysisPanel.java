@@ -45,52 +45,61 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
   }
 
   private void createPanel(){
+    this.addKeyListener(ctrl.keyCtrl);
+
     cbShowRing =new JCheckBox("Show Ring",vconf.isShowRing);
     cbShowRing.setFocusable(false);
     cbShowRing.addActionListener( this );
+    cbShowRing.addKeyListener(ctrl.keyCtrl);
 
     cbPBC =new JCheckBox("PBC?",vconf.isPBC);
     cbPBC.setFocusable(false);
     cbPBC.addActionListener( this );
+    cbPBC.addKeyListener(ctrl.keyCtrl);
 
     spRingRangeMax=new JSpinner(new SpinnerNumberModel(vconf.ringRangeMax, 3, null, 1));
     spRingRangeMax.setFocusable(false);
     spRingRangeMax.setPreferredSize(new Dimension(45, 23));
-
+    spRingRangeMax.addKeyListener(ctrl.keyCtrl);
 
 
     String[] str={"Normal","SiO2"};
     cmbRingType= new JComboBox(str);
     cmbRingType.setSelectedIndex(vconf.ringCalType);
     cmbRingType.addActionListener(this);
-
+    cmbRingType.addKeyListener(ctrl.keyCtrl);
 
 
     cnaButton=new JButton("CNA");
     cnaButton.setFocusable(false);
     cnaButton.addActionListener( this );
+    cnaButton.addKeyListener(ctrl.keyCtrl);
 
     ringButton=new JButton("Ring");
     ringButton.setFocusable(false);
     ringButton.addActionListener( this );
+    ringButton.addKeyListener(ctrl.keyCtrl);
 
     threadRingButton=new JButton("Thread Ring");
     threadRingButton.setFocusable(false);
     threadRingButton.addActionListener( this );
-
+    threadRingButton.addKeyListener(ctrl.keyCtrl);
 
 
     aveButton=new JButton("Average");
     aveButton.setFocusable(false);
     aveButton.addActionListener( this );
+    aveButton.addKeyListener(ctrl.keyCtrl);
 
     sfButton=new JButton("Structure Factor");
     sfButton.setFocusable(false);
     sfButton.addActionListener( this );
+    sfButton.addKeyListener(ctrl.keyCtrl);
 
     spRcut = new JSpinner(new SpinnerNumberModel((double)ctrl.vconf.neighborAnalysisRcut, 0.1, null, 0.2));
     spRcut.setPreferredSize(new Dimension(60, 23));
     spRcut.setFocusable(false);
+    spRcut.addKeyListener(ctrl.keyCtrl);
 
     //text area
     outArea = new JTextArea();
@@ -98,6 +107,7 @@ public class NeighborAnalysisPanel extends JPanel implements ActionListener{
     outArea.setLineWrap(true);
     outArea.setCaretPosition(outArea.getText().length());
     JScrollPane sp=new JScrollPane(outArea);
+    sp.addKeyListener(ctrl.keyCtrl);
 
     SpringLayout layout = new SpringLayout();
     this.setLayout( layout );

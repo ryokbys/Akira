@@ -91,6 +91,7 @@ public class VectorPanel extends JPanel implements ActionListener{
   private JComboBox vecColor;
 
   private void createPanel(){
+    this.addKeyListener(ctrl.keyCtrl);
     //General panel
     setFocusable( false );
 

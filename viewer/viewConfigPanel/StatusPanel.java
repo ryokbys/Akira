@@ -85,6 +85,8 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
 
   public void create(){
 
+    this.addKeyListener(ctrl.keyCtrl);
+
     statusFrame.addWindowListener(new java.awt.event.WindowAdapter() {
         public void windowClosing(WindowEvent e) {
           vconf.rectStatusWin = statusFrame.getBounds();

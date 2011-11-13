@@ -70,22 +70,29 @@ public class DataPanel extends JPanel implements ActionListener{
 
   private JButton calButton;
   public void createPanel(){
+    this.addKeyListener(ctrl.keyCtrl);
     //General panel
     setFocusable( false );
 
     applyButton = new JButton( "Apply" );
     applyButton.setFocusable(false);
     applyButton.addActionListener( this );
+    applyButton.addKeyListener(ctrl.keyCtrl);
+
     resetButton  = new JButton( "Reset" );
     resetButton.setFocusable(false);
     resetButton.addActionListener( this );
+    resetButton.addKeyListener(ctrl.keyCtrl);
+
     loadRangeButton= new JButton( "Load Original Range" );
     loadRangeButton.setFocusable(false);
     loadRangeButton.addActionListener( this );
+    loadRangeButton.addKeyListener(ctrl.keyCtrl);
+
     calButton = new JButton( "Average" );
     calButton.setFocusable( false );
     calButton.addActionListener( this );
-
+    calButton.addKeyListener(ctrl.keyCtrl);
 
 
     tableModel = new MyTableModel( colNames, 0 );
@@ -97,7 +104,7 @@ public class DataPanel extends JPanel implements ActionListener{
     table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
     table.setCellSelectionEnabled( true);
     table.setColumnSelectionAllowed( true );
-
+    table.addKeyListener(ctrl.keyCtrl);
     //table.setCellSelectionEnabled( false);
     //table.setColumnSelectionAllowed( false );
 
@@ -109,7 +116,7 @@ public class DataPanel extends JPanel implements ActionListener{
     sp.setFocusable(false);
     sp.setWheelScrollingEnabled( true );
     sp.setPreferredSize( new Dimension(700,120) );
-
+    sp.addKeyListener(ctrl.keyCtrl);
     addTable();
 
     DefaultTableColumnModel columnModel = (DefaultTableColumnModel)table.getColumnModel();
@@ -126,6 +133,7 @@ public class DataPanel extends JPanel implements ActionListener{
     cutRangeMinSpinner = new JSpinner(new SpinnerNumberModel((double)vconf.dataCutRange[0], 0, 1, 0.1));
     cutRangeMinSpinner.setFocusable(false);
     cutRangeMinSpinner.setPreferredSize(new Dimension(65, 25));
+    cutRangeMinSpinner.addKeyListener(ctrl.keyCtrl);
     cutRangeMinSpinner.addChangeListener(new ChangeListener(){
         public void stateChanged(ChangeEvent e){
           JSpinner s = (JSpinner)e.getSource();
@@ -136,6 +144,7 @@ public class DataPanel extends JPanel implements ActionListener{
     cutRangeMaxSpinner = new JSpinner(new SpinnerNumberModel((double)vconf.dataCutRange[1], 0, 1, 0.1));
     cutRangeMaxSpinner.setFocusable(false);
     cutRangeMaxSpinner.setPreferredSize(new Dimension(65, 25));
+    cutRangeMaxSpinner.addKeyListener(ctrl.keyCtrl);
     cutRangeMaxSpinner.addChangeListener(new ChangeListener(){
         public void stateChanged(ChangeEvent e){
           JSpinner s = (JSpinner)e.getSource();
@@ -146,6 +155,7 @@ public class DataPanel extends JPanel implements ActionListener{
     factorSpinner = new JSpinner(new SpinnerNumberModel((double)vconf.dataFactor, 0, 100., 0.1));
     factorSpinner.setFocusable(false);
     factorSpinner.setPreferredSize(new Dimension(65, 25));
+    factorSpinner.addKeyListener(ctrl.keyCtrl);
     factorSpinner.addChangeListener(new ChangeListener(){
         public void stateChanged(ChangeEvent e){
           JSpinner s = (JSpinner)e.getSource();

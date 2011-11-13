@@ -84,6 +84,7 @@ public class VolumeRenderPanel extends JPanel implements ActionListener{
 
 
   public void createPanel(){
+    this.addKeyListener(ctrl.keyCtrl);
     //General panel
     setFocusable( false );
 

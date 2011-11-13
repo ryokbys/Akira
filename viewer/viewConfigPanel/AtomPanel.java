@@ -164,7 +164,7 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
   JComboBox labelType;
 
   public void createPanel(){
-
+    this.addKeyListener(ctrl.keyCtrl);
 
     String[] lStr={"Invisible","ID","Species","Tag Name","Tag Name+ID","Tag Name+Num."};
     labelType= new JComboBox(lStr);
@@ -175,9 +175,12 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     atomType= new JComboBox(atStr);
     atomType.setSelectedIndex(1);
     atomType.setFocusable(false);
+    atomType.addKeyListener(ctrl.keyCtrl);
+
     atomColor= new JComboBox(acStr);
     atomColor.setSelectedIndex(0);
     atomColor.setFocusable(false);
+    atomColor.addKeyListener(ctrl.keyCtrl);
 
     //General panel
     setFocusable( false );
@@ -185,25 +188,29 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     applyButton = new JButton( "Apply" );
     applyButton.addActionListener( this );
     applyButton.setFocusable(false);
+    applyButton.addKeyListener(ctrl.keyCtrl);
 
     resetButton  = new JButton( "Reset" );
     resetButton.setFocusable(false);
     resetButton.addActionListener( this );
+    resetButton.addKeyListener(ctrl.keyCtrl);
 
     selectButton  = new JButton( "ID Select" );
     selectButton.setFocusable(false);
     selectButton.addActionListener( this );
-
+    selectButton.addKeyListener(ctrl.keyCtrl);
 
     ///
     vconf.isSelectionInfo=false;
     cbSelectionMode =new JCheckBox("Select Info",vconf.isSelectionInfo);
     cbSelectionMode.setFocusable(false);
     cbSelectionMode.addChangeListener(this);
+    cbSelectionMode.addKeyListener(ctrl.keyCtrl);
 
     spSelect = new JSpinner(new SpinnerNumberModel(1, 1, null, 1));
     spSelect.setFocusable(false);
     spSelect.setPreferredSize(new Dimension(70, 25));
+    spSelect.addKeyListener(ctrl.keyCtrl);
     //spSelect.addChangeListener(this);
 
 
@@ -260,7 +267,7 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     sp.setFocusable(false);
     sp.setWheelScrollingEnabled( true );
     //sp.setPreferredSize( new Dimension(500,100) );
-
+    sp.addKeyListener(ctrl.keyCtrl);
 
     addTableRow();
 

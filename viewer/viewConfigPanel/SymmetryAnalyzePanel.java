@@ -33,25 +33,32 @@ public class SymmetryAnalyzePanel extends JPanel implements ActionListener{
   private JButton getPrimitiveButton,getSymmetryButton,getSymbolButton,refineCellButton,getMultiplicityButton;
 
   private void createPanel(){
+    this.addKeyListener(ctrl.keyCtrl);
+
     getPrimitiveButton=new JButton("Get Primitive");
     getPrimitiveButton.setFocusable(false);
     getPrimitiveButton.addActionListener( this );
+    getPrimitiveButton.addKeyListener(ctrl.keyCtrl);
 
     getSymmetryButton=new JButton("Get Symmetry");
     getSymmetryButton.setFocusable(false);
     getSymmetryButton.addActionListener( this );
+    getSymmetryButton.addKeyListener(ctrl.keyCtrl);
 
     getSymbolButton=new JButton("Get Symbol");
     getSymbolButton.setFocusable(false);
     getSymbolButton.addActionListener( this );
+    getSymbolButton.addKeyListener(ctrl.keyCtrl);
 
     refineCellButton=new JButton("Refine Cell");
     refineCellButton.setFocusable(false);
     refineCellButton.addActionListener( this );
+    refineCellButton.addKeyListener(ctrl.keyCtrl);
 
     getMultiplicityButton=new JButton("Get Multiplicity");
     getMultiplicityButton.setFocusable(false);
     getMultiplicityButton.addActionListener( this );
+    getMultiplicityButton.addKeyListener(ctrl.keyCtrl);
 
     this.setLayout(new GridLayout(0,5));
 

@@ -172,6 +172,7 @@ public class AnnotationPanel extends JPanel implements ActionListener,ChangeList
 
 
   public void create(){
+    this.addKeyListener(ctrl.keyCtrl);
     //General panel
     setFocusable( false );
 

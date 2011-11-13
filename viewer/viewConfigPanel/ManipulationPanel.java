@@ -208,6 +208,7 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
 
   JSpinner valInputSpinner;
   private void createPanel(){
+    this.addKeyListener(ctrl.keyCtrl);
     //input field
     JLabel valLabel;
 

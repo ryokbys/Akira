@@ -69,17 +69,23 @@ public class ModelingPanel extends JPanel implements ActionListener{
 
   private JSpinner spNx,spNy,spNz;
   private void createPanel(){
+    this.addKeyListener(ctrl.keyCtrl);
+
     spNx = new JSpinner(new SpinnerNumberModel(4, 0, null, 1));
     spNx.setFocusable(false);
     spNx.setPreferredSize(new Dimension(50, 25));
+    spNx.addKeyListener(ctrl.keyCtrl);
     spNy = new JSpinner(new SpinnerNumberModel(4, 0, null, 1));
     spNy.setFocusable(false);
     spNy.setPreferredSize(new Dimension(50, 25));
+    spNy.addKeyListener(ctrl.keyCtrl);
     spNz = new JSpinner(new SpinnerNumberModel(4, 0, null, 1));
     spNz.setFocusable(false);
     spNz.setPreferredSize(new Dimension(50, 25));
+    spNz.addKeyListener(ctrl.keyCtrl);
 
     JPanel jp=new JPanel();
+    jp.addKeyListener(ctrl.keyCtrl);
     jp.setLayout(new GridLayout(3,2));
     jp.add(new JLabel("Nx"));
     jp.add(spNx);
@@ -89,6 +95,7 @@ public class ModelingPanel extends JPanel implements ActionListener{
     jp.add(spNz);
 
     JPanel pluginPanel=createPluginButton();
+    pluginPanel.addKeyListener(ctrl.keyCtrl);
     SpringLayout layout = new SpringLayout();
     setLayout(layout);
     layout.putConstraint(SpringLayout.NORTH, jp, 5, SpringLayout.NORTH,this);
@@ -156,6 +163,7 @@ public class ModelingPanel extends JPanel implements ActionListener{
     jp.setLayout(new GridLayout(0,4));
     for(int i=0;i<plugins.size();i++){
       JButton btn=new JButton(plugins.get(i).getPluginName());
+      btn.addKeyListener(ctrl.keyCtrl);
       btn.setActionCommand(plugins.get(i).getPluginName());
       btn.addActionListener( this );
       jp.add(btn);

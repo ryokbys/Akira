@@ -36,6 +36,7 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
 
 
   private void makePanel(){
+    this.addKeyListener(ctrl.keyCtrl);
     JLabel colorLabel=new JLabel("Color Type");
     String[] cTableStr = {"Max-Min-Enhaced3",
                           "Max-Min-Enhaced2",
@@ -52,6 +53,7 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     ctableType.setPreferredSize(new Dimension(150, 25));
     ctableType.addActionListener(this);
     ctableType.setFocusable(false);
+    ctableType.addKeyListener(ctrl.keyCtrl);
 
     JLabel ticsLabel=new JLabel("Tics Type");
     String[] ticsStr = {"3","2","1","6"};
@@ -59,6 +61,7 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     ticsType.setPreferredSize(new Dimension(150, 25));
     ticsType.addActionListener(this);
     ticsType.setFocusable(false);
+    ticsType.addKeyListener(ctrl.keyCtrl);
 
     JLabel alphaLabel=new JLabel("Alpha Type");
     String[] alphaStr = {"Normal", "High Opancity","Low Opancity","Cut"};
@@ -66,11 +69,13 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     alphaType.setPreferredSize(new Dimension(150, 25));
     alphaType.setFocusable(false);
     alphaType.addActionListener(this);
-
+    alphaType.addKeyListener(ctrl.keyCtrl);
 
     cbIsTicsHLong =new JCheckBox("Horizonal Long",vconf.isTicsHLong);
     cbIsTicsHLong.setFocusable(false);
     cbIsTicsHLong.addChangeListener(this);
+    cvIsTicsHLong.addKeyListener(ctrl.keyCtrl);
+
     //atom
     cbA =new JCheckBox("Atom Color Table",vconf.isVisibleAtomColorTable);
     cbA.setFocusable(false);

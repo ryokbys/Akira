@@ -48,6 +48,8 @@ public class RadialDistributionPanel extends JPanel implements ActionListener,
   private JProgressBar pbCal;
 
   private void createPanel(){
+    this.addKeyListener(ctrl.keyCtrl);
+
     //slice
     lSlice = new JLabel();
     lSlice.setText( "Slice" );
@@ -57,6 +59,7 @@ public class RadialDistributionPanel extends JPanel implements ActionListener,
     spSliceVal = new JSpinner(spSliceValModel);
     spSliceVal.setPreferredSize(new Dimension(70, 30));
     spSliceVal.setFocusable(false);
+    spSliceVal.addKeyListener(ctrl.keyCtrl);
     spSliceVal.addChangeListener(new ChangeListener(){
         public void stateChanged(ChangeEvent e){
           JSpinner s = (JSpinner)e.getSource();
@@ -74,6 +77,7 @@ public class RadialDistributionPanel extends JPanel implements ActionListener,
     spRcut = new JSpinner(spnmRcut);
     spRcut.setPreferredSize(new Dimension(70, 30));
     spRcut.setFocusable(false);
+    spRcut.addKeyListener(ctrl.keyCtrl);
     spRcut.addChangeListener(new ChangeListener(){
         public void stateChanged(ChangeEvent e){
           JSpinner s = (JSpinner)e.getSource();
@@ -86,28 +90,34 @@ public class RadialDistributionPanel extends JPanel implements ActionListener,
     rdCanv= new RDCanvas();
     rdCanv.setPreferredSize(new Dimension(500, 150));
     rdCanv.setBackground(Color.white);
+    rdCanv.addKeyListener(ctrl.keyCtrl);
 
     //calculate button
     btnCal=new JButton("Cal.");
     btnCal.setFocusable(false);
     btnCal.addActionListener( this );
+    btnCal.addKeyListener(ctrl.keyCtrl);
+
     //clear button
     btnClear=new JButton("Clear");
     btnClear.setFocusable(false);
     btnClear.addActionListener( this );
+    btnClear.addKeyListener(ctrl.keyCtrl);
     //write data
     btnWrite=new JButton("Write");
     btnWrite.setFocusable(false);
     btnWrite.addActionListener( this );
+    btnWrite.addKeyListener(ctrl.keyCtrl);
     //stop data
     btnPause=new JButton("Pause");
     btnPause.setFocusable(false);
     btnPause.addActionListener( this );
+    btnPause.addKeyListener(ctrl.keyCtrl);
     //resume data
     btnResume=new JButton("Resume");
     btnResume.setFocusable(false);
     btnResume.addActionListener( this );
-
+    btnResume.addKeyListener(ctrl.keyCtrl);
     //progressbar
     pbCal=new JProgressBar();
     pbCal.setFocusable(false);

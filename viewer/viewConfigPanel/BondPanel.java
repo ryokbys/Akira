@@ -109,6 +109,7 @@ public class BondPanel extends JPanel implements ActionListener{
   private JComboBox bondColor;
 
   private void createPanel(){
+    this.addKeyListener(ctrl.keyCtrl);
     //General panel
     setFocusable( false );
 

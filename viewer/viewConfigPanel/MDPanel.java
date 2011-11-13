@@ -59,6 +59,7 @@ public class MDPanel extends JPanel implements ActionListener{
 
 
   private void createPanel(){
+    this.addKeyListener(ctrl.keyCtrl);
     add(createPluginButton());
   }
 

@@ -38,6 +38,7 @@ public class Controller implements WindowListener{
 
   //enjoy mode flag
   public boolean isEnjoyMode=false;
+  public boolean isDebugMode=false;
   public double javaVer=Double.parseDouble(System.getProperty("java.specification.version"));
 
 

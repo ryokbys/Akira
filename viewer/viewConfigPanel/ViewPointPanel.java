@@ -55,6 +55,8 @@ public class ViewPointPanel extends JPanel implements ActionListener{
   private JTextArea outArea;
   private JButton loadButton;
   private void createPanel(){
+    this.addKeyListener(ctrl.keyCtrl);
+
     spEyeX = new JSpinner(new SpinnerNumberModel(0.0, 0., null, 0.1));
     spEyeY = new JSpinner(new SpinnerNumberModel(0.0, 0., null, 0.1));
     spEyeZ = new JSpinner(new SpinnerNumberModel(10.0, 0., null, 0.1));
