@@ -515,10 +515,6 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
     add(trnsDownButton, "8, 4, f, f");
     add(trnsLeftButton, "7, 4, f, f");
     add(trnsRightButton,"9, 4, f, f");
-    if(ctrl.isEnjoyMode){
-      add(trnsZupButton,  "7, 3, f, f");
-      add(trnsZdownButton,"9, 3, f, f");
-    }
 
     JLabel lZoom= new JLabel("Zoom");
     add(lZoom,        "11, 2, 12, 2");

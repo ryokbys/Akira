@@ -37,7 +37,6 @@ class KeyController extends KeyAdapter{
     case KeyEvent.VK_ESCAPE:
       if(ke.getSource() instanceof RenderingWindow){
         RenderingWindow rww = (RenderingWindow)ke.getSource();
-        //if(ctrl.isEnjoyMode) new Dissolver().dissolveExit(rww);
         rww.dispose();
       }else{
         ctrl.myExit();
@@ -477,7 +476,6 @@ class KeyController extends KeyAdapter{
       }else{
         if(ke.getSource() instanceof RenderingWindow){
           RenderingWindow rww = (RenderingWindow)ke.getSource();
-          //if(ctrl.isEnjoyMode) new Dissolver().dissolveExit(rww);
           rww.dispose();
         }else{
           ctrl.myExit();

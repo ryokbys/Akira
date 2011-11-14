@@ -56,7 +56,6 @@ public class ComboPanel extends JPanel implements ActionListener{
   static final String ROTATE_Y     = "ROTATE_Y";
   static final String ROTATE_Z     = "ROTATE_Z";
   static final String SAVE_IMAGE   = "SAVE_IMAGE";
-  static final String SAVE_PLOT_DATA   = "SAVE_PLOT_DATA";
   static final String HOME         = "HOME";
 
 
@@ -114,7 +113,6 @@ public class ComboPanel extends JPanel implements ActionListener{
     cb.addItem( ROTATE_Y );
     cb.addItem( ROTATE_Z );
     cb.addItem( SAVE_IMAGE );
-    cb.addItem( SAVE_PLOT_DATA );
     cb.addItem( HOME );
 
     TableColumn table_com = jtable.getColumn( new String("Command") );
@@ -434,8 +432,6 @@ public class ComboPanel extends JPanel implements ActionListener{
           RW.setObjectRotate(0.f,0.f,val);
         }else if( s.equals( SAVE_IMAGE ) ){
           RW.writeImage();
-        }else if( s.equals( SAVE_PLOT_DATA ) ){
-          ctrl.vcWin.plotterPanel.exportFile();
         }else if( s.equals( HOME ) ){
           RW.setVPHome();
         }else {

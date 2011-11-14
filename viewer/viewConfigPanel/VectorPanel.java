@@ -95,13 +95,8 @@ public class VectorPanel extends JPanel implements ActionListener{
     //General panel
     setFocusable( false );
 
-    if(ctrl.isEnjoyMode){
-      String[] vtStr={"Invisible","Line","Vector","Dolphine","Shark","Whale"};
-      vecType= new JComboBox(vtStr);
-    }else{
       String[] vtStr={"Invisible","Line","Vector"};
       vecType= new JComboBox(vtStr);
-    }
     vecType.setSelectedIndex(0);
     vecType.addActionListener(this);
     vecType.setFocusable(false);
@@ -337,10 +332,9 @@ public class VectorPanel extends JPanel implements ActionListener{
     add(lLegend);
     add(taFormat);
     add(taLegend);
-    if(ctrl.isEnjoyMode){
-      add(sliceLabel);
-      add(sliceSpinner);
-    }
+
+    //add(sliceLabel);
+    //add(sliceSpinner);
 
     setValue();
   }

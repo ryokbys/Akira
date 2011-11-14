@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- Last Modified <2011-11-11 01:11:55 by NAKAMURA Takahide> -->
+<!-- Last Modified <2011-11-14 12:53:29 by NAKAMURA Takahide> -->
 
   <project name="AKIRA" default="runall" basedir=".">
 
@@ -25,7 +25,6 @@
     <property name="browser_lib" value="jar-libs/BareBonesBrowserLaunch.jar" />
     <property name="eps_lib" value="jar-libs/jlibeps.jar" />
     <property name="qhull_lib" value="jar-libs/quickhull3d.jar" />
-    <property name="jspg_lib" value="${env.HOME}/Akira/JSpgLib.jar" />
 
 
     <!-- set classpath -->
@@ -44,7 +43,6 @@
       <pathelement path="${browser_lib}" />
       <pathelement path="${eps_lib}" />
       <pathelement path="${qhull_lib}" />
-      <pathelement path="${jspg_lib}" />
       <pathelement path="." />
     </path>
 
@@ -111,7 +109,7 @@
         <classpath refid="jogl_libpath_ref" />
         <!-- <jvmarg line="-Xdock:icon=img/Akira.icns -Xdock:name=Akira -Djogl.debug.GLProfile=true" /> -->
         <jvmarg line="-Xdock:icon=img/Akira.icns -Xdock:name=Akira -Djava.library.path=/Users/nakamura/myLocal/javalib/jogamp-macosx-universal/lib" />
-        <arg line="-enjoy sample.Akira" />
+        <arg line="sample.Akira" />
       </java>
     </target>
 

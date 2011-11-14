@@ -23,8 +23,7 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     makePanel();
   }
 
-  private JComboBox ctableType,ticsType,alphaType;
-  private JCheckBox cbIsTicsHLong;
+  private JComboBox ctableType,ticsType;
   private JCheckBox cbA,cbB,cbV,cbVol;
   private JSpinner spAX,spAY,spAW,spAH;
   private JSpinner spBX,spBY,spBW,spBH;
@@ -62,19 +61,6 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     ticsType.addActionListener(this);
     ticsType.setFocusable(false);
     ticsType.addKeyListener(ctrl.keyCtrl);
-
-    JLabel alphaLabel=new JLabel("Alpha Type");
-    String[] alphaStr = {"Normal", "High Opancity","Low Opancity","Cut"};
-    alphaType = new JComboBox(alphaStr);
-    alphaType.setPreferredSize(new Dimension(150, 25));
-    alphaType.setFocusable(false);
-    alphaType.addActionListener(this);
-    alphaType.addKeyListener(ctrl.keyCtrl);
-
-    cbIsTicsHLong =new JCheckBox("Horizonal Long",vconf.isTicsHLong);
-    cbIsTicsHLong.setFocusable(false);
-    cbIsTicsHLong.addChangeListener(this);
-    cvIsTicsHLong.addKeyListener(ctrl.keyCtrl);
 
     //atom
     cbA =new JCheckBox("Atom Color Table",vconf.isVisibleAtomColorTable);
@@ -176,13 +162,6 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     layout.putConstraint( SpringLayout.WEST, ticsLabel, 0, SpringLayout.WEST,colorLabel);
     layout.putConstraint( SpringLayout.NORTH, ticsType, 0, SpringLayout.NORTH, ticsLabel);
     layout.putConstraint( SpringLayout.WEST, ticsType, 0, SpringLayout.WEST, ctableType);
-
-    layout.putConstraint( SpringLayout.NORTH, alphaLabel, 10, SpringLayout.SOUTH, ticsLabel);
-    layout.putConstraint( SpringLayout.WEST, alphaLabel, 0, SpringLayout.WEST, ticsLabel);
-    layout.putConstraint( SpringLayout.NORTH, alphaType, 0, SpringLayout.NORTH, alphaLabel);
-    layout.putConstraint( SpringLayout.WEST, alphaType, 0, SpringLayout.WEST, ticsType);
-    layout.putConstraint( SpringLayout.NORTH, cbIsTicsHLong, 10, SpringLayout.SOUTH, alphaLabel);
-    layout.putConstraint( SpringLayout.WEST, cbIsTicsHLong, 0, SpringLayout.WEST, alphaLabel);
 
     //
     layout.putConstraint( SpringLayout.NORTH, cbA, 20, SpringLayout.NORTH, this);
@@ -310,11 +289,6 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     this.add(spVolH);
     this.add(spVolW);
 
-    if(ctrl.isEnjoyMode){
-      this.add( alphaLabel);
-      this.add( alphaType );
-      add(cbIsTicsHLong);
-    }
 
 
     update();
@@ -323,8 +297,6 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
   private void update(){
     ctableType.setSelectedIndex(vconf.colorTableType);
     ticsType.setSelectedIndex(vconf.ticsType);
-    alphaType.setSelectedIndex(vconf.colorAlphaType);
-    cbIsTicsHLong.setSelected(vconf.isTicsHLong);
     cbA.setSelected(vconf.isVisibleAtomColorTable);
     spAX.setValue((double)vconf.atomColorTablePos[0]);
     spAY.setValue((double)vconf.atomColorTablePos[1]);
@@ -352,7 +324,6 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
   }
 
   public void stateChanged( ChangeEvent ce ){
-    vconf.isTicsHLong=cbIsTicsHLong.isSelected();
     vconf.isVisibleAtomColorTable=cbA.isSelected();
     vconf.atomColorTablePos[0]=((Double)spAX.getValue()).floatValue();
     vconf.atomColorTablePos[1]=((Double)spAY.getValue()).floatValue();
@@ -381,7 +352,6 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
   public void actionPerformed( ActionEvent ae ){
     vconf.colorTableType=ctableType.getSelectedIndex();
     vconf.ticsType=ticsType.getSelectedIndex();
-    vconf.colorAlphaType=alphaType.getSelectedIndex();
     if(ae.getSource() == applyButton){
       ctrl.RWinRepaint();
     }else if(ae.getSource() == resetButton){

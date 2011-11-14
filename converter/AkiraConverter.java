@@ -99,12 +99,8 @@ public class AkiraConverter{
         XYZ.conv(atomFileIO,cconf,itarget,ithFrame);
       }else if(format.equalsIgnoreCase("chem3d")){
         Chem3D.conv(atomFileIO,cconf,itarget,ithFrame);
-      }else if(format.equalsIgnoreCase("kvs")){
-        KVS.conv(atomFileIO,cconf,itarget,ithFrame);
       }else if(format.equalsIgnoreCase("xcrysden")){
         XCrysDen.conv(atomFileIO,cconf,itarget,ithFrame);
-      }else if(format.equalsIgnoreCase("nkmd")){
-        NkmdAscii.conv(atomFileIO,cconf,itarget,ithFrame);
       }else if(format.equalsIgnoreCase("akira")){
         AkiraAscii.conv(atomFileIO,cconf,itarget,ithFrame);
       }else if(format.equalsIgnoreCase("akiratgz")){

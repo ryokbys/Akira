@@ -37,8 +37,6 @@ public class Controller implements WindowListener{
   public KeyController keyCtrl;
 
   //enjoy mode flag
-  public boolean isEnjoyMode=false;
-  public boolean isDebugMode=false;
   public double javaVer=Double.parseDouble(System.getProperty("java.specification.version"));
 
 
@@ -138,8 +136,7 @@ public class Controller implements WindowListener{
 
 
   //constructer
-  public Controller(boolean isEnjoyMode){
-    this.isEnjoyMode=isEnjoyMode;
+  public Controller(){
 
     //load viewer config file
     try {

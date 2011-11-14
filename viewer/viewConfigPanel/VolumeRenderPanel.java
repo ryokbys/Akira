@@ -494,40 +494,42 @@ public class VolumeRenderPanel extends JPanel implements ActionListener{
     add(lLegend);
     add(taFormat);
     add(taLegend);
-    if(ctrl.isEnjoyMode){
-      add(cbCutTiny);
-      add(cbxy);
-      add(cbxz);
-      add(cbyz);
-
-      add(cmbVolExcludeLabel);
-      add(cmbVolExclude);
-
-      add(cbLevel);
-      add(lLevelMin);
-      add(spLevelMin);
-      add(lLevelMax);
-      add(spLevelMax);
-
-      add(cbContour2);
-      add(lContour2PlaneNormal);
-      add(spContour2PlaneNormalX);
-      add(spContour2PlaneNormalY);
-      add(spContour2PlaneNormalZ);
-      add(lContour2PlanePoint);
-      add(spContour2PlanePointX);
-      add(spContour2PlanePointY);
-      add(spContour2PlanePointZ);
-
-      add(cmbSurfaceType);
-      add(cbSrf2);
-      add(lSrf2);
-      add(spSrfLevel2);
-      add(lSrfNeighbors);
-      add(spSrfNeighbors);
-      add(lDensFac);
-      add(spDensFac);
-    }
+    //if(ctrl.isEnjoyMode){
+      /*
+       * add(cbCutTiny);
+       * add(cbxy);
+       * add(cbxz);
+       * add(cbyz);
+       *
+       * add(cmbVolExcludeLabel);
+       * add(cmbVolExclude);
+       *
+       * add(cbLevel);
+       * add(lLevelMin);
+       * add(spLevelMin);
+       * add(lLevelMax);
+       * add(spLevelMax);
+       *
+       * add(cbContour2);
+       * add(lContour2PlaneNormal);
+       * add(spContour2PlaneNormalX);
+       * add(spContour2PlaneNormalY);
+       * add(spContour2PlaneNormalZ);
+       * add(lContour2PlanePoint);
+       * add(spContour2PlanePointX);
+       * add(spContour2PlanePointY);
+       * add(spContour2PlanePointZ);
+       *
+       * add(cmbSurfaceType);
+       * add(cbSrf2);
+       * add(lSrf2);
+       * add(spSrfLevel2);
+       * add(lSrfNeighbors);
+       * add(spSrfNeighbors);
+       * add(lDensFac);
+       * add(spDensFac);
+       * }
+       */
   }
 
 

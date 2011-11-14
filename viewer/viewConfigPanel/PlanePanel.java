@@ -44,11 +44,7 @@ public class PlanePanel extends JPanel implements ActionListener{
   JButton resetButton;
   JButton applyButton;
 
-  JCheckBox cbPickPlane;
-  JCheckBox cbVoronoi;
-  JCheckBox cbDelaunay;
   JCheckBox cbTetrahedron;
-  JButton calAllVoronoiButton;
 
   final String[] colNames = { "On/Off", "Nx", "Ny", "Nz",
                               "Px","Py","Pz",
@@ -105,21 +101,6 @@ public class PlanePanel extends JPanel implements ActionListener{
     applyButton.addActionListener( this );
     applyButton.addKeyListener(ctrl.keyCtrl);
 
-    calAllVoronoiButton=new JButton("Cal. All Voronoi");
-    calAllVoronoiButton.setFocusable(false);
-    calAllVoronoiButton.addActionListener( this );
-    calAllVoronoiButton.addKeyListener(ctrl.keyCtrl);
-
-
-    //check box
-    cbPickPlane =new JCheckBox("Pick Plane Mode",vconf.isSelectionPlaneMode);
-    cbPickPlane.setFocusable(false);
-
-    cbVoronoi =new JCheckBox("Pick Voronoi",vconf.isVoronoiMode);
-    cbVoronoi.setFocusable(false);
-
-    cbDelaunay =new JCheckBox("Delaunay Mode",vconf.isDelaunayMode);
-    cbDelaunay.setFocusable(false);
 
     cbTetrahedron =new JCheckBox("Tetrahedron Mode",vconf.isTetrahedronMode);
     cbTetrahedron.setFocusable(false);
@@ -157,41 +138,11 @@ public class PlanePanel extends JPanel implements ActionListener{
     layout.putConstraint( SpringLayout.WEST, sp, 10,
                           SpringLayout.WEST, this );
 
-    //color
-    layout.putConstraint( SpringLayout.NORTH, singlePlaneColorButton, 10,
-                          SpringLayout.NORTH, this);
-    layout.putConstraint( SpringLayout.WEST, singlePlaneColorButton, 10,
-                          SpringLayout.EAST, sp);
-    JLabel rcutLabel=new JLabel("Rcut");
-    layout.putConstraint( SpringLayout.NORTH, rcutLabel, 10,
-                          SpringLayout.SOUTH,  singlePlaneColorButton);
-    layout.putConstraint( SpringLayout.WEST, rcutLabel, 0,
-                          SpringLayout.WEST, singlePlaneColorButton);
-    layout.putConstraint( SpringLayout.NORTH, spRcut, 0,
-                          SpringLayout.NORTH, rcutLabel);
-    layout.putConstraint( SpringLayout.WEST, spRcut, 0,
-                          SpringLayout.EAST, rcutLabel);
-
-
-
-    //cb
-    //voronoi
-    layout.putConstraint( SpringLayout.NORTH, cbVoronoi, 10,
-                          SpringLayout.NORTH, this);
-    layout.putConstraint( SpringLayout.WEST, cbVoronoi, 10,
-                          SpringLayout.EAST, resetButton);
-
-    layout.putConstraint( SpringLayout.NORTH, calAllVoronoiButton, 0,
-                          SpringLayout.NORTH, cbVoronoi);
-    layout.putConstraint( SpringLayout.WEST, calAllVoronoiButton, 10,
-                          SpringLayout.EAST, cbVoronoi);
-
-
     //tetrahedron mode
     layout.putConstraint( SpringLayout.NORTH, cbTetrahedron, 10,
-                          SpringLayout.SOUTH,  cbVoronoi);
+                          SpringLayout.NORTH, this  );
     layout.putConstraint( SpringLayout.WEST, cbTetrahedron, 0,
-                          SpringLayout.WEST, cbVoronoi);
+                          SpringLayout.EAST, sp);
     JLabel tetraSpeciesLabel=new JLabel("Tag");
     layout.putConstraint( SpringLayout.NORTH, tetraSpeciesLabel, 0,
                           SpringLayout.SOUTH,  cbTetrahedron);
@@ -201,18 +152,23 @@ public class PlanePanel extends JPanel implements ActionListener{
                           SpringLayout.NORTH, tetraSpeciesLabel);
     layout.putConstraint( SpringLayout.WEST, spTetraSpecies, 0,
                           SpringLayout.EAST, tetraSpeciesLabel);
-    //delaynay
-    layout.putConstraint( SpringLayout.NORTH, cbDelaunay, 20,
-                          SpringLayout.SOUTH, cbTetrahedron );
-    layout.putConstraint( SpringLayout.WEST, cbDelaunay, 0,
-                          SpringLayout.WEST, cbTetrahedron);
-    //pick plane
-    layout.putConstraint( SpringLayout.NORTH, cbPickPlane, 10,
-                          SpringLayout.SOUTH, cbDelaunay);
-    layout.putConstraint( SpringLayout.WEST, cbPickPlane, 0,
-                          SpringLayout.WEST,  cbDelaunay);
 
 
+
+    //color
+    layout.putConstraint( SpringLayout.NORTH, singlePlaneColorButton, 10,
+                          SpringLayout.NORTH, this);
+    layout.putConstraint( SpringLayout.WEST, singlePlaneColorButton, 10,
+                          SpringLayout.EAST, cbTetrahedron);
+    JLabel rcutLabel=new JLabel("Rcut");
+    layout.putConstraint( SpringLayout.NORTH, rcutLabel, 0,
+                          SpringLayout.NORTH,  singlePlaneColorButton);
+    layout.putConstraint( SpringLayout.WEST, rcutLabel, 10,
+                          SpringLayout.EAST, singlePlaneColorButton);
+    layout.putConstraint( SpringLayout.NORTH, spRcut, 0,
+                          SpringLayout.NORTH, rcutLabel);
+    layout.putConstraint( SpringLayout.WEST, spRcut, 0,
+                          SpringLayout.EAST, rcutLabel);
 
 
 
@@ -229,9 +185,6 @@ public class PlanePanel extends JPanel implements ActionListener{
 
 
     //addition
-    add(cbPickPlane);
-    add(cbVoronoi);
-    add(cbDelaunay);
     add(cbTetrahedron);
     add(resetButton);
     add(applyButton);
@@ -241,7 +194,6 @@ public class PlanePanel extends JPanel implements ActionListener{
     add(singlePlaneColorButton);
     add(tetraSpeciesLabel);
     add(rcutLabel);
-    add(calAllVoronoiButton);
   }
 
   boolean visiblePlane=false;
@@ -250,10 +202,6 @@ public class PlanePanel extends JPanel implements ActionListener{
       //resetparameters();
       setVars();
       setTable();
-    }else if( e.getSource() == calAllVoronoiButton){
-      if(ctrl.getActiveRW()!=null){
-        ctrl.getActiveRW().plane.calAllVoronoi();
-      }
     }else if( e.getSource() == applyButton ){
       updateList();
       ctrl.RWinRefresh();
@@ -318,9 +266,6 @@ public class PlanePanel extends JPanel implements ActionListener{
   }
 
   void updateList(){
-    vconf.isSelectionPlaneMode=cbPickPlane.isSelected();
-    vconf.isVoronoiMode=cbVoronoi.isSelected();
-    vconf.isDelaunayMode=cbDelaunay.isSelected();
     vconf.isTetrahedronMode=cbTetrahedron.isSelected();
     vconf.tetrahedronCenter=((Integer)spTetraSpecies.getValue()).intValue();
     vconf.planeRcut=((Double)spRcut.getValue()).floatValue();

@@ -92,7 +92,6 @@ public class BondPanel extends JPanel implements ActionListener{
   private JButton resetButton,applyButton;
 
   private JSpinner radiusSpinner;
-  private JSpinner sliceSpinner;
   private JSpinner lengthMinSpinner,lengthMaxSpinner;
   private JSpinner CNMinSpinner,CNMaxSpinner;
   private JButton createButton;
@@ -128,10 +127,6 @@ public class BondPanel extends JPanel implements ActionListener{
     radiusSpinner.setFocusable(false);
     radiusSpinner.setPreferredSize(new Dimension(60, 25));
 
-    JLabel sliceLabel = new JLabel( "Slice" );
-    sliceSpinner = new JSpinner(new SpinnerNumberModel(vconf.bondSlice, 1, null, 1));
-    sliceSpinner.setFocusable(false);
-    sliceSpinner.setPreferredSize(new Dimension(60, 25));
 
     JLabel lengthMinLabel=new JLabel("Length Range Min");
     lengthMinSpinner = new JSpinner(new SpinnerNumberModel((double)vconf.bondLengthRange[0], 0., null, 1.));
@@ -278,13 +273,6 @@ public class BondPanel extends JPanel implements ActionListener{
     layout.putConstraint( SpringLayout.EAST, sp, -10,SpringLayout.EAST, this);
     layout.putConstraint( SpringLayout.WEST, sp, 30, SpringLayout.EAST, lengthMaxSpinner);
 
-    //enjoy
-    layout.putConstraint( SpringLayout.NORTH, sliceLabel, 0,SpringLayout.NORTH, radiusSpinner);
-    layout.putConstraint( SpringLayout.WEST, sliceLabel, 10,SpringLayout.EAST,radiusSpinner);
-    layout.putConstraint( SpringLayout.NORTH, sliceSpinner, 0,SpringLayout.NORTH, sliceLabel );
-    layout.putConstraint( SpringLayout.WEST, sliceSpinner, 5,SpringLayout.EAST, sliceLabel );
-
-
 
 
     add(bondTypeLabel);
@@ -314,10 +302,6 @@ public class BondPanel extends JPanel implements ActionListener{
     add(taFormat);
     add(taLegend);
 
-    if(ctrl.isEnjoyMode){
-      add(sliceLabel);
-      add(sliceSpinner);
-    }
 
   }
 
@@ -350,8 +334,6 @@ public class BondPanel extends JPanel implements ActionListener{
 
 
   private void getValue(){
-    vconf.bondRadius=((Double)radiusSpinner.getValue()).floatValue();
-    vconf.bondSlice=((Integer)sliceSpinner.getValue()).intValue();
     vconf.bondLengthRange[0]=((Double)lengthMinSpinner.getValue()).floatValue();
     vconf.bondLengthRange[1]=((Double)lengthMaxSpinner.getValue()).floatValue();
     vconf.bondCNRange[0]=((Double)CNMinSpinner.getValue()).floatValue();
@@ -361,7 +343,6 @@ public class BondPanel extends JPanel implements ActionListener{
   }
   private void setValue(){
     radiusSpinner.setValue((double)vconf.bondRadius);
-    sliceSpinner.setValue(vconf.bondSlice);
     lengthMinSpinner.setValue((double)vconf.bondLengthRange[0]);
     lengthMaxSpinner.setValue((double)vconf.bondLengthRange[1]);
     CNMinSpinner.setValue((double)vconf.bondCNRange[0]);

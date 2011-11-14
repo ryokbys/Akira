@@ -54,18 +54,6 @@ public class ViewConfigWindowMenuController implements ActionListener {
       updateManager.checkUpdate();
       updateManager.showDialog();
 
-    }else if(ae.getSource() == miSetPluginDir ){
-      JFileChooser chooser = new JFileChooser();
-      chooser.setDialogTitle("set plugin directory");
-      chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-      chooser.setAcceptAllFileFilterUsed(false);
-      int s = chooser.showOpenDialog( null );
-      if( s == JFileChooser.APPROVE_OPTION ){
-        ctrl.vconf.pluginDir= chooser.getSelectedFile().getAbsolutePath();
-        System.out.println("export plugin directory is reset to "+ctrl.vconf.pluginDir);
-      }
-    }else if(ae.getSource() == miConv ){
-      AkiraConverter ac=new AkiraConverter(true);
     }else if(ae.getSource() == miOpen ){
       String str = (new MyOpen()).getOpenFilename();
       ctrl.createRenderingWindow(str);
@@ -75,12 +63,6 @@ public class ViewConfigWindowMenuController implements ActionListener {
         for(int i=MAX_BOOKMARK-1;i>0;i--)
           miBookMark[i].setText(miBookMark[i-1].getText());
         miBookMark[0].setText(str);
-      }
-    }else if(ae.getSource() == miBackRW ){
-      ctrl.vconf.isBackRW=!ctrl.vconf.isBackRW;
-      if(ctrl.getActiveRW()!=null){
-        ctrl.getActiveRW().backRW.setVisible(ctrl.vconf.isBackRW);
-        ctrl.getActiveRW().refresh();
       }
     }else if(ae.getSource() == miMaximize){
       //maximize
@@ -138,7 +120,6 @@ public class ViewConfigWindowMenuController implements ActionListener {
 
   }
   public void updateMenu(RenderingWindow rw){
-    if(miBackRW!=null)miBackRW.setSelected(ctrl.vconf.isBackRW);
   }
 
 
@@ -162,8 +143,6 @@ public class ViewConfigWindowMenuController implements ActionListener {
   private JMenuItem miManual;
   //private JMenuItem miLF;
 
-  private JMenuItem miSetPluginDir;
-  private JMenuItem miConv;
   private JMenuItem miUpdate;
 
   private JMenu getMiscMenu(){
@@ -179,20 +158,10 @@ public class ViewConfigWindowMenuController implements ActionListener {
     miUpdate  = new JMenuItem( "Check update" );
     miUpdate.addActionListener( this );
 
-    miSetPluginDir  = new JMenuItem( "Set Plugin Directory" );
-    miSetPluginDir.addActionListener( this );
-
-    miConv  = new JMenuItem( "Convert" );
-    miConv.addActionListener( this );
-
-
-
     menu.add(miAbout);
     menu.add(miKeyHelp);
     menu.add(miManual);
     menu.addSeparator();
-    menu.add( miSetPluginDir );
-    menu.add( miConv );
     menu.addSeparator();
     menu.add(miUpdate);
 
@@ -202,7 +171,6 @@ public class ViewConfigWindowMenuController implements ActionListener {
 
   //rendering window list
   JMenuItem[] miRenderWin=new JMenuItem[ctrl.MAX_RWIN];
-  private JRadioButtonMenuItem miBackRW;
   private JMenuItem miMaximize,miTile;
   private JMenu getWindowMenu(){
     //render window list
@@ -223,12 +191,6 @@ public class ViewConfigWindowMenuController implements ActionListener {
       miRenderWin[i].addActionListener( this );
       miRenderWin[i].setEnabled(false);
       mnWins.add( miRenderWin[i] );
-    }
-    if(ctrl.isEnjoyMode){
-      miBackRW=new JRadioButtonMenuItem("BackReneringWindow",ctrl.vconf.isBackRW);
-      miBackRW.addActionListener( this );
-      mnWins.addSeparator();
-      mnWins.add(miBackRW);
     }
 
 

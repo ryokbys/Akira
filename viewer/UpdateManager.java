@@ -125,16 +125,6 @@ public class UpdateManager{
     if(ans==0){//WWW page
       BareBonesBrowserLaunch.openURL(downloadURL);
     }else if(ans==1){//ok
-      if(ctrl.isEnjoyMode){
-        JOptionPane pane = new JOptionPane("それを言っちゃあおしまいよ",
-                                           JOptionPane.INFORMATION_MESSAGE);
-        JDialog d = pane.createDialog(null, "ドラえもんは言った");
-        DialogEarthquakeCenter dec = new DialogEarthquakeCenter(d);
-        d.pack();
-        d.setModal(false);
-        d.setVisible(true);
-        dec.startShake();
-      }
     }
 
   }

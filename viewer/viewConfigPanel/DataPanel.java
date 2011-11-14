@@ -32,10 +32,6 @@ public class DataPanel extends JPanel implements ActionListener{
     }
     setTable();
 
-    if( ae.getSource() == calButton ){
-      calculate();
-    }
-
     ctrl.RWinRefresh();
   }
 
@@ -65,10 +61,6 @@ public class DataPanel extends JPanel implements ActionListener{
   private JTable table;
   JScrollPane sp;
 
-  private JSpinner cutRangeMinSpinner,cutRangeMaxSpinner;
-  private JSpinner factorSpinner;
-
-  private JButton calButton;
   public void createPanel(){
     this.addKeyListener(ctrl.keyCtrl);
     //General panel
@@ -88,12 +80,6 @@ public class DataPanel extends JPanel implements ActionListener{
     loadRangeButton.setFocusable(false);
     loadRangeButton.addActionListener( this );
     loadRangeButton.addKeyListener(ctrl.keyCtrl);
-
-    calButton = new JButton( "Average" );
-    calButton.setFocusable( false );
-    calButton.addActionListener( this );
-    calButton.addKeyListener(ctrl.keyCtrl);
-
 
     tableModel = new MyTableModel( colNames, 0 );
     table = new JTable( tableModel );
@@ -129,38 +115,7 @@ public class DataPanel extends JPanel implements ActionListener{
     columnModel.getColumn(6).setPreferredWidth(10);
 
 
-    JLabel cutRangeMinLabel=new JLabel("Cut Min");
-    cutRangeMinSpinner = new JSpinner(new SpinnerNumberModel((double)vconf.dataCutRange[0], 0, 1, 0.1));
-    cutRangeMinSpinner.setFocusable(false);
-    cutRangeMinSpinner.setPreferredSize(new Dimension(65, 25));
-    cutRangeMinSpinner.addKeyListener(ctrl.keyCtrl);
-    cutRangeMinSpinner.addChangeListener(new ChangeListener(){
-        public void stateChanged(ChangeEvent e){
-          JSpinner s = (JSpinner)e.getSource();
-          vconf.dataCutRange[0]=((Double)s.getValue()).floatValue();
-        }});
 
-    JLabel cutRangeMaxLabel=new JLabel("Max");
-    cutRangeMaxSpinner = new JSpinner(new SpinnerNumberModel((double)vconf.dataCutRange[1], 0, 1, 0.1));
-    cutRangeMaxSpinner.setFocusable(false);
-    cutRangeMaxSpinner.setPreferredSize(new Dimension(65, 25));
-    cutRangeMaxSpinner.addKeyListener(ctrl.keyCtrl);
-    cutRangeMaxSpinner.addChangeListener(new ChangeListener(){
-        public void stateChanged(ChangeEvent e){
-          JSpinner s = (JSpinner)e.getSource();
-          vconf.dataCutRange[1]=((Double)s.getValue()).floatValue();
-        }});
-
-    JLabel factorLabel=new JLabel("Scale Factor");
-    factorSpinner = new JSpinner(new SpinnerNumberModel((double)vconf.dataFactor, 0, 100., 0.1));
-    factorSpinner.setFocusable(false);
-    factorSpinner.setPreferredSize(new Dimension(65, 25));
-    factorSpinner.addKeyListener(ctrl.keyCtrl);
-    factorSpinner.addChangeListener(new ChangeListener(){
-        public void stateChanged(ChangeEvent e){
-          JSpinner s = (JSpinner)e.getSource();
-          vconf.dataFactor=((Double)s.getValue()).floatValue();
-        }});
 
 
 
@@ -179,31 +134,7 @@ public class DataPanel extends JPanel implements ActionListener{
     layout.putConstraint( SpringLayout.WEST, loadRangeButton, 5, SpringLayout.EAST, sp);
 
     //enjoy
-    layout.putConstraint( SpringLayout.NORTH, cutRangeMinLabel, 0,
-                          SpringLayout.NORTH,  sp);
-    layout.putConstraint( SpringLayout.WEST, cutRangeMinLabel, 10,
-                          SpringLayout.EAST, sp );
-    layout.putConstraint( SpringLayout.NORTH, cutRangeMinSpinner, 0,
-                          SpringLayout.NORTH,  cutRangeMinLabel);
-    layout.putConstraint( SpringLayout.WEST, cutRangeMinSpinner, 0,
-                          SpringLayout.EAST,  cutRangeMinLabel);
 
-    layout.putConstraint( SpringLayout.NORTH, cutRangeMaxLabel, 0,
-                          SpringLayout.NORTH, cutRangeMinSpinner);
-    layout.putConstraint( SpringLayout.WEST, cutRangeMaxLabel, 5,
-                          SpringLayout.EAST, cutRangeMinSpinner);
-    layout.putConstraint( SpringLayout.NORTH, cutRangeMaxSpinner, 0,
-                          SpringLayout.NORTH,  cutRangeMaxLabel);
-    layout.putConstraint( SpringLayout.WEST, cutRangeMaxSpinner, 0,
-                          SpringLayout.EAST,  cutRangeMaxLabel);
-
-    layout.putConstraint( SpringLayout.NORTH, factorLabel, 5,SpringLayout.SOUTH, cutRangeMinSpinner);
-    layout.putConstraint( SpringLayout.WEST, factorLabel, 0, SpringLayout.WEST, cutRangeMinLabel);
-    layout.putConstraint( SpringLayout.NORTH, factorSpinner, 0,SpringLayout.NORTH,  factorLabel);
-    layout.putConstraint( SpringLayout.WEST, factorSpinner, 2,SpringLayout.EAST,  factorLabel);
-
-    layout.putConstraint(SpringLayout.WEST, calButton, 20, SpringLayout.EAST, resetButton);
-    layout.putConstraint(SpringLayout.NORTH, calButton, 0, SpringLayout.NORTH, resetButton);
 
 
 
@@ -213,15 +144,15 @@ public class DataPanel extends JPanel implements ActionListener{
     add( loadRangeButton );
 
 
-    if(ctrl.isEnjoyMode){
-      add(cutRangeMinLabel);
-      add(cutRangeMaxLabel);
-      add(cutRangeMinSpinner);
-      add(cutRangeMaxSpinner);
-      add(calButton);
-      add(factorLabel);
-      add(factorSpinner);
-    }
+      /*
+       * add(cutRangeMinLabel);
+       * add(cutRangeMaxLabel);
+       * add(cutRangeMinSpinner);
+       * add(cutRangeMaxSpinner);
+       * add(calButton);
+       * add(factorLabel);
+       * add(factorSpinner);
+       */
 
   }
 

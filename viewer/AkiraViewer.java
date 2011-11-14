@@ -31,11 +31,9 @@ public class AkiraViewer{
 
     //options
     boolean isSilent=false;
-    boolean isEnjoyMode=false;
     String[] argFile=new String[100];
     int nFile=0;
 
-    if((System.getProperty("user.name")).startsWith("nakamura")) isEnjoyMode=true;
 
     //analyze command line options
     for(int i=0;i<args.length;i++){
@@ -44,8 +42,6 @@ public class AkiraViewer{
       }else if(args[i].equals("-h") || args[i].equals("-help")){
         printHelp();
         System.exit(0);
-      }else if(args[i].equals("-enjoy")){
-        isEnjoyMode=true;
       }else if(args[i].endsWith(".Akira")){
         argFile[nFile]=args[i];
         nFile++;
@@ -54,10 +50,6 @@ public class AkiraViewer{
         System.exit(1);
       }
     }
-
-
-    //print java.library.path
-    if(isEnjoyMode)System.out.println("java.library.path= "+System.getProperty("java.library.path"));
 
 
 
@@ -69,7 +61,7 @@ public class AkiraViewer{
     if(isSilent){
       //silent activate
       nFile=0;
-      new AkiraViewer(argFile,nFile,isEnjoyMode);
+      new AkiraViewer(argFile,nFile);
       //dispose splash screen
       SplashWindow.disposeSplash();
     }else if(nFile==0){
@@ -78,10 +70,10 @@ public class AkiraViewer{
       MyOpen myopen= new MyOpen();
       argFile[0] = myopen.getOpenFilename();
       nFile=1;
-      new AkiraViewer(argFile,nFile,isEnjoyMode);
+      new AkiraViewer(argFile,nFile);
     }else{
       //normal activate
-      new AkiraViewer(argFile,nFile,isEnjoyMode);
+      new AkiraViewer(argFile,nFile);
       //dispose splash screen
       SplashWindow.disposeSplash();
     }
@@ -92,9 +84,9 @@ public class AkiraViewer{
   }//end of main
 
   //constructor
-  public AkiraViewer(String[] file, int n, boolean isEnjoyMode){
+  public AkiraViewer(String[] file, int n){
     this.setLookAndFeel();
-    Controller Controller = new Controller(isEnjoyMode);
+    Controller Controller = new Controller();
     for(int i=0;i<n;i++)Controller.createRenderingWindow(file[i]);
   }
 
@@ -109,7 +101,6 @@ public class AkiraViewer{
     System.out.println("OPTIONS");
     System.out.println("-h/-help: show this help");
     System.out.println("-silent: silent mode");
-    System.out.println("-enjoy: enjoy mode");
   }
 
   //////////////////////////////////////////////////////////////////////

@@ -60,11 +60,6 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
         ctrl.getActiveRW().atoms.setVisualTag();
         ctrl.RWinRefresh();
       }
-    }else if( ae.getSource() == btnRegionClear ){
-      if(ctrl.getActiveRW()!=null){
-        ctrl.getActiveRW().sq.clearWinPos();
-        ctrl.RWinRefresh();
-      }
     }
   }
 
@@ -76,22 +71,13 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
 
   JButton resetButton, applyButton;
 
-  final String[] colNames = { "On/Off", "Nx", "Ny", "Nz",
-                              "Px","Py","Pz"};
+  final String[] colNames = { "On/Off", "Nx", "Ny", "Nz", "Px","Py","Pz"};
   MyTableModel tableModel;
   JTable table;
   JScrollPane sp;
 
   private JSpinner spExtendX1,spExtendY1,spExtendZ1;
   private JSpinner spExtendX2,spExtendY2,spExtendZ2;
-
-  private JCheckBox cbSphereCut;
-  private JSpinner spherePx,spherePy,spherePz,sphereRadius;
-
-  JCheckBox cbDelete;
-  JCheckBox cbRegionSelect;
-  JButton btnRegionClear;
-  JCheckBox cbRectangleSelect;
 
 
   public void createPanel(){
@@ -132,50 +118,6 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
     spExtendZ2.addChangeListener(this);
 
 
-    //sphere cut
-    vconf.isSphereCut=false;
-    cbSphereCut =new JCheckBox("Sphere Cut",vconf.isSphereCut);
-    cbSphereCut.setFocusable(false);
-
-    spherePx = new JSpinner(new SpinnerNumberModel((double)vconf.spherecutPos[0], 0., 1., 0.1));
-    spherePx.setFocusable(false);
-    spherePx.setPreferredSize(new Dimension(60, 25));
-    spherePx.addChangeListener(this);
-
-    spherePy = new JSpinner(new SpinnerNumberModel((double)vconf.spherecutPos[1], 0., 1., 0.1));
-    spherePy.setFocusable(false);
-    spherePy.setPreferredSize(new Dimension(60, 25));
-    spherePy.addChangeListener(this);
-
-    spherePz = new JSpinner(new SpinnerNumberModel((double)vconf.spherecutPos[2], 0., 1., 0.1));
-    spherePz.setFocusable(false);
-    spherePz.setPreferredSize(new Dimension(60, 25));
-    spherePz.addChangeListener(this);
-
-    sphereRadius = new JSpinner(new SpinnerNumberModel((double)vconf.spherecutRadius, null, null, 1.));
-    sphereRadius.setFocusable(false);
-    sphereRadius.setPreferredSize(new Dimension(60, 25));
-    sphereRadius.addChangeListener(this);
-
-    vconf.isDeletionMode=false;
-    cbDelete =new JCheckBox("Delete",vconf.isDeletionMode);
-    cbDelete.setFocusable(false);
-    cbDelete.addChangeListener(this);
-
-    vconf.isRegionSelectMode=false;
-    cbRegionSelect =new JCheckBox("Region Select",vconf.isRegionSelectMode);
-    cbRegionSelect.setFocusable(false);
-    cbRegionSelect.addChangeListener(this);
-
-    vconf.isRectangleSelectMode=false;
-    cbRectangleSelect =new JCheckBox("Rectangle Select",vconf.isRectangleSelectMode);
-    cbRectangleSelect.setFocusable(false);
-    cbRectangleSelect.addChangeListener(this);
-
-
-    btnRegionClear  = new JButton( "Clear Region" );
-    btnRegionClear.setFocusable(false);
-    btnRegionClear.addActionListener( this );
 
 
     tableModel = new MyTableModel( colNames, 0 );
@@ -285,51 +227,13 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
     layout.putConstraint( SpringLayout.WEST, tableLabel, 0,SpringLayout.WEST, sp );
 
 
-    layout.putConstraint( SpringLayout.NORTH, cbSphereCut, 10,SpringLayout.NORTH, this );
-    layout.putConstraint( SpringLayout.WEST,  cbSphereCut, 10,SpringLayout.EAST,sp);
-
-    layout.putConstraint( SpringLayout.NORTH, spherePx, 5,SpringLayout.SOUTH,cbSphereCut);
-    layout.putConstraint( SpringLayout.WEST,  spherePx, 10,SpringLayout.WEST,cbSphereCut);
-
-    layout.putConstraint( SpringLayout.NORTH, spherePy, 0,SpringLayout.NORTH,spherePx);
-    layout.putConstraint( SpringLayout.WEST,  spherePy, 0,SpringLayout.EAST,spherePx);
-
-    layout.putConstraint( SpringLayout.NORTH, spherePz, 0,SpringLayout.NORTH,spherePy);
-    layout.putConstraint( SpringLayout.WEST,  spherePz, 0,SpringLayout.EAST,spherePy);
-
-    layout.putConstraint( SpringLayout.NORTH, sphereRadius, 5,SpringLayout.SOUTH,spherePx);
-    layout.putConstraint( SpringLayout.WEST,  sphereRadius, 0,SpringLayout.WEST,spherePx);
-
-
-
-
     //Button: Reset
     layout.putConstraint( SpringLayout.SOUTH, applyButton, -10,SpringLayout.SOUTH, this );
-    layout.putConstraint( SpringLayout.WEST,  applyButton, 0,SpringLayout.EAST,  spherePz);
+    layout.putConstraint( SpringLayout.WEST,  applyButton, 0,SpringLayout.EAST,  sp);
     //Button: Apply
     layout.putConstraint( SpringLayout.NORTH, resetButton, 0,SpringLayout.NORTH, applyButton);
     layout.putConstraint( SpringLayout.WEST,  resetButton, 10,SpringLayout.EAST,  applyButton );
 
-    //
-    layout.putConstraint( SpringLayout.NORTH, cbDelete, 10,
-                          SpringLayout.NORTH, this);
-    layout.putConstraint( SpringLayout.WEST, cbDelete, 0,
-                          SpringLayout.EAST, spherePz);
-
-    layout.putConstraint( SpringLayout.NORTH, cbRegionSelect, 0,
-                          SpringLayout.SOUTH, cbDelete);
-    layout.putConstraint( SpringLayout.WEST, cbRegionSelect, 0,
-                          SpringLayout.WEST, cbDelete);
-
-    layout.putConstraint( SpringLayout.NORTH, btnRegionClear, 0,
-                          SpringLayout.NORTH, cbRegionSelect);
-    layout.putConstraint( SpringLayout.WEST, btnRegionClear, 5,
-                          SpringLayout.EAST, cbRegionSelect);
-
-    layout.putConstraint( SpringLayout.NORTH, cbRectangleSelect, 0,
-                          SpringLayout.SOUTH, cbRegionSelect);
-    layout.putConstraint( SpringLayout.WEST, cbRectangleSelect, 0,
-                          SpringLayout.WEST, cbRegionSelect);
 
 
 
@@ -349,15 +253,6 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
     add( applyButton);
     add(tableLabel);
     add(sp);
-    add(cbSphereCut);
-    add(spherePx);
-    add(spherePy);
-    add(spherePz);
-    add(sphereRadius);
-    add(cbDelete);
-    add(cbRegionSelect);
-    add(btnRegionClear);
-    add(cbRectangleSelect);
   }
 
 
@@ -381,13 +276,6 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
     spExtendY2.setValue((double)vconf.extendRenderingFactor[1][1]);
     spExtendZ2.setValue((double)vconf.extendRenderingFactor[1][2]);
 
-
-    spherePx.setValue((double)vconf.spherecutPos[0]);
-    spherePy.setValue((double)vconf.spherecutPos[1]);
-    spherePz.setValue((double)vconf.spherecutPos[2]);
-    sphereRadius.setValue((double)vconf.spherecutRadius);
-    cbSphereCut.setSelected(vconf.isSphereCut);
-
   }
 
   void addTable(){
@@ -405,11 +293,6 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
   }
 
   void updateList(){
-    vconf.spherecutPos[0]=(float)((Double)spherePx.getValue()).floatValue();
-    vconf.spherecutPos[1]=(float)((Double)spherePy.getValue()).floatValue();
-    vconf.spherecutPos[2]=(float)((Double)spherePz.getValue()).floatValue();
-    vconf.spherecutRadius=(float)((Double)sphereRadius.getValue()).floatValue();
-    vconf.isSphereCut=cbSphereCut.isSelected();
 
     vconf.extendRenderingFactor[0][0]=(float)((Double)spExtendX1.getValue()).floatValue();
     vconf.extendRenderingFactor[0][1]=(float)((Double)spExtendY1.getValue()).floatValue();
@@ -417,10 +300,6 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
     vconf.extendRenderingFactor[1][0]=(float)((Double)spExtendX2.getValue()).floatValue();
     vconf.extendRenderingFactor[1][1]=(float)((Double)spExtendY2.getValue()).floatValue();
     vconf.extendRenderingFactor[1][2]=(float)((Double)spExtendZ2.getValue()).floatValue();
-
-    vconf.isDeletionMode=cbDelete.isSelected();
-    vconf.isRegionSelectMode=cbRegionSelect.isSelected();
-    vconf.isRectangleSelectMode=cbRectangleSelect.isSelected();
 
 
     Double data;

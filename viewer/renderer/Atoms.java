@@ -267,23 +267,6 @@ public class Atoms extends data.Atoms implements Renderer{
         }
       }
 
-      //rectangle cut
-      if(vconf.isRectangleSelectMode){
-        ArrayList<Float> cutN=rw.sq.cutRN;
-        ArrayList<Float> cutP=rw.sq.cutRP;
-
-        for(int k=0;k<cutN.size()/3;k++){
-          double inner=0;
-          for(int j=0;j<3;j++) inner+=cutN.get(3*k+j)*(ri[j]-cutP.get(3*k+j));
-          if(inner>0.0){
-            vtag[i]=-1;
-            continue MAINLOOP;
-          }
-        }
-      }
-
-
-
       //special tag cut
       Set set = specialTag.keySet();
       Iterator iterator = set.iterator();
@@ -296,23 +279,6 @@ public class Atoms extends data.Atoms implements Renderer{
         }
       }
 
-      //sphere cut
-      if(vconf.isSphereCut){
-        double[] org=new double[3];
-        for(int j=0;j<3;j++){
-          org[j]=0.;
-          for(int k=0;k<3;k++)org[j]+=h[j][k]*vconf.spherecutPos[k];
-        }
-        double r2=(ri[0]-org[0])*(ri[0]-org[0])
-          +(ri[1]-org[1])*(ri[1]-org[1])
-          +(ri[2]-org[2])*(ri[2]-org[2]);
-        double rc2=vconf.spherecutRadius*vconf.spherecutRadius;
-
-        if(r2>rc2){
-          vtag[i]=-1;
-          continue MAINLOOP;
-        }
-      }
 
       //plane cut
       for(int ii=0;ii<Const.PLANE;ii++){

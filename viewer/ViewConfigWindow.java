@@ -18,7 +18,6 @@ public class ViewConfigWindow extends JFrame{
     bond.updateStatus();
     vec.updateStatus();
     volumerender.updateStatus();
-    if(plotterPanel!=null)plotterPanel.update();
   }
 
   public void focusOnStatus(){
@@ -68,10 +67,8 @@ public class ViewConfigWindow extends JFrame{
   private VectorPanel vec;
   private BoundaryPanel boundary;
   private VolumeRenderPanel volumerender;
-  public PlotterPanel plotterPanel;
   private ComboPanel combo;
   private TrajectoryPanel trj;
-  private RadialDistributionPanel rdst;
 
 
 
@@ -166,76 +163,14 @@ public class ViewConfigWindow extends JFrame{
                       new ImageIcon(this.getClass().getResource("/img/tab/trj.png")),
                       trj,
                       "Trajectory");
-    //export
-    ExportPanel export=new ExportPanel(ctrl);
-    export.setFocusable(false);
-    tabbedPane.addTab(null,
-                      new ImageIcon(this.getClass().getResource("/img/tab/export.png")),
-                      export,
-                      "Export");
 
-    if(ctrl.isEnjoyMode){
-      //plane panel
-      PlanePanel plane=new PlanePanel(ctrl);
-      plane.setFocusable(false);
-      tabbedPane.addTab(null,
-                        new ImageIcon(this.getClass().getResource("/img/tab/plane.png")),
-                        plane,
-                        "Plane");
-      //plotter
-      plotterPanel=new PlotterPanel(ctrl);
-      tabbedPane.addTab(null,
-                        new ImageIcon(this.getClass().getResource("/img/tab/plotter.png")),
-                        plotterPanel,
-                        "Plotter");
-      //radial
-      rdst=new RadialDistributionPanel(ctrl);
-      rdst.setFocusable(false);
-      tabbedPane.addTab(null,
-                        new ImageIcon(this.getClass().getResource("/img/tab/rd.png")),
-                        rdst,
-                        "Radial Distribution");
-      //neighbor analysis
-      NeighborAnalysisPanel na=new NeighborAnalysisPanel(ctrl);
-      na.setFocusable(false);
-      tabbedPane.addTab(null,
-                        new ImageIcon(this.getClass().getResource("/img/tab/neighbor.png")),
-                        na,
-                        "Neighbor Analysis");
-      SymmetryAnalyzePanel sym=new SymmetryAnalyzePanel(ctrl);
-      sym.setFocusable(false);
-      tabbedPane.addTab(null,
-                        new ImageIcon(this.getClass().getResource("/img/tab/symmetry.png")),
-                        sym,
-                        "Symmetry Analyzer");
-      //Modeling
-      ModelingPanel model=new ModelingPanel(ctrl);
-      model.setFocusable(false);
-      tabbedPane.addTab(null,
-                        new ImageIcon(this.getClass().getResource("/img/tab/model.png")),
-                        model,
-                        "Modeling");
-      //light
-      LightPanel light= new LightPanel(ctrl);
-      light.setFocusable(false);
-      tabbedPane.addTab(null,
-                        new ImageIcon(this.getClass().getResource("/img/tab/light.png")),
-                        light,
-                        "Light Setting");
-      //viewpoint
-      ViewPointPanel vpPanel=new ViewPointPanel(ctrl);
-      vpPanel.setFocusable(false);
-      tabbedPane.addTab(null,
-                        new ImageIcon(this.getClass().getResource("/img/tab/viewpoint.png")),
-                        vpPanel,"ViewPoint Setting");
-      //MD
-      MDPanel md=new MDPanel(ctrl);
-      md.setFocusable(false);
-      tabbedPane.addTab(null,
-                        new ImageIcon(this.getClass().getResource("/img/tab/md.png")),
-                        md,
-                        "MD");
-    }
+    //plane panel
+    PlanePanel plane=new PlanePanel(ctrl);
+    plane.setFocusable(false);
+    tabbedPane.addTab(null,
+                      new ImageIcon(this.getClass().getResource("/img/tab/plane.png")),
+                      plane,
+                      "Plane");
 
 
     if(ctrl.vconf.viewConfigWinTabIndex < tabbedPane.getTabCount())

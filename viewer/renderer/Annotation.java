@@ -216,14 +216,14 @@ public class Annotation{
       //3 number
       gl.glColor3fv( vconf.txtColor, 0 );
       y = ystart;
-      str = getFormat(format, range[0]*vconf.dataFactor );
+      str = getFormat(format, range[0] );
       renderString(str,
                    isVLong*(xend+dx)+isHLong*(y+dy),
                    isHLong*(xend+dx)+isVLong*(y+dy),
                    0.f,legendScale,vconf.txtColor);
       //middle
       y = ystart + Math.abs( range[0])/dr*(yend-ystart);
-      str = getFormat(format,(range[1]+range[0])*0.5f*vconf.dataFactor);
+      str = getFormat(format,(range[1]+range[0])*0.5f);
 
       renderString(str,
                    isVLong*(xend+dx)+isHLong*(y+dy),
@@ -231,7 +231,7 @@ public class Annotation{
                    0.f,legendScale,vconf.txtColor);
 
       y = yend;
-      str = getFormat(format, range[1]*vconf.dataFactor );
+      str = getFormat(format, range[1] );
       renderString(str,
                    isVLong*(xend+dx)+isHLong*(y+dy),
                    isHLong*(xend+dx)+isVLong*(y+dy),
@@ -259,7 +259,7 @@ public class Annotation{
       //2 number
       gl.glColor3fv( vconf.txtColor, 0 );
       y = ystart;
-      str = getFormat(format, range[0]*vconf.dataFactor );
+      str = getFormat(format, range[0] );
 
       //if(Math.abs(range[0])>1e-4)
       renderString(str,
@@ -269,7 +269,7 @@ public class Annotation{
 
 
       y = yend;
-      str = getFormat(format, range[1]*vconf.dataFactor );
+      str = getFormat(format, range[1] );
       //if(Math.abs(range[1])>1e-4)
       renderString(str,
                    isVLong*(xend+dx)+isHLong*(y+dy),
@@ -301,7 +301,7 @@ public class Annotation{
 
       //1text
       y = ystart + Math.abs(range[0])/dr*(yend-ystart);
-      str = getFormat(format,(range[1]-range[0])*0.5f*vconf.dataFactor);
+      str = getFormat(format,(range[1]-range[0])*0.5f);
       renderString(str,
                    isVLong*(xend+dx)+isHLong*(y+dy),
                    isHLong*(xend+dx)+isVLong*(y+dy),
@@ -314,7 +314,7 @@ public class Annotation{
       y = ystart;
       for( int i=0; i<=6; i++ ){
         x = range[0] + i*dr/6.0f;
-        str = getFormat(format, x*vconf.dataFactor );
+        str = getFormat(format, x );
         renderString(str,
                      isVLong*(xend+dx)+isHLong*(y+dy),
                      isHLong*(xend+dx)+isVLong*(y+dy),

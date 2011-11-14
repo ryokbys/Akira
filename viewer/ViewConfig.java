@@ -22,7 +22,6 @@ public class ViewConfig implements Serializable{
   public String configDir;
   public String configFile;
 
-  public String pluginDir;
 
   //status
   public boolean isPopStatus=false;
@@ -63,15 +62,10 @@ public class ViewConfig implements Serializable{
   public boolean isSelectionLength;
   public boolean isSelectionAngle;
   public boolean isSelectionTorsion;
-  public boolean isDeletionMode;
-  public boolean isDragMoveMode;
-  public int moveDirection=0;
-  public float moveVal=0.1f;
 
   //data
   public float  dataRange[][]  = new float[Const.DATA][2];
   public float  dataCutRange[] = new float[2];
-  public float  dataFactor=1.f;
   public String dataLegend[]   = new String[Const.DATA];
   public String dataFormat[]   = new String[Const.DATA];
 
@@ -101,11 +95,6 @@ public class ViewConfig implements Serializable{
   public boolean isOnSlicer[]              = new boolean[Const.PLANE];
   public float   normalVecSlicer[][]       = new float[Const.PLANE][3];
   public float   posVecSlicer[][]          = new float[Const.PLANE][3];
-  public float   spherecutPos[]            = new float[3];
-  public float   spherecutRadius;
-  public boolean isSphereCut;
-  public boolean isRegionSelectMode;
-  public boolean isRectangleSelectMode;
 
   //volume rendering
   public int     volDataMesh[]          = new int[3];
@@ -136,9 +125,6 @@ public class ViewConfig implements Serializable{
 
 
   //plane
-  public boolean isSelectionPlaneMode=false;
-  public boolean isVoronoiMode;
-  public boolean isDelaunayMode;
   public boolean isPlaneVisible[] = new boolean[Const.PLANE];
   public float   planeNormal[][]  = new float[Const.PLANE][3];
   public float   planePoint[][]   = new float[Const.PLANE][3];
@@ -158,18 +144,6 @@ public class ViewConfig implements Serializable{
   public int lightShininess;
 
 
-  //radial distribution
-  public float rdSlice=0.2f;
-  public float rdCut=10.f;
-
-  public int plotterDrawType=0;
-
-  //neighbor
-  public float neighborAnalysisRcut;
-  public boolean isShowRing;
-  public boolean isPBC;
-  public int ringCalType;
-  public int ringRangeMax;
 
   //colortable
   public int colorTableTypeMAX=ColorTable.maxColorType;//color table
@@ -191,8 +165,6 @@ public class ViewConfig implements Serializable{
   public float[] ctNumPos=new float[2];
 
 
-  public boolean isBackRW=false;
-
 
 
   //constructor
@@ -200,12 +172,10 @@ public class ViewConfig implements Serializable{
     if(System.getProperty("os.name").startsWith("Win")){
       configDir= "\\Akira";
       configFile="\\Akira\\viewer.config";
-      pluginDir="\\Akira\\plugin";
 
     }else{
       configDir= System.getProperty("user.home")+"/Akira";
       configFile= configDir+"/viewer.config";
-      pluginDir= configDir+"/plugin";
     }
     resetAll();
   }
@@ -214,7 +184,6 @@ public class ViewConfig implements Serializable{
   //reset default
   public void resetAll(){
     resetManipulation();
-    resetNeighbor();
     resetMisc();
     resetAtom();
     resetData();
@@ -235,13 +204,6 @@ public class ViewConfig implements Serializable{
     isTransXOnly=false;
     isTransYOnly=false;
     isTrjMode=false;
-  }
-  public void resetNeighbor(){
-    neighborAnalysisRcut=4f;
-    isShowRing=true;
-    isPBC=false;
-    ringCalType=1;
-    ringRangeMax=6;
   }
 
   public void resetMisc(){
@@ -1280,17 +1242,6 @@ public class ViewConfig implements Serializable{
       for(int j=0;j<3;j++)normalVecSlicer[i][j]=1.f;
       for(int j=0;j<3;j++)posVecSlicer[i][j]=0.5f;
     }
-    isSphereCut=false;
-    spherecutPos[0]=0.5f;
-    spherecutPos[1]=0.5f;
-    spherecutPos[2]=0.5f;
-    spherecutRadius=10.f;
-    isDeletionMode=false;
-    isDragMoveMode=false;
-    moveDirection=0;
-    moveVal=0.1f;
-    isRegionSelectMode=false;
-    isRectangleSelectMode=false;
   }
 
   //volume rendering
@@ -1328,9 +1279,6 @@ public class ViewConfig implements Serializable{
 
   //plane
   public void resetPlane(){
-    isSelectionPlaneMode = false;
-    isVoronoiMode = false;
-    isDelaunayMode = false;
     for(int i=0;i<Const.PLANE;i++){
       isPlaneVisible[i]=false;
       for(int j=0;j<3;j++)planeNormal[i][j]=1.f;

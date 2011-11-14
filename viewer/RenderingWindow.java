@@ -66,7 +66,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
 
   public boolean visibleVectors=false;
   static final public int renderingVectorTypeMAX=2;//line, vector
-  static final public int renderingVectorTypeMAXEnjoy=5;//line, vector, dolphine, shark,whale
   public int renderingVectorType=0;
   static final public int renderingVectorColorTypeMAX=2;//atom color, length
   public int renderingVectorColorType=0;
@@ -111,11 +110,9 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   public viewer.renderer.Bonds bonds;
   public Vectors vec;
   public Volume volume;
-  public Ring ring;
   public SelectorQueue sq;
   public Snapshot snapshot;
   private TrackBall trackB;
-  public BackRenderingWindow backRW;
   public Controller ctrl;
 
 
@@ -179,16 +176,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   /* accesser  block starts *******************************************/
   public void updateAnnotationFont(){
     annotation.updateFont();
-  }
-  private ArrayList<String> rings;
-  private boolean visibleRing=false;
-  private boolean remakeRing=false;
-  public void drawRing(ArrayList<String> rings){
-    visibleRing=true;
-    remakeRing=true;
-    remakeFlag=true;
-    this.rings=rings;
-    repaint();
   }
 
   ComboPanel combo;
@@ -313,23 +300,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     pickedAtomID=id;
     tmpSelect=true;
     refresh();
-  }
-  public void modifyAtom(){
-    if(pickedAtomID>=0){
-      int id=pickedAtomID;
-      int drc=vconf.moveDirection;
-      atoms.r[id][drc]+=vconf.moveVal;
-
-      if(drc==0)
-        System.out.println(String.format("%d-atom is moved: %f in x",id,vconf.moveVal));
-      else if(drc==1)
-        System.out.println(String.format("%d-atom is moved: %f in y",id,vconf.moveVal));
-      else if(drc==2)
-        System.out.println(String.format("%d-atom is moved: %f in z",id,vconf.moveVal));
-
-      refresh();
-    }
-
   }
   public void setViewMode(){
     vp.setViewportMode();
@@ -479,11 +449,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   }
   public void setVectorRenderingType(){
     renderingVectorType++;
-    if(ctrl.isEnjoyMode){
-      if(renderingVectorType>=renderingVectorTypeMAXEnjoy)renderingVectorType=0;
-    }else{
-      if(renderingVectorType>=renderingVectorTypeMAX)renderingVectorType=0;
-    }
+    if(renderingVectorType>=renderingVectorTypeMAX)renderingVectorType=0;
 
     remakeFlag=true;
     this.repaint();
@@ -576,7 +542,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   //wrapper of repaint
   public void repaint(){
     glCanvas.repaint();
-    if(vconf.isBackRW && ctrl.isEnjoyMode)backRW.glCanvas.repaint();
     ctrl.updateStatusString();
   }
   /* accesser  block ends *********************************************/
@@ -707,7 +672,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     vp.setAxis(axis);
     //
     rotcent=new RotationCenter(this);
-    ring=new Ring(this);
     //
     plane = new Plane(ctrl,this);
     //
@@ -731,7 +695,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
                     vconf.bgColor[2],vconf.bgColor[3]);
 
 
-    if(ctrl.isEnjoyMode)backRW=new BackRenderingWindow(ctrl, this,filePath);
     ctrl.updateStatusString();
     isConstuctorFinished=true;
   }
@@ -826,10 +789,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
 
     if( !vconf.isLightPosAuto ) light.set(gl,glu,glut,vconf);
 
-    if(vconf.isBackRW && ctrl.isEnjoyMode)backRW.setViewPointVars(vp.objScale,
-                                                                  vp.rotX,vp.rotY,vp.rotZ,
-                                                                  vp.objCenter,vp.mvm,
-                                                                  visibleAtoms);
 
     gl.glGetFloatv( GL2.GL_MODELVIEW_MATRIX, vp.mvm, 0 );
 
@@ -844,7 +803,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     if(//isAtomSelecting&&
        (vconf.isSelectionInfo ||vconf.isSelectionLength  ||
         vconf.isSelectionAngle  ||vconf.isSelectionTorsion  ||
-        vconf.isDeletionMode || tmpSelect)){
+        tmpSelect)){
 
 
       if(tmpSelect){
@@ -859,7 +818,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
         ctrl.vcWin.focusOnStatus();
         System.out.println(String.format("picked id: %d",pickedAtomID+1));
         atoms.makePickedAtom(pickedAtomID);
-        if(vconf.isDeletionMode)atoms.deletePickedAtom(pickedAtomID);
 
         //trajectory
         ctrl.setPickedID4Trj(pickedAtomID);
@@ -890,7 +848,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
 
     //lines
     if(vconf.isSelectionInfo ||vconf.isSelectionLength  ||
-       vconf.isSelectionAngle  ||vconf.isSelectionTorsion  ||vconf.isDeletionMode)sq.show();
+       vconf.isSelectionAngle  ||vconf.isSelectionTorsion)sq.show();
 
       }
     }
@@ -903,10 +861,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     //region selection
     if(sq.isBandClose){
       calRegionNP();
-    }
-    if(vconf.isRectangleSelectMode){
-      calRectangleNP();
-      remakeFlag=true;
     }
 
     //make
@@ -932,17 +886,13 @@ public class RenderingWindow extends JFrame implements GLEventListener,
       if(pickedAtomID>=0 && (vconf.isSelectionInfo ||
                              vconf.isSelectionLength  ||
                              vconf.isSelectionAngle  ||
-                             vconf.isSelectionTorsion  ||
-                             vconf.isDeletionMode))
+                             vconf.isSelectionTorsion
+                             ))
         atoms.makePickedAtom(pickedAtomID);
 
       if(visibleVectors)vec.make();
       plane.make(pickedAtomID);
       volume.make();
-      if(remakeRing){
-        ring.make(rings,gl);
-        remakeRing=false;
-      }
       remakeFlag=false;
     }//end of remakeFlag
 
@@ -966,11 +916,10 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     if(visibleVolume)volume.show();
 
     //show ring
-    if(vconf.isShowRing)ring.show();
 
     //picked atom
     if(vconf.isSelectionInfo ||vconf.isSelectionLength  || vconf.isSelectionAngle  ||
-       vconf.isSelectionTorsion  ||vconf.isDeletionMode|| tmpSelect
+       vconf.isSelectionTorsion  ||tmpSelect
        )atoms.showPickedAtom();
 
 
@@ -1015,12 +964,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
         axis.show(vp.rotX, vp.rotY, vp.rotZ );
     }
 
-    //region cut
-    if(vconf.isRegionSelectMode)
-      sq.drawRubberBand(thisWidth, thisHeight);
-    //rectangle cut
-    if(vconf.isRectangleSelectMode)
-      sq.drawRect(thisWidth, thisHeight);
 
 
 
@@ -1063,10 +1006,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
 
   //dispose window
   public void dispose(GLAutoDrawable drawable){
-    if(ctrl.isEnjoyMode){
-      backRW.dispose();
-      backRW=null;
-    }
     vconf.rectRWin=getBounds();
   }
 
@@ -1225,13 +1164,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     if( (renderingAtomType!=0 && atoms.n>10000) ||
         (renderingAtomType==0 && atoms.n>100000) ) tmpVisibleAtoms=false;
 
-    //for region selector
-    if(vconf.isRegionSelectMode){
-      //add window point
-      sq.addWinPos(me.getX(),me.getY());
-    }
-
-
   }//mousePressed
 
   public void mouseReleased( MouseEvent me ){
@@ -1267,23 +1199,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     Dimension size = me.getComponent().getSize();
 
 
-
-    if(vconf.isDragMoveMode){
-      if(pickedAtomID>=0){
-        int id=pickedAtomID;
-        int drc=vconf.moveDirection;
-        int dx= prevMouseX - x;
-        //atoms.tag[id]=33;
-        atoms.r[id][drc]+=(float)(atoms.h[drc][drc]/20f*dx/size.width);
-
-        this.refresh();
-      }
-
-      return;
-    }
-
-
-
     if(isTrackBallMode){
       trackB.trackball( vp.lastquat,
                         (2.0f*prevMouseX-size.width)/size.width,
@@ -1298,10 +1213,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     prevMouseY = y;
 
     if( mouseLButton ){
-      if(vconf.isRectangleSelectMode){
-        sq.setRectPos(pressedMouseX,pressedMouseY,
-                      me.getX(),me.getY());
-      }else{
         if((me.getModifiers() & InputEvent.SHIFT_MASK) !=0){
           //+SHIFT: trans
           if(vconf.isTransXOnly){
@@ -1331,7 +1242,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
           }
         }
 
-      }//rectangelSelectMode
 
     }else if( mouseMButton ){
       /* middle */
