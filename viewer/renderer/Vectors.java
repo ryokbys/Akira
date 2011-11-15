@@ -11,16 +11,15 @@ import javax.swing.table.*;
 
 import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
-import com.jogamp.opengl.util.*;
+import com.sun.opengl.util.*;
 
-import com.jogamp.opengl.util.gl2.*;
+import com.sun.opengl.util.gl2.*;
 import javax.media.opengl.awt.*;
 
 import data.*;
 import tools.*;
 import viewer.*;
 import viewer.renderer.*;
-import viewer.renderer.atlantis.*;
 
 public class Vectors implements Renderer{
 
@@ -32,15 +31,9 @@ public class Vectors implements Renderer{
     this.rw=rw;
     ctable=new ColorTable(rw);
 
-    dolphin=new Dolphin(rw.gl,rw.glu,rw.glut);
-    shark=new Shark(rw.gl,rw.glu,rw.glut);
-    whale=new Whale(rw.gl,rw.glu,rw.glut);
   }
   public ColorTable ctable;
 
-  private Dolphin dolphin;
-  private Shark shark;
-  private Whale whale;
 
 
   private float[] mulH( float[][] h,float[] in ){
@@ -162,52 +155,8 @@ public class Vectors implements Renderer{
       }
       break;
     default:
-      //SPECIAL VECTORS
-      gl.glMateriali( GL2.GL_FRONT, GL2.GL_SHININESS, vconf.atomShineness);
-      gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, vconf.atomSpecular, 0 );
-      gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_EMISSION, vconf.atomEmmission, 0 );
-      gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, vconf.atomAmb, 0 );
-
-      for(int i=0; i<rw.atoms.n; i++ ){
-        if(rw.atoms.vtag[i]<0)continue;
-
-        gl.glPushMatrix();
-        gl.glTranslatef( rw.atoms.r[i][0],
-                         rw.atoms.r[i][1],
-                         rw.atoms.r[i][2] );
-
-        float[] t = Coordinate.xyz2rtp( rw.atoms.data[i][ix],
-                                        rw.atoms.data[i][iy],
-                                        rw.atoms.data[i][iz]);
-
-        gl.glRotatef( H_PI*t[1], 0.0f, 0.0f, 1.0f );//theta
-        gl.glRotatef( H_PI*t[2], 0.0f, 1.0f, 0.0f );//phi
-        gl.glScalef(1.f,1.f,t[0]*lengthRatio);
-
-        if(rw.renderingVectorColorType==0){
-          color=rw.atoms.getAtomColor(i);
-        }else if(rw.renderingVectorColorType==1){
-          color=ctable.getColor(t[0]);
-        }
-        gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, color, 0 );
-
-        //SWITCH
-        switch(rw.renderingVectorType){
-        case 2:
-          dolphin.showNoColor();
-          break;
-        case 3:
-          shark.showNoColor();
-          break;
-        case 4:
-          whale.showNoColor();
-          break;
-        }
-        gl.glPopMatrix();
-      }
+      break;
     }
-
-
     gl.glEndList();
   }
 

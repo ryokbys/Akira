@@ -8,13 +8,13 @@ import javax.swing.event.*;
 
 import javax.media.opengl.*;
 import javax.media.opengl.glu.*;
-import com.jogamp.opengl.util.*;
+import com.sun.opengl.util.*;
 
-import com.jogamp.opengl.util.gl2.*;
+import com.sun.opengl.util.gl2.*;
 import javax.media.opengl.awt.*;
 
 
-import com.jogamp.opengl.util.texture.*;
+import com.sun.opengl.util.texture.*;
 import java.io.*;
 import java.util.*;
 
