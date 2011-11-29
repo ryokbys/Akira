@@ -23,7 +23,7 @@ import com.centerkey.utils.BareBonesBrowserLaunch;
 
 
 public class UpdateManager{
-  private double thisVersion=1.0;
+  private double thisVersion=2.0;
 
   private double wwwVersion;
   private String homeURL="http://code.google.com/p/project-akira/";

@@ -258,7 +258,7 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
 
     layout.putConstraint( SpringLayout.SOUTH, sp, -10, SpringLayout.SOUTH, this );
     layout.putConstraint( SpringLayout.NORTH, sp, 10, SpringLayout.NORTH, this );
-    layout.putConstraint( SpringLayout.WEST, sp, 5, SpringLayout.EAST, atomTypeLabel);
+    layout.putConstraint( SpringLayout.WEST, sp, 5, SpringLayout.EAST, atomType);
 
 
     layout.putConstraint( SpringLayout.SOUTH, applyButton, 0,

@@ -138,7 +138,7 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
     slFPS.setPaintTicks(true);
     slFPS.setSnapToTicks(true);
 
-    popoutButton = new JButton( "Popout Status Panel" );
+    popoutButton = new JButton( "Popout Status" );
     popoutButton.addActionListener( this );
     popoutButton.setFocusable(false);
 
@@ -189,16 +189,18 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
     double f= TableLayout.FILL;
     double p= TableLayout.PREFERRED;
     double hb= 10;//10px
-    double colSizeTL[]= {hb,p,hb,p,hb,f,hb};
+    double colSizeTL[]= {hb,p,hb,p,hb,f,p,hb};
     double rowSizeTL[]= {hb,f,p,p,hb};
 
     setLayout(new TableLayout(colSizeTL,rowSizeTL));
 
     this.add(leftPanel,    "1,1,1,3");
-    this.add(rightPanel,   "3,1,f,f");
-    this.add(cbAlwaysTop,  "3,2,r,b");
-    this.add(popoutButton, "3,3,r,b");
+    this.add(rightPanel,   "3,1,3,3");
+    //this.add(cbAlwaysTop,  "3,2,r,b");
+    //this.add(popoutButton, "3,3,r,b");
     this.add(sPanel,"5,1,5,3");
+    this.add(cbAlwaysTop,  "6,2,r,b");
+    this.add(popoutButton, "6,3,r,b");
 
   }
 
