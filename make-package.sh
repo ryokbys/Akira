@@ -17,8 +17,7 @@ cp converter/AkiraConverter.conf Akira/
 cp img/Akira.icns Akira/
 cp -r utils/shellscript-* Akira/
 mkdir Akira/plugin
-cp -r plugin-sample/* Akira/plugin/
-zip -r Akira-$ver.zip Akira/
+zip -r Akira-v$ver.zip Akira/
 rm -rfv Akira/
 
 
