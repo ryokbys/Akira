@@ -101,6 +101,8 @@ public class AkiraConverter{
         Chem3D.conv(atomFileIO,cconf,itarget,ithFrame);
       }else if(format.equalsIgnoreCase("xcrysden")){
         XCrysDen.conv(atomFileIO,cconf,itarget,ithFrame);
+      }else if(format.equalsIgnoreCase("xcrysdentgz")){
+        XCrysDenTgz.conv(atomFileIO,cconf,itarget,ithFrame);
       }else if(format.equalsIgnoreCase("akira")){
         AkiraAscii.conv(atomFileIO,cconf,itarget,ithFrame);
       }else if(format.equalsIgnoreCase("akiratgz")){

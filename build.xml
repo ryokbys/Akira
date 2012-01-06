@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- Last Modified <2011-11-14 12:53:29 by NAKAMURA Takahide> -->
+<!-- Last Modified <2012-01-06 17:48:52 by NAKAMURA Takahide> -->
 
   <project name="AKIRA" default="runall" basedir=".">
 
@@ -107,8 +107,7 @@
     <target name="macview" depends="make_view" description="run viewer">
       <java classname="viewer/AkiraViewer" classpath="." fork="yes" maxmemory="1024m"  >
         <classpath refid="jogl_libpath_ref" />
-        <!-- <jvmarg line="-Xdock:icon=img/Akira.icns -Xdock:name=Akira -Djogl.debug.GLProfile=true" /> -->
-        <jvmarg line="-Xdock:icon=img/Akira.icns -Xdock:name=Akira -Djava.library.path=/Users/nakamura/myLocal/javalib/jogamp-macosx-universal/lib" />
+        <jvmarg line="-Xdock:icon=img/Akira.icns -Xdock:name=Akira" />
         <arg line="sample.Akira" />
       </java>
     </target>

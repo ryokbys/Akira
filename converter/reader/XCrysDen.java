@@ -44,9 +44,9 @@ public class XCrysDen{
         line = br.readLine();
         //
         while((line = br.readLine()) !=null){
-          if(line.equalsIgnoreCase("PRIMVEC")){
+          if(line.matches(".*PRIMVEC.*")){
             readBox(br,atoms);
-          }else if(line.equalsIgnoreCase("PRIMCOORD")){
+          }else if(line.matches(".*PRIMCOORD.*")){
             readAtom(br,atoms);
           }
         }
@@ -81,7 +81,7 @@ public class XCrysDen{
   }//end of xcrysden
 
 
-  private static void readBox(BufferedReader br, Atoms atoms)throws IOException{
+  public static void readBox(BufferedReader br, Atoms atoms)throws IOException{
     String line;
     String[] elem;
     Tokens tokens = new Tokens();
@@ -119,7 +119,7 @@ public class XCrysDen{
   }
 
 
-  private static void readAtom(BufferedReader br, Atoms atoms) throws IOException{
+  public static void readAtom(BufferedReader br, Atoms atoms) throws IOException{
     String line;
     String[] elem;
     Tokens tokens = new Tokens();
@@ -131,7 +131,7 @@ public class XCrysDen{
     elem = tokens.getTokens();
     epnum.setString( elem[0] );
     int natm=(int)epnum.getNumber();
-
+    System.out.print(String.format("  |- ATOMS        : %8d",natm));
     //set natom
     atoms.n=natm;
     atoms.nData = 0;
