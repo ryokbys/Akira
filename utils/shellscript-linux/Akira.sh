@@ -1,3 +1,3 @@
 #!/bin/bash
-BINDIR="$HOME/myLocal/bin"
+BINDIR="$HOME/Akira/shellscript-linux"
 $BINDIR/AkiraConverter.sh && $BINDIR/AkiraViewer.sh $@

@@ -1,8 +1,16 @@
 #!/bin/bash
 
+
 #set directories
 AKIRADIR="$HOME/Akira"
-JOGL="$HOME/myLocal/jogl"
+JOGL="$HOME/Akira/jogl"
+
+if [ -z "${DYLD_LIBRARY_PATH%%$JOGL}" ] ; then
+    echo $JOGL
+else
+    export DYLD_LIBRARY_PATH=$JOGL:$DYLD_LIBRARY_PATH
+fi
+
 JARS="$JOGL/gluegen-rt.jar:\
 $JOGL/gluegen-rt.jar:\
 $JOGL/newt.all.jar:\

@@ -2,7 +2,7 @@
 
 #set directories
 AKIRADIR="$HOME/Akira"
-JOGL="$HOME/myLocal/jogl"
+JOGL="$HOME/Akira/jogl"
 JARS="$JOGL/gluegen-rt.jar:\
 $JOGL/gluegen-rt.jar:\
 $JOGL/newt.all.jar:\
