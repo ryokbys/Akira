@@ -6,12 +6,13 @@ AKIRADIR="$HOME/Akira"
 JOGL="$HOME/Akira/jogl"
 
 
-export DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH:-$JOGL}
-if [ -z "${DYLD_LIBRARY_PATH%%JOGL}" ];then
-    echo already set >/dev/null
+DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH:-$JOGL}
+if [ `echo $DYLD_LIBRARY_PATH | grep $JOGL` ];then                                                                                                                                                          
+    echo OK > /dev/null
 else
     export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$JOGL
 fi
+
 
 JARS="$JOGL/gluegen-rt.jar:\
 $JOGL/gluegen-rt.jar:\
