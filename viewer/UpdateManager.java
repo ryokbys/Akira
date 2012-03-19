@@ -100,9 +100,12 @@ public class UpdateManager{
 
         //if(ret.matches(".*Akira.*.zip.*"))System.out.println(ret);
 
-        Pattern pattern = Pattern.compile("(.*)Akira-(.*).zip(.*)");
+        Pattern pattern = Pattern.compile("Akira-v(.*?).zip");
         Matcher matcher = pattern.matcher(ret);
-        if(matcher.find()) wwwVersion=Double.valueOf(matcher.group(2));
+        if(matcher.find()){
+          double tmp=Double.valueOf(matcher.group(1));
+          if(tmp>wwwVersion)wwwVersion=tmp;
+        }
       }
     }
   }
