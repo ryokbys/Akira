@@ -5,9 +5,9 @@
 AKIRADIR="$HOME/Akira"
 JOGL="$HOME/Akira/jogl"
 
-
+#set path
 DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH:-$JOGL}
-if [ `echo $DYLD_LIBRARY_PATH | grep $JOGL` ];then                                                                                                                                                          
+if [ `echo $DYLD_LIBRARY_PATH | grep $JOGL` ];then
     echo OK > /dev/null
 else
     export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$JOGL
@@ -21,9 +21,5 @@ $JOGL/jogl.all.jar:\
 $JOGL/nativewindow.all.jar:\
 $AKIRADIR/Akira.jar"
 
-#set command
-cmd="java -Xmx1024m -Xdock:icon=$AKIRADIR/Akira.icns -Xdock:name=Akira \
-     -cp $JARS viewer.AkiraViewer"
-
 #execute
-$cmd $@
+java -Djava.library.path=$DYLD_LIBRARY_PATH -Xmx1024m -Xdock:icon=$AKIRADIR/Akira.icns -Xdock:name=Akira -cp $JARS viewer.AkiraViewer $@
