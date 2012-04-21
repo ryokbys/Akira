@@ -146,8 +146,8 @@ public class Vectors implements Renderer{
         }
         gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, color, 0 );
 
-        gl.glRotatef( H_PI*t[1], 0.0f, 0.0f, 1.0f );//theta
-        gl.glRotatef( H_PI*t[2], 0.0f, 1.0f, 0.0f );//phi
+        gl.glRotatef( t[1], 0.0f, 0.0f, 1.0f );//theta
+        gl.glRotatef( t[2], 0.0f, 1.0f, 0.0f );//phi
         rw.glut.glutSolidCylinder( cylinderRadius, t[0]*lengthRatio, slice, slice);
         gl.glTranslatef( 0.0f, 0.0f, t[0]*lengthRatio );
         rw.glut.glutSolidCone( coneRadius, coneHeight, slice, slice);
