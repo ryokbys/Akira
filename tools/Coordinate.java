@@ -13,7 +13,7 @@ public class Coordinate {
   static double safety = 1.0e-10f;
 
   /**
-   * 直交系(xyz)から極座標系(r,theta,phi)への変換
+   * Convert Cartessian coordinate (x,y,z) to polar coordinate (r,theta,phi)
    */
   public static float[] xyz2rtp( float x, float y, float z ){
     double rxy2, rxy, r2;
@@ -27,9 +27,8 @@ public class Coordinate {
       r[2] = 0.0f;
     }else if( rxy2 <= safety ){
       r[0] = (float)Math.sqrt(r2);
-      if( z == 0.0f )r[1] = 0.0f;
-      else if( z > 0.0f ) r[1] = 0.0f;
-      else  r[1] = (float)Math.PI;
+      if( z >= 0.0f ) r[1] = 0.0f;
+      else  r[1] = 180.0f;
       r[2] = 0.0f;
     }else {
       r[0] = (float)Math.sqrt(r2);
