@@ -66,6 +66,7 @@ public class BondPanel extends JPanel implements ActionListener{
         break;
       }
       rw.renderingBondColorType=bondColor.getSelectedIndex();
+      vconf.bondRadius= ((Double)radiusSpinner.getValue()).floatValue();
 
       ctrl.RWinRefresh();
     }else if(ae.getSource() == resetButton){
