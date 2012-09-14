@@ -137,6 +137,7 @@
         <include name="viewer/**/*.class" />
         <include name="viewer/renderer/src/toon_rk.vp" />
         <include name="viewer/renderer/src/toon_rk.fp" />
+        <include name="viewer/renderer/src/toon_orth_rk.fp" />
         <include name="data/*.class" />
         <include name="tools/*.class" />
         <include name="tools/**/*.class" />

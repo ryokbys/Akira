@@ -170,7 +170,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
 
 
     //Toon rendering
-    toon= new Toon();
+    toon= new Toon(vconf);
   }
 
   /* accesser  block starts *******************************************/
@@ -303,6 +303,8 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   }
   public void setViewMode(){
     vp.setViewportMode();
+    // Reset toon shading code
+    toon.changeShaderProgram();
     if(vconf.viewMode == 0){
       System.out.println("view mode: perspective");
     }else{

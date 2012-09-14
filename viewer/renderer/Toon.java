@@ -1,6 +1,7 @@
 package viewer.renderer;
 
 import viewer.RenderingWindow;
+import viewer.ViewConfig;
 import java.io.*;
 import java.util.*;
 import javax.media.opengl.*;
@@ -19,7 +20,17 @@ public class Toon {
   GLU glu;
   GLUT glut;
   GL2ES2 glsl;
+  GL2ES2 glslo;
   ShaderState st;
+  ShaderProgram sp,spo;
+
+  // In order to differentiate perspective and orthogonal views
+  ViewConfig vconf;
+
+  // Constructor
+  public Toon(ViewConfig vc){
+    vconf= vc;
+  }
 
   public void setGL( GLAutoDrawable drawable,
                      GL2 gl, GLU glu, GLUT glut ) {
@@ -29,6 +40,7 @@ public class Toon {
     this.glu = glu;
     this.glut = glut;
     glsl = drawable.getGL().getGL2ES2();
+    glslo = drawable.getGL().getGL2ES2();
   }
 
   ClassLoader cl = this.getClass().getClassLoader();
@@ -64,39 +76,59 @@ public class Toon {
 
   String vpfile = "viewer/renderer/src/toon_rk.vp";
   String fpfile = "viewer/renderer/src/toon_rk.fp";
+  String fpofile= "viewer/renderer/src/toon_orth_rk.fp";
 
   public void init() {
     ShaderCode rsVp = new ShaderCode( GL2ES2.GL_VERTEX_SHADER,
                                       1,
                                       readShaderCode(vpfile) );
-    ShaderCode rsFp = new ShaderCode( GL2ES2.GL_FRAGMENT_SHADER,
-                                      1,
-                                      readShaderCode(fpfile) );
-    /* 
-     * ShaderCode rsVp = ShaderCode.create( glsl, GL2ES2.GL_VERTEX_SHADER,
-     *                                      1, RenderingWindow.class,
-     *                                      "viewer/renderer/src", "bin",
-     *                                      "toon_rk" );
-     * ShaderCode rsFp = ShaderCode.create( glsl, GL2ES2.GL_FRAGMENT_SHADER,
-     *                                      1, RenderingWindow.class,
-     *                                      "viewer/renderer/src", "bin",
-     *                                      "toon_rk" );
-     */
-    ShaderProgram sp = new ShaderProgram();
+    ShaderCode rsFp= new ShaderCode( GL2ES2.GL_FRAGMENT_SHADER,
+                                     1,
+                                     readShaderCode(fpfile) );
+    ShaderCode rsFpo = new ShaderCode( GL2ES2.GL_FRAGMENT_SHADER,
+                                       1,
+                                       readShaderCode(fpofile) );
+    sp = new ShaderProgram();
     sp.add( rsVp );
     sp.add( rsFp );
-    if ( !sp.link( glsl, System.err ) ) {
+    spo = new ShaderProgram();
+    spo.add( rsVp );
+    spo.add( rsFpo );
+    if( !sp.link( glsl, System.err ) ) {
       throw new GLException( "Couldn't link program: " + sp );
     }
+    if( !spo.link( glslo, System.err ) ){
+      throw new GLException( "Couldn't link program: " + spo );
+    }
     st = new ShaderState();
-    st.attachShaderProgram( glsl, sp );
+    if( vconf.viewMode==0 ){ // Perspective
+      st.attachShaderProgram( glsl, sp );
+    }else{ // Orthogonal
+      st.attachShaderProgram( glslo, spo );
+    }
+  }
+
+  public void changeShaderProgram(){
+    if( vconf.viewMode==0 ){ // Perspective
+      st.attachShaderProgram( glsl, sp );
+    }else{ // Orthogonal
+      st.attachShaderProgram( glslo, spo );
+    }
   }
 
   public void set() {
-    st.glUseProgram( glsl, true );
+    if( vconf.viewMode==0 ){ // Perspective
+      st.glUseProgram( glsl, true );
+    }else{ // Orthogonal
+      st.glUseProgram( glslo, true );
+    }
   }
   public void unset() {
-    st.glUseProgram( glsl, false );
+    if( vconf.viewMode==0 ){ // Perspective
+      st.glUseProgram( glsl, false );
+    }else{ // Orthogonal
+      st.glUseProgram( glslo, false );
+    }
   }
 
 }
