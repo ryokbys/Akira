@@ -250,7 +250,8 @@ public class TrajectoryPanel extends JPanel
 
   public void setAllatoms(){
     RenderingWindow rw=ctrl.getActiveRW();
-    for(int id=0;id<rw.atoms.n;id++){
+    int natm= rw.atoms.getNumAtoms();
+    for(int id=0;id<natm;id++){
       addRow();
       int r = jtable.getRowCount();
       tableModel.setValueAt( id, r-1, 0 );
@@ -273,7 +274,7 @@ public class TrajectoryPanel extends JPanel
       tableList.add( a );
     }
     if(ctrl.activeRWinID>=0 && ctrl.RWin[ctrl.activeRWinID] != null)
-      ctrl.RWin[ctrl.activeRWinID].atoms.resetTrjDList();
+      ctrl.RWin[ctrl.activeRWinID].atmRndr.resetTrjDList();
 
   }
 

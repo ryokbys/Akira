@@ -73,16 +73,15 @@ public class BondPanel extends JPanel implements ActionListener{
       vconf.resetBond();
       setValue();
     }else if(ae.getSource() == setRangeButton){
-      vconf.bondLengthRange[1]=(ctrl.getActiveRW()).bonds.maxBondLength;
-      vconf.bondCNRange[1]=(ctrl.getActiveRW()).bonds.maxCN;
+      vconf.bondLengthRange[1]=(ctrl.getActiveRW()).atoms.getMaxBondLength();
+      vconf.bondCNRange[1]=(ctrl.getActiveRW()).atoms.getMaxCoordinationNumber();
       lengthMaxSpinner.setValue((double)vconf.bondLengthRange[1]);
       CNMaxSpinner.setValue((double)vconf.bondCNRange[1]);
     }else if(ae.getSource() == createButton ){
       setListFromTable();
       if(ctrl.activeRWinID>=0 && ctrl.RWin[ctrl.activeRWinID] != null){
-        ctrl.RWin[ctrl.activeRWinID].bonds.clear();
-        bondCreator.createWithBondLength(ctrl.RWin[ctrl.activeRWinID].atoms,
-                                         ctrl.RWin[ctrl.activeRWinID].bonds);
+        ctrl.RWin[ctrl.activeRWinID].atoms.clearBonds();
+        bondCreator.createWithBondLength(ctrl.RWin[ctrl.activeRWinID].atoms);
 
         ctrl.RWinRefresh();
       }

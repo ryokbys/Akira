@@ -16,14 +16,15 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
   /* accesser starts*/
 
   public void updateStatusString(RenderingWindow rw){
+    float[][] h= rw.atoms.hmat;
     lNatm.setText(String.format("# of atoms: %d/%d",rw.getVisibleNAtoms()
                                 ,rw.getNAtoms()));
-    lBox1.setText(String.format("%7.1f %7.1f %7.1f",rw.atoms.h[0][0],rw.atoms.h[0][1],rw.atoms.h[0][2]));
-    lBox2.setText(String.format("%7.1f %7.1f %7.1f",rw.atoms.h[1][0],rw.atoms.h[1][1],rw.atoms.h[1][2]));
-    lBox3.setText(String.format("%7.1f %7.1f %7.1f",rw.atoms.h[2][0],rw.atoms.h[2][1],rw.atoms.h[2][2]));
+    lBox1.setText(String.format("%7.1f %7.1f %7.1f",h[0][0],h[0][1],h[0][2]));
+    lBox2.setText(String.format("%7.1f %7.1f %7.1f",h[1][0],h[1][1],h[1][2]));
+    lBox3.setText(String.format("%7.1f %7.1f %7.1f",h[2][0],h[2][1],h[2][2]));
 
-    lFrame.setText(String.format("Frame No.: %d/%d",rw.currentFrame+1,rw.atoms.totalFrame));
-    slFrame.setMaximum(rw.atoms.totalFrame-1);
+    lFrame.setText(String.format("Frame No.: %d/%d",rw.currentFrame+1,rw.totalFrame));
+    slFrame.setMaximum(rw.totalFrame-1);
     if(!rw.isAnimating())slFrame.setValue(rw.currentFrame);
     lFPS.setText(String.format("Frame per Second: %d",rw.fps));
     slFPS.setValue(rw.fps);

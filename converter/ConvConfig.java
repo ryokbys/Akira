@@ -7,7 +7,7 @@ import data.*;
 
 public class ConvConfig {
   /**
-   * Configure of KVSConv.
+   * Configure of AkiraConverter
    * Reading function is also implemented
    */
   public static String fileExtension=".Akira";

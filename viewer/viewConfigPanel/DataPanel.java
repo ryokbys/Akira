@@ -21,7 +21,7 @@ public class DataPanel extends JPanel implements ActionListener{
   // called when the event happens
   public void actionPerformed( ActionEvent ae){
     if(ae.getSource() == loadRangeButton){
-      for( int i=0; i<Const.DATA; i++ ){
+      for( int i=0; i<Atom.MAX_NUM_DATA; i++ ){
         vconf.dataRange[i][0]=this.refDataRange[i][0];
         vconf.dataRange[i][1]=this.refDataRange[i][1];
       }
@@ -156,13 +156,13 @@ public class DataPanel extends JPanel implements ActionListener{
 
   }
 
-  float[][] refDataRange = new float[Const.DATA][2];
+  float[][] refDataRange = new float[Atom.MAX_NUM_DATA][2];
   public void setDataRange(float[][] range){
     this.refDataRange=range;
     setTable();
   }
   private void setTable(){
-    for( int i=0; i<Const.DATA; i++ ){
+    for( int i=0; i<Atom.MAX_NUM_DATA; i++ ){
       tableModel.setValueAt( String.valueOf( i+1 ),i,0 );
       tableModel.setValueAt( vconf.dataLegend[i],i,1 );
       tableModel.setValueAt( vconf.dataFormat[i],i,2 );
@@ -174,7 +174,7 @@ public class DataPanel extends JPanel implements ActionListener{
   }
   private void addTable(){
     Object[] s = new Object[colNames.length];
-    for( int i=0; i<Const.DATA; i++ ){
+    for( int i=0; i<Atom.MAX_NUM_DATA; i++ ){
       s[0] = String.valueOf( i+1 );
       s[1] = vconf.dataLegend[i];
       s[2] = vconf.dataFormat[i];
@@ -215,11 +215,14 @@ public class DataPanel extends JPanel implements ActionListener{
 
     float sum=0.f;
     int inc=0;
-    for( int i=0; i<rw.atoms.n; i++ ){
-      if(rw.atoms.vtag[i]<0)continue;
-
-      if(rw.renderingAtomDataIndex>0){
-        sum+=rw.atoms.data[i][rw.renderingAtomDataIndex-1];
+    int natm= rw.atoms.getNumAtoms();
+    int[] vtag= rw.atmRndr.vtag;
+    int renderingAtomDataIndex= rw.renderingAtomDataIndex;
+    for( int i=0; i<natm; i++ ){
+      if( vtag[i]<0 ) continue;
+      Atom ai= rw.atoms.getAtom(i);
+      if( renderingAtomDataIndex>0 ){
+        sum+= ai.auxData[renderingAtomDataIndex-1];
         inc++;
       }else{
         inc++;
@@ -230,8 +233,8 @@ public class DataPanel extends JPanel implements ActionListener{
     String body="";
     head=String.format("including atoms: %d",inc);
 
-    if(rw.renderingAtomDataIndex>0){
-      body="averaged "+vconf.dataLegend[rw.renderingAtomDataIndex-1]+": ";
+    if( renderingAtomDataIndex>0 ){
+      body="averaged "+vconf.dataLegend[renderingAtomDataIndex-1]+": ";
       body+=String.format("%f",sum/(float)inc);
     }
     System.out.println(head+newline+body+newline);

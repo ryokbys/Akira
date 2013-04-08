@@ -30,7 +30,7 @@ public class AkiraConverter{
 
 
   ConvConfig cconf=new ConvConfig();
-  MyFileIO atomFileIO;
+  AkiraFileIO atomFileIO;
 
   //frame counter
   int ithFrame=0;
@@ -65,7 +65,7 @@ public class AkiraConverter{
     long start = System.currentTimeMillis();
 
     cconf.read(convConfFile);
-    atomFileIO= new MyFileIO(cconf.systemName+cconf.fileExtension);
+    atomFileIO= new AkiraFileIO(cconf.systemName+cconf.fileExtension);
 
     System.out.println(String.format("Total Number of Frames: %d",cconf.getTotalFrame()));
     System.out.println();
@@ -89,32 +89,34 @@ public class AkiraConverter{
 
       //read files according to extension
       String format=cconf.readFileFormat.get(itarget);
-      if(format.equalsIgnoreCase("chgcar")){
-        CHGCAR.conv(atomFileIO,cconf,itarget,ithFrame);
-      }else if(format.equalsIgnoreCase("cube")){
-        Cube.conv(atomFileIO,cconf,itarget,ithFrame);
-      }else if(format.equalsIgnoreCase("coord")){
-        Coord.conv(atomFileIO,cconf,itarget,ithFrame);
-      }else if(format.equalsIgnoreCase("xyz")){
-        XYZ.conv(atomFileIO,cconf,itarget,ithFrame);
-      }else if(format.equalsIgnoreCase("chem3d")){
-        Chem3D.conv(atomFileIO,cconf,itarget,ithFrame);
-      }else if(format.equalsIgnoreCase("xcrysden")){
-        XCrysDen.conv(atomFileIO,cconf,itarget,ithFrame);
-      }else if(format.equalsIgnoreCase("xcrysdentgz")){
-        XCrysDenTgz.conv(atomFileIO,cconf,itarget,ithFrame);
-      }else if(format.equalsIgnoreCase("akira")){
+      //if(format.equalsIgnoreCase("chgcar")){
+      //  CHGCAR.conv(atomFileIO,cconf,itarget,ithFrame);
+      //}else if(format.equalsIgnoreCase("cube")){
+      //  Cube.conv(atomFileIO,cconf,itarget,ithFrame);
+      //}else if(format.equalsIgnoreCase("coord")){
+      //  Coord.conv(atomFileIO,cconf,itarget,ithFrame);
+      //}else if(format.equalsIgnoreCase("xyz")){
+      //  XYZ.conv(atomFileIO,cconf,itarget,ithFrame);
+      //}else if(format.equalsIgnoreCase("chem3d")){
+      //  Chem3D.conv(atomFileIO,cconf,itarget,ithFrame);
+      //}else if(format.equalsIgnoreCase("xcrysden")){
+      //  XCrysDen.conv(atomFileIO,cconf,itarget,ithFrame);
+      //}else if(format.equalsIgnoreCase("xcrysdentgz")){
+      //  XCrysDenTgz.conv(atomFileIO,cconf,itarget,ithFrame);
+      //}else if(format.equalsIgnoreCase("akira")){
+      //  AkiraAscii.conv(atomFileIO,cconf,itarget,ithFrame);
+      //}else if(format.equalsIgnoreCase("akiratgz")){
+      //  AkiraAsciiTgz.conv(atomFileIO,cconf,itarget,ithFrame);
+      //}else if(format.equalsIgnoreCase("akiratbz2")){
+      //  AkiraAsciiTbz2.conv(atomFileIO,cconf,itarget,ithFrame);
+      //}else if(format.equalsIgnoreCase("akirabintgz")){
+      //  AkiraBinaryTgz.conv(atomFileIO,cconf,itarget,ithFrame);
+      //}else if(format.equalsIgnoreCase("akirabintbz2")){
+      //  AkiraBinaryTbz2.conv(atomFileIO,cconf,itarget,ithFrame);
+      //}else if(format.equalsIgnoreCase("akirabin")){
+      //  AkiraBinary.conv(atomFileIO,cconf,itarget,ithFrame);
+      if(format.equalsIgnoreCase("akira")){
         AkiraAscii.conv(atomFileIO,cconf,itarget,ithFrame);
-      }else if(format.equalsIgnoreCase("akiratgz")){
-        AkiraAsciiTgz.conv(atomFileIO,cconf,itarget,ithFrame);
-      }else if(format.equalsIgnoreCase("akiratbz2")){
-        AkiraAsciiTbz2.conv(atomFileIO,cconf,itarget,ithFrame);
-      }else if(format.equalsIgnoreCase("akirabintgz")){
-        AkiraBinaryTgz.conv(atomFileIO,cconf,itarget,ithFrame);
-      }else if(format.equalsIgnoreCase("akirabintbz2")){
-        AkiraBinaryTbz2.conv(atomFileIO,cconf,itarget,ithFrame);
-      }else if(format.equalsIgnoreCase("akirabin")){
-        AkiraBinary.conv(atomFileIO,cconf,itarget,ithFrame);
       }else{
         System.out.println("unknown file format!!");
         System.out.println("check akiraconv.conf");

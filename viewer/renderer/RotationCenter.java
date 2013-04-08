@@ -38,7 +38,7 @@ public class RotationCenter{
     visible = false;
     for(int i=0; i<3; i++)
       for(int j=0; j<3; j++)
-        if(size< rw.atoms.hMax[i][j])size= rw.atoms.hMax[i][j];
+        if(size< rw.maxHmat[i][j])size= rw.maxHmat[i][j];
     make(rw.gl,rw.glut);
   }
   private void make(GL2 gl,GLUT glut){

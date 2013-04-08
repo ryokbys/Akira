@@ -77,10 +77,11 @@ public class Viewpoint{
     this.glut = rw.glut;
     this.canvas = rw.glCanvas;
     this.vconf=rw.vconf;
+    float[][] h= rw.atoms.hmat;
 
     //opposite corner
     for(int k=0; k<3; k++)
-      mbs[k] = (rw.atoms.h[k][0] +rw.atoms.h[k][1] +rw.atoms.h[k][2]);
+      mbs[k] = ( h[k][0] +h[k][1] +h[k][2]);
 
     //max
     maxmbs = 0.0f;

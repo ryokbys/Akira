@@ -13,8 +13,10 @@ import converter.*;
 
 public class CHGCAR{
 
-  public static void conv(MyFileIO atomFileIO,ConvConfig cconf,
-                          int itarget,int ithFrame){
+  public static void conv(AkiraFileIO atomFileIO,
+                          ConvConfig cconf,
+                          int itarget,
+                          int ithFrame){
 
     for(int ifrm=cconf.startFrame.get(itarget);
         ifrm<=cconf.endFrame.get(itarget);
@@ -28,7 +30,7 @@ public class CHGCAR{
       float tmp;
       float[] tp =new float[3];
       Atoms atoms=new Atoms();
-      Bonds bonds=new Bonds();
+      //Bonds bonds=new Bonds();
 
       try {
         FileReader fr = new FileReader( readFile );
@@ -67,11 +69,11 @@ public class CHGCAR{
           for( int j=0; j<3; j++ ){
             epnum.setString( elem[j] );
             //now h matrix is angstrom
-            atoms.h[i][j] = (float)(epnum.getNumber())*fac;
+            atoms.hmat[i][j] = (float)(epnum.getNumber())*fac;
             //System.out.println(String.format("h %f",atoms.h[i][j]));
           }
         }
-        Matrix.inv(atoms.h,atoms.hinv);
+        Matrix.inv(atoms.hmat,atoms.hmati);
 
 
         //# of atoms
@@ -121,8 +123,7 @@ public class CHGCAR{
         atoms.n=nvoxel+natm;
         atoms.nData = 1;
         //allocate
-        atoms.allocate(atoms.n);
-
+        //atoms.allocate(atoms.n);
 
         //atoms
         iatm=0;

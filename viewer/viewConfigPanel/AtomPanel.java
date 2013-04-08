@@ -320,9 +320,9 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
   }
 
   void applyModification2Table(){
-    int[] tags=ctrl.RWin[ctrl.activeRWinID].getTags();
+    byte[] tags=ctrl.RWin[ctrl.activeRWinID].getTags();
     for( int j=0; j<tags.length; j++ ){
-      int i=tags[j]-1;
+      int i=(int)tags[j]-1;
       if(i==100)continue;//skip volume data
       tableModel.setValueAt( String.valueOf( i+1 ),j,0 );
       tableModel.setValueAt( vconf.tagName[i],j,1 );
@@ -345,9 +345,9 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     //add table
     Object[] s = new Object[colNames.length];
     if(ctrl.activeRWinID>=0 && ctrl.RWin[ctrl.activeRWinID]!=null){
-      int[] tags=ctrl.RWin[ctrl.activeRWinID].getTags();
+      byte[] tags=ctrl.RWin[ctrl.activeRWinID].getTags();
       for( int j=0; j<tags.length; j++ ){
-        int i=tags[j]-1;
+        int i=(int)tags[j]-1;
         if(i==100)continue;//skip volume data
         s[0] = String.valueOf( i+1 );
         s[1] = vconf.tagName[i];
@@ -364,9 +364,9 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
   private void updateList(){
     RenderingWindow rw=ctrl.getActiveRW();
 
-    int[] tags=rw.getTags();
+    byte[] tags=rw.getTags();
     for( int j=0; j<tags.length; j++ ){
-      int i=tags[j]-1;
+      int i=(int)tags[j]-1;
       if(i==100)continue;//skip volume data
       vconf.tagName[i]=(String)table.getValueAt(j,1);
       vconf.tagOnOff[i]=(Boolean)table.getValueAt(j,2);

@@ -2,6 +2,7 @@ package converter.reader;
 
 import java.io.*;
 import java.util.*;
+import java.lang.Math;
 
 import tools.*;
 import data.*;
@@ -11,9 +12,10 @@ import converter.*;
  * Reading function from ASCII
  */
 public class AkiraAscii{
-  public static void conv(MyFileIO atomFileIO,ConvConfig cconf,
-                          int itarget,int ithFrame){
-
+  public static void conv(AkiraFileIO atomFileIO,
+                          ConvConfig cconf,
+                          int itarget,
+                          int ithFrame){
 
     for(int ifrm=cconf.startFrame.get(itarget);
         ifrm<=cconf.endFrame.get(itarget);
@@ -27,20 +29,18 @@ public class AkiraAscii{
                                        cconf.getTotalFrame(),readFile));
 
       Atoms atoms=new Atoms();
-      Bonds bonds=new Bonds();
 
       //read
       AkiraAscii.read(readFile,atoms,cconf);
 
-
       //create bonds
       if(cconf.createBondsWithLength){
         BondCreator bondCreator=new BondCreator(cconf);
-        bondCreator.createWithBondLength(atoms,bonds);
+        bondCreator.createWithBondLength(atoms);
         atomFileIO.existBonds=true;
       }else if(cconf.createBondsWithFile){
         BondCreator bondCreator=new BondCreator(cconf);
-        bondCreator.createWithBondList(atoms,bonds,cconf,itarget,ifrm);
+        bondCreator.createWithBondList(atoms,cconf,itarget,ifrm);
         atomFileIO.existBonds=true;
       }else{
         System.out.println("  |- NO BONDS");
@@ -48,7 +48,7 @@ public class AkiraAscii{
       }
 
       //write to file
-      atomFileIO.write(atoms,bonds);
+      atomFileIO.write(atoms);
       System.out.print("\n");
     }//ifrm
   }
@@ -56,7 +56,9 @@ public class AkiraAscii{
   /**
    * read ASCII file
    */
-  private static void read(String fileName,Atoms atoms,ConvConfig cconf){
+  private static void read(String fileName,
+                           Atoms atoms,
+                           ConvConfig cconf){
     try {
       FileReader fr = new FileReader( fileName );
       BufferedReader br = new BufferedReader( fr );
@@ -64,6 +66,7 @@ public class AkiraAscii{
       String[] elem;
       Tokens tokens = new Tokens();
       Exponent epnum = new Exponent();
+      int ndata;
 
       float[] tp = new float[3];
       float[] ra = new float[3];
@@ -72,18 +75,19 @@ public class AkiraAscii{
       HashMap<Integer,Integer> tagCount = new HashMap<Integer,Integer>();
 
 
-      //n
+      // line 1: n
       line = br.readLine();
       tokens.setString( line );
       tokens.setDelim( " " );
       elem = tokens.getTokens();
       int natm=Integer.parseInt( elem[0] );
-      atoms.nData = Integer.parseInt( elem[1] );
-      if(atoms.nData>9)atoms.nData=9;
+      // atoms.nData = Integer.parseInt( elem[1] );
+      // if(atoms.nData>9)atoms.nData=9;
+      ndata= (byte)Math.min( Byte.parseByte( elem[1] ), Atom.MAX_NUM_DATA );
       int nvolBlock=Integer.parseInt( elem[2] );
       int nvolume=Integer.parseInt( elem[3] );
 
-      atoms.allocate(natm+nvolume);
+      //atoms.allocate(natm+nvolume);
 
       //read h matrix
       for( int i=0; i<3; i++ ){
@@ -93,10 +97,10 @@ public class AkiraAscii{
         for( int j=0; j<3; j++ ){
           epnum.setString( elem[j] );
           //now h matrix is angstrom
-          atoms.h[i][j] = (float)(epnum.getNumber());
+          atoms.hmat[i][j] = (float)(epnum.getNumber());
         }
       }
-      Matrix.inv(atoms.h,atoms.hinv);
+      Matrix.inv(atoms.hmat,atoms.hmati);
 
       //read
       int dataStartPosition = 4;
@@ -119,37 +123,45 @@ public class AkiraAscii{
         }
 
 
-        //2nd~4th colum is ra
-        //ra is not scaled for cutRegion
+        // 2nd~4th colum is position data
+        // position data is not scaled for cutRegion
         for( int k=0; k<3; k++ ){
           epnum.setString( elem[k+1] );
           tp[k] = (float)epnum.getNumber();
         }
-        ra =  Tool.mulH( atoms.h, tp );
+        ra =  Tool.mulH( atoms.hmat, tp );
 
-        float[] data=new float[Const.DATA];
-        for( int k=0; k<atoms.nData; k++ ){
+        float[] data=new float[ndata];
+        for( int k=0; k<ndata; k++ ){
           epnum.setString( elem[k+dataStartPosition] );
           data[k]=(float)epnum.getNumber();
         }
 
         //check region
         if(cconf.isCutX)
-          itag=Tool.cutRange(itag,ra, atoms.h, 'x', cconf.xMin, cconf.xMax);
+          itag=Tool.cutRange(itag,ra, atoms.hmat, 'x', cconf.xMin, cconf.xMax);
         if(cconf.isCutY)
-          itag=Tool.cutRange(itag,ra, atoms.h, 'y', cconf.yMin, cconf.yMax);
+          itag=Tool.cutRange(itag,ra, atoms.hmat, 'y', cconf.yMin, cconf.yMax);
         if(cconf.isCutZ)
-          itag=Tool.cutRange(itag,ra, atoms.h, 'z', cconf.zMin, cconf.zMax);
+          itag=Tool.cutRange(itag,ra, atoms.hmat, 'z', cconf.zMin, cconf.zMax);
         if(cconf.isCutSphere)
-          itag=Tool.cutShepre(itag,ra, atoms.h,cconf.cutCenter, cconf.cutRadius );
+          itag=Tool.cutShepre(itag,ra, atoms.hmat,cconf.cutCenter, cconf.cutRadius );
 
         //add
         if(itag>0){
-          atoms.tag[atoms.n]=(byte)itag;
-          for(int k=0;k<3;k++)atoms.r[atoms.n][k]=ra[k];
-          for(int k=0;k<atoms.nData;k++)atoms.data[atoms.n][k]=data[k];
+          Atom atom= new Atom((byte)itag);
+          //atoms.tag[atoms.n]=(byte)itag;
+          //for(int k=0;k<3;k++)atoms.r[atoms.n][k]=ra[k];
+          atom.pos[0]= ra[0];
+          atom.pos[1]= ra[1];
+          atom.pos[2]= ra[2];
+          //for(int k=0;k<Atom.MAX_NUM_DATA;k++)atoms.data[atoms.n][k]=data[k];
+          for(int k=0;k<ndata;k++)
+            atom.auxData[k]=data[k];
 
-          atoms.n++;
+          atoms.listAtom.add(atom);
+          //atoms.n++;
+
           //tag count
           if(tagCount.containsKey(itag)){
             int inc=tagCount.get(itag);
@@ -194,7 +206,7 @@ public class AkiraAscii{
         System.out.print("\b\b )\n");
       }
       //written atoms info
-      System.out.print(String.format("  |- ATOMS        : %8d",atoms.n));
+      System.out.print(String.format("  |- ATOMS        : %8d",atoms.getNumAtoms()));
       System.out.print(" (");
       Set set = tagCount.keySet();
       Iterator iterator = set.iterator();
@@ -244,6 +256,9 @@ public class AkiraAscii{
           }
         }
 
+        /**
+         * At this moment (2013-04-05), negleting volumetric data
+         *
         //volume data
         float rr=nvx*nvx/4;
         for(int ivz=0;ivz<nvz;ivz++){
@@ -294,6 +309,7 @@ public class AkiraAscii{
         System.out.print("\r");
         //write info
         System.out.print(String.format("  |- VOLUME%d      : %8d\n",iv,nvol));
+        */
       }//end of iv
 
 

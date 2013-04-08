@@ -12,7 +12,7 @@ import data.*;
 import converter.*;
 
 public class AkiraAsciiTbz2{
-  public static void conv(MyFileIO atomFileIO,ConvConfig cconf,
+  public static void conv(AkiraFileIO atomFileIO,ConvConfig cconf,
                           int itarget,int ithFrame){
 
 
@@ -79,12 +79,12 @@ public class AkiraAsciiTbz2{
         elem = tokens.getTokens();
         //nAtoms
         int natm=Integer.parseInt( elem [0] );
-        atoms.nData = Integer.parseInt( elem [1] );
-        if(atoms.nData>9)atoms.nData=9;
+        Atom.numData = (byte)Integer.parseInt( elem [1] );
+        if( Atom.numData>9 ) Atom.numData=9;
         int nvolBlock=Integer.parseInt( elem [2] );
         int nvolume=Integer.parseInt( elem [3] );
 
-        atoms.allocate(natm+nvolume);
+        // atoms.allocate(natm+nvolume);
 
         //read h matrix
         for( int i=0; i<3; i++ ){
@@ -94,12 +94,10 @@ public class AkiraAsciiTbz2{
           for( int j=0; j<3; j++ ){
             epnum.setString( elem[j] );
             //now h matrix is angstrom
-            atoms.h[i][j] = (float)(epnum.getNumber());
+            atoms.hmat[i][j] = (float)(epnum.getNumber());
           }
         }
-        Matrix.inv(atoms.h,atoms.hinv);
-
-
+        Matrix.inv( atoms.hmat,atoms.hmati );
 
         //read
         int dataStartPosition = 4;
@@ -129,29 +127,31 @@ public class AkiraAsciiTbz2{
             epnum.setString( elem[k+1] );
             tp[k] = (float)epnum.getNumber();
           }
-          ra =  Tool.mulH( atoms.h, tp );
+          ra =  Tool.mulH( atoms.hmat, tp );
 
-          float[] data=new float[Const.DATA];
-          for( int k=0; k<atoms.nData; k++ ){
+          float[] data=new float[Atom.MAX_NUM_DATA];
+          for( int k=0; k<Atom.numData; k++ ){
             epnum.setString( elem[k+dataStartPosition] );
             data[k]=(float)epnum.getNumber();
           }
 
           //check region
           if(cconf.isCutX)
-            itag=Tool.cutRange(itag,ra, atoms.h, 'x', cconf.xMin, cconf.xMax);
+            itag=Tool.cutRange(itag,ra, atoms.hmat, 'x', cconf.xMin, cconf.xMax);
           if(cconf.isCutY)
-            itag=Tool.cutRange(itag,ra, atoms.h, 'y', cconf.yMin, cconf.yMax);
+            itag=Tool.cutRange(itag,ra, atoms.hmat, 'y', cconf.yMin, cconf.yMax);
           if(cconf.isCutZ)
-            itag=Tool.cutRange(itag,ra, atoms.h, 'z', cconf.zMin, cconf.zMax);
+            itag=Tool.cutRange(itag,ra, atoms.hmat, 'z', cconf.zMin, cconf.zMax);
           if(cconf.isCutSphere)
-            itag=Tool.cutShepre(itag,ra, atoms.h,cconf.cutCenter, cconf.cutRadius );
+            itag=Tool.cutShepre(itag,ra, atoms.hmat,cconf.cutCenter, cconf.cutRadius );
 
           //add
           if(itag>0){
             atoms.tag[atoms.n]=(byte)itag;
-            for(int k=0;k<3;k++)atoms.r[atoms.n][k]=ra[k];
-            for(int k=0;k<atoms.nData;k++)atoms.data[atoms.n][k]=data[k];
+            for(int k=0;k<3;k++)
+              atoms.r[atoms.n][k]=ra[k];
+            for(int k=0;k<Atom.numData;k++)
+              atoms.data[atoms.n][k]=data[k];
 
             atoms.n++;
             //tag count

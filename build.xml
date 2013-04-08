@@ -62,7 +62,8 @@
         <include name="tools/*/*.java" />
         <include name="data/*.java" />
         <include name="converter/*.java" />
-        <include name="converter/reader/*.java" />
+        <!-- <include name="converter/reader/*.java" /> -->
+        <include name="converter/reader/AkiraAscii.java" />
       </javac>
     </target>
 
@@ -79,8 +80,11 @@
     <target name="make_view" description="compile akiraconv">
       <javac includeAntRuntime="true" encoding="UTF-8" srcdir="." deprecation="on" debug="${dbg}" source="1.5" target="1.5">
         <!-- <compilerarg line="-Xlint" /> -->
-        <include name="**/*.java" />
-        <include name="**/**/*.java" />
+        <include name="data/*.java" />
+        <include name="tools/*.java" />
+        <include name="tools/*/*.java" />
+        <include name="viewer/*.java" />
+        <include name="viewer/*/*.java" />
         <classpath refid="jogl_libpath_ref" />
         <classpath refid="libpath_ref" />
         <classpath refid="ant_libpath_ref" />

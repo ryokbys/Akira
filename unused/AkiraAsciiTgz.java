@@ -3,18 +3,16 @@ import java.io.*;
 import java.nio.*;
 import java.util.*;
 import org.apache.tools.tar.*;
-import org.apache.tools.bzip2.*;
 import java.util.zip.*;
 
 import tools.*;
 import data.*;
 import converter.*;
 
-/**
- * read binary kvs file on tar.bz2
- */
-public class AkiraBinaryTbz2{
-  public static void conv(MyFileIO atomFileIO,ConvConfig cconf,
+
+public class AkiraAsciiTgz{
+
+  public static void conv(AkiraFileIO atomFileIO,ConvConfig cconf,
                           int itarget,int ithFrame){
 
 
@@ -31,13 +29,10 @@ public class AkiraBinaryTbz2{
 
     String readFile;
 
-
     filePath=cconf.readFilePath.get(itarget);
     try {
       FileInputStream fis = new FileInputStream(filePath);
-      //skip two bytes(this is only tbz2)
-      fis.read();fis.read();
-      TarInputStream tin = new TarInputStream(new CBZip2InputStream(fis));
+      TarInputStream tin = new TarInputStream(new GZIPInputStream(fis));
       TarEntry tarEnt = tin.getNextEntry();
 
       int ifrm=cconf.startFrame.get(itarget);
@@ -65,6 +60,7 @@ public class AkiraBinaryTbz2{
         byte[] tba = bos.toByteArray();
         DataInputStream dis = new DataInputStream(new ByteArrayInputStream(tba));
 
+        BufferedReader br = new BufferedReader(new InputStreamReader(dis));
         //read atom
         HashMap<Integer,Integer> readTagCount = new HashMap<Integer,Integer>();
         HashMap<Integer,Integer> tagCount = new HashMap<Integer,Integer>();
@@ -73,85 +69,65 @@ public class AkiraBinaryTbz2{
         Bonds bonds=new Bonds();
 
         //natm
+        line=br.readLine();
+        tokens.setString( line );
+        tokens.setDelim( " " );
+        elem = tokens.getTokens();
         //nAtoms
-        ByteBuffer bb = ByteBuffer.allocate(1024);
-        bb.putInt(dis.readInt());
-        bb.putInt(dis.readInt());//natm
-        bb.putInt(dis.readInt());//ndata
-        bb.putInt(dis.readInt());//nvblock
-        bb.putInt(dis.readInt());//nvolume
-        bb.putInt(dis.readInt());
-
-        //nAtoms
-        if(cconf.readFileEndian.get(itarget).startsWith("little"))
-          bb.order(ByteOrder.LITTLE_ENDIAN);
-        int natm=bb.getInt(4);
-        atoms.nData=bb.getInt(8);
+        int natm=Integer.parseInt( elem [0] );
+        atoms.nData = Integer.parseInt( elem [1] );
         if(atoms.nData>9)atoms.nData=9;
-        int nvolBlock=bb.getInt(12);
-        int nvolume=bb.getInt(16);
+        int nvolBlock=Integer.parseInt( elem [2] );
+        int nvolume=Integer.parseInt( elem [3] );
         atoms.allocate(natm+nvolume);
 
         //read h matrix
-        bb=null;
-        bb = ByteBuffer.allocate(1024);
-
-        bb.putInt(dis.readInt());
-        bb.putFloat(dis.readFloat());//h11
-        bb.putFloat(dis.readFloat());//h12
-        bb.putFloat(dis.readFloat());//h13
-        bb.putInt(dis.readInt());
-        bb.putInt(dis.readInt());
-        bb.putFloat(dis.readFloat());//h21
-        bb.putFloat(dis.readFloat());//h22
-        bb.putFloat(dis.readFloat());//h23
-        bb.putInt(dis.readInt());
-        bb.putInt(dis.readInt());
-        bb.putFloat(dis.readFloat());//h31
-        bb.putFloat(dis.readFloat());//h32
-        bb.putFloat(dis.readFloat());//h33
-        bb.putInt(dis.readInt());
-
-        if(cconf.readFileEndian.get(itarget).startsWith("little"))
-          bb.order(ByteOrder.LITTLE_ENDIAN);
-        //now h matrix is angstrom
-        atoms.h[0][0] = (float)(bb.getFloat(4));
-        atoms.h[1][0] = (float)(bb.getFloat(8));
-        atoms.h[2][0] = (float)(bb.getFloat(12));
-
-        atoms.h[0][1] = (float)(bb.getFloat(24));
-        atoms.h[1][1] = (float)(bb.getFloat(28));
-        atoms.h[2][1] = (float)(bb.getFloat(32));
-
-        atoms.h[0][2] = (float)(bb.getFloat(44));
-        atoms.h[1][2] = (float)(bb.getFloat(48));
-        atoms.h[2][2] = (float)(bb.getFloat(52));
+        for( int i=0; i<3; i++ ){
+          line = br.readLine();
+          tokens.setString( line );
+          elem = tokens.getTokens();
+          for( int j=0; j<3; j++ ){
+            epnum.setString( elem[j] );
+            atoms.h[i][j] = (float)(epnum.getNumber());
+          }
+        }
         Matrix.inv(atoms.h,atoms.hinv);
 
         //read
+        int dataStartPosition = 4;
+
         for(int i=0; i<natm; i++){
-          bb=null;
-          bb = ByteBuffer.allocate(1024);
-          bb.putInt(dis.readInt());
-          bb.putInt(dis.readInt());//tag
-          bb.putFloat(dis.readFloat());//ra(1,i)
-          bb.putFloat(dis.readFloat());//ra(2,i)
-          bb.putFloat(dis.readFloat());//ra(3,i)
-          for(int j=0;j<atoms.nData;j++)bb.putFloat(dis.readFloat());//data
-          bb.putInt(dis.readInt());
+          line = br.readLine();
+          tokens.setString( line );
+          elem = tokens.getTokens(); //total data of a line
 
-          if(cconf.readFileEndian.get(itarget).startsWith("little"))
-            bb.order(ByteOrder.LITTLE_ENDIAN);
+          //1st colum is species
+          epnum.setString( elem[0] );
+          int itag= (int)epnum.getNumber();
+          //tag counter
+          if(readTagCount.containsKey(itag)){
+            int inc=readTagCount.get(itag);
+            inc++;
+            readTagCount.put(itag,inc);
+          }else{
+            int inc=1;
+            readTagCount.put(itag,inc);
+          }
 
-          int itag=bb.getInt(4);
-          tp[0]=bb.getFloat(8);
-          tp[1]=bb.getFloat(12);
-          tp[2]=bb.getFloat(16);
+
+          //2nd~4th colum is ra
+          //ra is not scaled for cutRegion
+          for( int k=0; k<3; k++ ){
+            epnum.setString( elem[k+1] );
+            tp[k] = (float)epnum.getNumber();
+          }
           ra =  Tool.mulH( atoms.h, tp );
 
           float[] data=new float[Const.DATA];
-          for( int k=0; k<atoms.nData; k++ )data[k] = bb.getFloat(20+4*k);
-
+          for( int k=0; k<atoms.nData; k++ ){
+            epnum.setString( elem[k+dataStartPosition] );
+            data[k]=(float)epnum.getNumber();
+          }
 
           //check region
           if(cconf.isCutX)
@@ -162,7 +138,6 @@ public class AkiraBinaryTbz2{
             itag=Tool.cutRange(itag,ra, atoms.h, 'z', cconf.zMin, cconf.zMax);
           if(cconf.isCutSphere)
             itag=Tool.cutShepre(itag,ra, atoms.h,cconf.cutCenter, cconf.cutRadius );
-
 
           //add
           if(itag>0){
@@ -182,6 +157,7 @@ public class AkiraBinaryTbz2{
             }
           }
 
+
           //progress bar
           int digit=1;
           if(digit<natm/30)digit=natm/30;
@@ -194,12 +170,13 @@ public class AkiraBinaryTbz2{
             System.out.print("] ");
             System.out.print(String.format("%3.0f %%",i/(float)natm*100));
           }
-        }//end of i::readNatoms
 
+        }//end of i::natm
         //finish progress bar
         System.out.print("\r");
         for(int j=0;j<100;j++)System.out.print(" ");
         System.out.print("\r");
+
 
         //read atoms info
         if(cconf.isCutX || cconf.isCutY || cconf.isCutZ || cconf.isCutSphere){
@@ -230,79 +207,53 @@ public class AkiraBinaryTbz2{
 
 
 
+
         //read volume data
         for(int iv=0;iv<nvolBlock;iv++){
-          bb=null;
-          bb = ByteBuffer.allocate(1024);
-          bb.putInt(dis.readInt());
-          bb.putInt(dis.readInt());//nvx
-          bb.putInt(dis.readInt());//nvy
-          bb.putInt(dis.readInt());//nvz
-          bb.putInt(dis.readInt());
-          if(cconf.readFileEndian.get(itarget).startsWith("little"))
-            bb.order(ByteOrder.LITTLE_ENDIAN);
-          int nvx=bb.getInt(4);
-          int nvy=bb.getInt(8);
-          int nvz=bb.getInt(12);
+          //division of volume
+          line = br.readLine();
+          tokens.setString( line );
+          tokens.setDelim( " " );
+          elem = tokens.getTokens();
+          epnum.setString( elem[0] );
+          int nvx= (int)(epnum.getNumber());
+          epnum.setString( elem[1] );
+          int nvy= (int)(epnum.getNumber());
+          epnum.setString( elem[2] );
+          int nvz= (int)(epnum.getNumber());
           int nvol=nvz*nvy*nvx;
 
           //origin of volume
           float[] vorg=new float[3];
-          bb=null;
-          bb = ByteBuffer.allocate(1024);
-          bb.putInt(dis.readInt());
-          bb.putFloat(dis.readFloat());//org x
-          bb.putFloat(dis.readFloat());//org y
-          bb.putFloat(dis.readFloat());//org z
-          bb.putInt(dis.readInt());
-          if(cconf.readFileEndian.get(itarget).startsWith("little"))
-            bb.order(ByteOrder.LITTLE_ENDIAN);
-          vorg[0] = (float)(bb.getFloat(4));
-          vorg[1] = (float)(bb.getFloat(8));
-          vorg[2] = (float)(bb.getFloat(12));
-
-          //read h matrix
+          line = br.readLine();
+          tokens.setString( line );
+          tokens.setDelim( " " );
+          elem = tokens.getTokens();
+          for( int j=0; j<3; j++ ){
+            epnum.setString( elem[j] );
+            vorg[j] = (float)(epnum.getNumber());
+          }
+          //h-matirx of volume
           float[][] hv=new float[3][3];
-          bb=null;
-          bb = ByteBuffer.allocate(1024);
-          bb.putInt(dis.readInt());
-          bb.putFloat(dis.readFloat());//h11
-          bb.putFloat(dis.readFloat());//h12
-          bb.putFloat(dis.readFloat());//h13
-          bb.putInt(dis.readInt());
-          bb.putInt(dis.readInt());
-          bb.putFloat(dis.readFloat());//h21
-          bb.putFloat(dis.readFloat());//h22
-          bb.putFloat(dis.readFloat());//h23
-          bb.putInt(dis.readInt());
-          bb.putInt(dis.readInt());
-          bb.putFloat(dis.readFloat());//h31
-          bb.putFloat(dis.readFloat());//h32
-          bb.putFloat(dis.readFloat());//h33
-          bb.putInt(dis.readInt());
-
-          if(cconf.readFileEndian.get(itarget).startsWith("little"))
-            bb.order(ByteOrder.LITTLE_ENDIAN);
-          //now h matrix is angstrom
-          hv[0][0] = (float)(bb.getFloat(4));
-          hv[1][0] = (float)(bb.getFloat(8));
-          hv[2][0] = (float)(bb.getFloat(12));
-          hv[0][1] = (float)(bb.getFloat(24));
-          hv[1][1] = (float)(bb.getFloat(28));
-          hv[2][1] = (float)(bb.getFloat(32));
-          hv[0][2] = (float)(bb.getFloat(44));
-          hv[1][2] = (float)(bb.getFloat(48));
-          hv[2][2] = (float)(bb.getFloat(52));
+          for( int i=0; i<3; i++ ){
+            line = br.readLine();
+            tokens.setString( line );
+            elem = tokens.getTokens();
+            for( int j=0; j<3; j++ ){
+              epnum.setString( elem[j] );
+              hv[i][j] = (float)(epnum.getNumber());
+            }
+          }
 
           //volume data
           for(int ivz=0;ivz<nvz;ivz++){
             for(int ivy=0;ivy<nvy;ivy++){
               for(int ivx=0;ivx<nvx;ivx++){
-                bb=null;
-                bb = ByteBuffer.allocate(1024);
-                bb.putInt(dis.readInt());
-                bb.putFloat(dis.readFloat());//volume
-                bb.putInt(dis.readInt());
+                line = br.readLine();
+                tokens.setString( line );
+                elem = tokens.getTokens(); //total data of a line
+                epnum.setString( elem[0] );
+                float voxel = (float)(epnum.getNumber());
 
                 tp[0]=(ivx+0.5f)/(float)nvx;
                 tp[1]=(ivy+0.5f)/(float)nvy;
@@ -313,7 +264,7 @@ public class AkiraBinaryTbz2{
                 atoms.r[atoms.n][0]+=vorg[0];
                 atoms.r[atoms.n][1]+=vorg[1];
                 atoms.r[atoms.n][2]+=vorg[2];
-                atoms.data[atoms.n][0]=(float)(bb.getFloat(4));
+                atoms.data[atoms.n][0]=voxel;
                 atoms.n++;
 
                 //progress bar
@@ -329,22 +280,24 @@ public class AkiraBinaryTbz2{
                   System.out.print("] ");
                   System.out.print(String.format("%3.0f %%",ii/(float)nvol*100));
                 }
-              }
-            }
-          }
+              }//ix
+            }//iy
+          }//iz
           //finish progress bar
           System.out.print("\r");
           for(int j=0;j<100;j++)System.out.print(" ");
           System.out.print("\r");
           //write info
           System.out.print(String.format("  |- VOLUME%d      : %8d\n",iv,nvol));
-        }
+        }//end of iv
+
 
 
 
         //close
         bos.close();
         dis.close();
+        br.close();
 
 
         //create bonds
@@ -361,7 +314,6 @@ public class AkiraBinaryTbz2{
         atomFileIO.existBonds=false;
       }
 
-
         //write to file
         atomFileIO.write(atoms,bonds);
         System.out.print("\n");
@@ -374,12 +326,12 @@ public class AkiraBinaryTbz2{
       //close
       tin.close();
 
-    }//end of try
-    catch ( IOException e ){
+    }catch ( IOException e ){
       System.out.println(" CANNOT READ " + filePath );
       (new File(cconf.systemName+cconf.fileExtension)).delete();
       System.exit(0);
     }//end of catch
 
-  }//fromTBZ2Binary
+  }//end of conv
+
 }

@@ -19,7 +19,7 @@ import viewer.viewConfigPanel.*;
 import viewer.LF.*;
 
 /**
- * This class Controllers everything.
+ * This class controls everything.
  * SO THIS CLASS IS MAIN OF AKIRAView.
  *
  */

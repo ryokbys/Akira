@@ -20,11 +20,12 @@ import viewer.renderer.*;
 import viewer.*;
 
 public class AtomLabel {
+
   private RenderingWindow rw;
+
   public AtomLabel(RenderingWindow rw){
     this.rw=rw;
   }
-
 
   private int label_t=Const.DISPLAY_LIST_EMPTY;
   public void show(){
@@ -40,7 +41,7 @@ public class AtomLabel {
 
 
   private void makeLabel( GL2 gl, GLU glu, GLUT glut,
-                          viewer.renderer.Atoms atoms, ViewConfig vconf,
+                          Atoms atoms, ViewConfig vconf,
                           float[] mvm ){
     HashMap<Integer,Integer> tagCount = new HashMap<Integer,Integer>();
     double[][] mat  = new double[4][4];
@@ -57,9 +58,13 @@ public class AtomLabel {
 
     label_t = gl.glGenLists(1);
     gl.glNewList( label_t, GL2.GL_COMPILE );
-    for( int i=0; i<atoms.n; i++ ){
-      if(atoms.vtag[i]<0)continue;
-      int itag  = atoms.tag[i]-1;
+    int natm= atoms.getNumAtoms();
+    int[] vtag= rw.atmRndr.vtag;
+    for( int i=0; i<natm; i++ ){
+      if( vtag[i]<0 )continue;
+      Atom ai= atoms.getAtom(i);
+      int itag  = ai.tag-1;
+      float[] pos= ai.pos;
       if( itag >= 0 ){
         float r = (float)vconf.tagRadius[itag];
         rr[2] = r*sr;
@@ -67,9 +72,9 @@ public class AtomLabel {
           rv[k] = 0.0f;
           for( int j=0; j<4; j++ ) rv[k] += mati[k][j]*rr[j];
         }
-        gl.glRasterPos3f( atoms.r[i][0] + rv[0],
-                          atoms.r[i][1] + rv[1],
-                          atoms.r[i][2] + rv[2] );
+        gl.glRasterPos3f( pos[0] + rv[0],
+                          pos[1] + rv[1],
+                          pos[2] + rv[2] );
         //switch string
         String str;
         switch( rw.atomLabelType ){

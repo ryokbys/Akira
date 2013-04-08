@@ -12,7 +12,7 @@ import converter.*;
  * Reading XCrysDen
  */
 public class XCrysDen{
-  public static void conv(MyFileIO atomFileIO,ConvConfig cconf,
+  public static void conv(AkiraFileIO atomFileIO,ConvConfig cconf,
                           int itarget,int ithFrame){
 
     for(int ifrm=cconf.startFrame.get(itarget);

@@ -64,10 +64,10 @@ public class ViewConfig implements Serializable{
   public boolean isSelectionTorsion;
 
   //data
-  public float  dataRange[][]  = new float[Const.DATA][2];
+  public float  dataRange[][]  = new float[Atom.MAX_NUM_DATA][2];
   public float  dataCutRange[] = new float[2];
-  public String dataLegend[]   = new String[Const.DATA];
-  public String dataFormat[]   = new String[Const.DATA];
+  public String dataLegend[]   = new String[Atom.MAX_NUM_DATA];
+  public String dataFormat[]   = new String[Atom.MAX_NUM_DATA];
 
   //bond
   public float   bondRadius;
@@ -1296,8 +1296,8 @@ public class ViewConfig implements Serializable{
 
   //light
   public void resetLight(){
-    lightPos[0] = 10.0f;
-    lightPos[1] = 10.0f;
+    lightPos[0] = 20.0f;
+    lightPos[1] = 20.0f;
     lightPos[2] = 100.0f;
     lightPos[3] = 0.0f;
 

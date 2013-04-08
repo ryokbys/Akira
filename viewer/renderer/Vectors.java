@@ -64,14 +64,15 @@ public class Vectors implements Renderer{
     int slice=vconf.vecCylinderSlice;
 
     float[] color=new float[4];
-
+    int natm= rw.atoms.getNumAtoms();
 
     lengthMax=0.f;
-    for(int i=0; i<rw.atoms.n; i++ ){
+    for(int i=0; i<natm; i++ ){
+      Atom ai= rw.atoms.getAtom(i);
       float tmp=
-        rw.atoms.data[i][ix]*rw.atoms.data[i][ix]+
-        rw.atoms.data[i][iy]*rw.atoms.data[i][iy]+
-        rw.atoms.data[i][iz]*rw.atoms.data[i][iz];
+        ai.auxData[ix]*ai.auxData[ix]+
+        ai.auxData[iy]*ai.auxData[iy]+
+        ai.auxData[iz]*ai.auxData[iz];
       if(tmp>lengthMax)lengthMax=tmp;
     }
 
@@ -91,16 +92,16 @@ public class Vectors implements Renderer{
       //line
       gl.glDisable( GL2.GL_LIGHTING );
       gl.glLineWidth(2.f);
-      for(int i=0; i<rw.atoms.n; i++ ){
-        if(rw.atoms.vtag[i]<0)continue;
+      for(int i=0; i<natm; i++ ){
+        if(rw.atmRndr.vtag[i]<0)continue;
 
+        Atom ai= rw.atoms.getAtom(i);
         gl.glPushMatrix();
-        gl.glTranslatef( rw.atoms.r[i][0],rw.atoms.r[i][1],rw.atoms.r[i][2] );
+        gl.glTranslatef( ai.pos[0],ai.pos[1],ai.pos[2] );
 
-
-        float[] t = Coordinate.xyz2rtp( rw.atoms.data[i][ix],
-                                        rw.atoms.data[i][iy],
-                                        rw.atoms.data[i][iz]);
+        float[] t = Coordinate.xyz2rtp( ai.auxData[ix],
+                                        ai.auxData[iy],
+                                        ai.auxData[iz]);
 
         gl.glRotatef( t[1], 0.0f, 0.0f, 1.0f );//phi
         gl.glRotatef( t[2], 0.0f, 1.0f, 0.0f );//theta
@@ -108,7 +109,7 @@ public class Vectors implements Renderer{
         gl.glBegin(GL2.GL_LINES);
 
         if(rw.renderingVectorColorType==0){
-          color=rw.atoms.getAtomColor(i);
+          color=rw.atmRndr.getAtomColor(i);
         }else if(rw.renderingVectorColorType==1){
           color=ctable.getColor(t[0]);
         }
@@ -129,18 +130,19 @@ public class Vectors implements Renderer{
       gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_EMISSION, vconf.atomEmmission, 0 );
       gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, vconf.atomAmb, 0 );
 
-
-      for(int i=0; i<rw.atoms.n; i++ ){
-        if(rw.atoms.vtag[i]<0)continue;
+      for(int i=0; i<natm; i++ ){
+        if(rw.atmRndr.vtag[i]<0)continue;
+        
+        Atom ai= rw.atoms.getAtom(i);
         gl.glPushMatrix();
-        gl.glTranslatef( rw.atoms.r[i][0],rw.atoms.r[i][1],rw.atoms.r[i][2] );
+        gl.glTranslatef( ai.pos[0],ai.pos[1],ai.pos[2] );
 
-        float[] t = Coordinate.xyz2rtp( rw.atoms.data[i][ix],
-                                        rw.atoms.data[i][iy],
-                                        rw.atoms.data[i][iz]);
+        float[] t = Coordinate.xyz2rtp( ai.auxData[ix],
+                                        ai.auxData[iy],
+                                        ai.auxData[iz]);
 
         if(rw.renderingVectorColorType==0){
-          color=rw.atoms.getAtomColor(i);
+          color=rw.atmRndr.getAtomColor(i);
         }else if(rw.renderingVectorColorType==1){
           color=ctable.getColor(t[0]);
         }

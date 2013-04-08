@@ -39,7 +39,7 @@ public class Plane {
   private GLUT glut;
   private Controller ctrl;
   private ViewConfig vconf;
-  private viewer.renderer.Atoms atoms;
+  private Atoms atoms;
   private RenderingWindow rw;
   //constructor
   public Plane(Controller ctrl,RenderingWindow rw){
@@ -65,6 +65,8 @@ public class Plane {
     gl.glNewList( plane_t, GL2.GL_COMPILE );
 
     ArrayList<ArrayList<Integer>> lspr=null;
+
+    float[][] h= atoms.hmat;
 
     //tetrahedron
     if(vconf.isTetrahedronMode){
@@ -104,8 +106,8 @@ public class Plane {
           n[j]=0.f;
           p[j]=0.f;
           for(int k=0;k<3;k++){
-            n[j]+=atoms.h[j][k]*vconf.planeNormal[i][k];
-            p[j]+=atoms.h[j][k]*vconf.planePoint[i][k];
+            n[j]+= h[j][k]*vconf.planeNormal[i][k];
+            p[j]+= h[j][k]*vconf.planePoint[i][k];
           }
         }
         ArrayList<Float> vertex= makePlane(n,p);
@@ -134,6 +136,8 @@ public class Plane {
    * 平面とboxの交点を返す．
    */
   private ArrayList<Float> makePlane(float[] normalvec,float[] pointvec){
+    float[][] h= atoms.hmat;
+
     //determine normal vector
     if(normalvec[2]!=0.f){
       i0=0;
@@ -157,22 +161,22 @@ public class Plane {
     sp[i0] = 0f;
     sp[i1] = 0.f;
     sp[i2] = 0.f;
-    tp = chgScale( atoms.h,sp );
+    tp = chgScale( h,sp );
     getPoint(normalvec, tp, pointvec,tmpV);
     sp[i0] = 1.f;
     sp[i1] = 0.f;
     sp[i2] = 0.f;
-    tp = chgScale( atoms.h,sp );
+    tp = chgScale( h,sp );
     getPoint(normalvec, tp, pointvec,tmpV);
     sp[i0] = 1.f;
     sp[i1] = 1.f;
     sp[i2] = 0.f;
-    tp = chgScale( atoms.h,sp );
+    tp = chgScale( h,sp );
     getPoint(normalvec, tp, pointvec,tmpV);
     sp[i0] = 0.f;
     sp[i1] = 1.f;
     sp[i2] = 0.f;
-    tp = chgScale( atoms.h,sp );
+    tp = chgScale( h,sp );
     getPoint(normalvec, tp, pointvec,tmpV);
 
 
@@ -415,20 +419,21 @@ public class Plane {
    */
   public void getPoint( float[] normal, float[] tp, float[] point,ArrayList<Float> tmpV){
 
+    float[][] h= atoms.hmat;
 
     tp[i2] = (ip(normal,point) -normal[i0]*tp[i0]-normal[i1]*tp[i1])/normal[i2];
 
     float[] v1=new float[3];
     float[] v2=new float[3];
     float t,tmp;
-    if(tp[i2]>atoms.h[i2][i2]){
+    if(tp[i2]>h[i2][i2]){
       ///// up 1
-      v1[0]=atoms.h[0][i2];
-      v1[1]=atoms.h[1][i2];
-      v1[2]=atoms.h[2][i2];
-      v2[0]=atoms.h[0][i1]+atoms.h[0][i2];
-      v2[1]=atoms.h[1][i1]+atoms.h[1][i2];
-      v2[2]=atoms.h[2][i1]+atoms.h[2][i2];
+      v1[0]= h[0][i2];
+      v1[1]= h[1][i2];
+      v1[2]= h[2][i2];
+      v2[0]= h[0][i1] +h[0][i2];
+      v2[1]= h[1][i1] +h[1][i2];
+      v2[2]= h[2][i1] +h[2][i2];
       tmp=ip(normal,v1)-ip(normal,v2);
       if(tmp!=0.f){
         t=(ip(normal,point)-ip(normal,v2))/tmp;
@@ -443,12 +448,12 @@ public class Plane {
       }
 
       ///// up 2
-      v1[0]=atoms.h[0][i1]+atoms.h[0][i2];
-      v1[1]=atoms.h[1][i1]+atoms.h[1][i2];
-      v1[2]=atoms.h[2][i1]+atoms.h[2][i2];
-      v2[0]=atoms.h[0][i0]+atoms.h[0][i1]+atoms.h[0][i2];
-      v2[1]=atoms.h[1][i0]+atoms.h[1][i1]+atoms.h[1][i2];
-      v2[2]=atoms.h[2][i0]+atoms.h[2][i1]+atoms.h[2][i2];
+      v1[0]= h[0][i1] +h[0][i2];
+      v1[1]= h[1][i1] +h[1][i2];
+      v1[2]= h[2][i1] +h[2][i2];
+      v2[0]= h[0][i0] +h[0][i1] +h[0][i2];
+      v2[1]= h[1][i0] +h[1][i1] +h[1][i2];
+      v2[2]= h[2][i0] +h[2][i1] +h[2][i2];
       tmp=ip(normal,v1)-ip(normal,v2);
       if(tmp!=0.f){
         t=(ip(normal,point)-ip(normal,v2))/tmp;
@@ -463,12 +468,12 @@ public class Plane {
       }
 
       //up 3
-      v1[0]=atoms.h[0][i0]+atoms.h[0][i1]+atoms.h[0][i2];
-      v1[1]=atoms.h[1][i0]+atoms.h[1][i1]+atoms.h[1][i2];
-      v1[2]=atoms.h[2][i0]+atoms.h[2][i1]+atoms.h[2][i2];
-      v2[0]=atoms.h[0][i0]+atoms.h[0][i2];
-      v2[1]=atoms.h[1][i0]+atoms.h[1][i2];
-      v2[2]=atoms.h[2][i0]+atoms.h[2][i2];
+      v1[0]=h[0][i0]+h[0][i1]+h[0][i2];
+      v1[1]=h[1][i0]+h[1][i1]+h[1][i2];
+      v1[2]=h[2][i0]+h[2][i1]+h[2][i2];
+      v2[0]=h[0][i0]+h[0][i2];
+      v2[1]=h[1][i0]+h[1][i2];
+      v2[2]=h[2][i0]+h[2][i2];
       tmp=ip(normal,v1)-ip(normal,v2);
       if(tmp!=0.f){
         t=(ip(normal,point)-ip(normal,v2))/tmp;
@@ -483,12 +488,12 @@ public class Plane {
       }
 
       // up 4
-      v1[0]=atoms.h[0][i0]+atoms.h[0][i2];
-      v1[1]=atoms.h[1][i0]+atoms.h[1][i2];
-      v1[2]=atoms.h[2][i0]+atoms.h[2][i2];
-      v2[0]=atoms.h[0][i2];
-      v2[1]=atoms.h[1][i2];
-      v2[2]=atoms.h[2][i2];
+      v1[0]=h[0][i0]+h[0][i2];
+      v1[1]=h[1][i0]+h[1][i2];
+      v1[2]=h[2][i0]+h[2][i2];
+      v2[0]=h[0][i2];
+      v2[1]=h[1][i2];
+      v2[2]=h[2][i2];
       tmp=ip(normal,v1)-ip(normal,v2);
       if(tmp!=0.f){
         t=(ip(normal,point)-ip(normal,v2))/tmp;
@@ -507,9 +512,9 @@ public class Plane {
       v1[0]=0.f;
       v1[1]=0.f;
       v1[2]=0.f;
-      v2[0]=atoms.h[0][i1];
-      v2[1]=atoms.h[1][i1];
-      v2[2]=atoms.h[2][i1];
+      v2[0]=h[0][i1];
+      v2[1]=h[1][i1];
+      v2[2]=h[2][i1];
       tmp=ip(normal,v1)-ip(normal,v2);
       if(tmp!=0.f){
         t=(ip(normal,point)-ip(normal,v2))/tmp;
@@ -523,12 +528,12 @@ public class Plane {
         }
       }
       ///// down 2
-      v1[0]=atoms.h[0][i1];
-      v1[1]=atoms.h[1][i1];
-      v1[2]=atoms.h[2][i1];
-      v2[0]=atoms.h[0][i0]+atoms.h[0][i1];
-      v2[1]=atoms.h[1][i0]+atoms.h[1][i1];
-      v2[2]=atoms.h[2][i0]+atoms.h[2][i1];
+      v1[0]=h[0][i1];
+      v1[1]=h[1][i1];
+      v1[2]=h[2][i1];
+      v2[0]=h[0][i0]+h[0][i1];
+      v2[1]=h[1][i0]+h[1][i1];
+      v2[2]=h[2][i0]+h[2][i1];
       tmp=ip(normal,v1)-ip(normal,v2);
       if(tmp!=0.f){
         t=(ip(normal,point)-ip(normal,v2))/tmp;
@@ -543,12 +548,12 @@ public class Plane {
       }
 
       //down 3
-      v1[0]=atoms.h[0][i0]+atoms.h[0][i1];
-      v1[1]=atoms.h[1][i0]+atoms.h[1][i1];
-      v1[2]=atoms.h[2][i0]+atoms.h[2][i1];
-      v2[0]=atoms.h[0][i0];
-      v2[1]=atoms.h[1][i0];
-      v2[2]=atoms.h[2][i0];
+      v1[0]=h[0][i0]+h[0][i1];
+      v1[1]=h[1][i0]+h[1][i1];
+      v1[2]=h[2][i0]+h[2][i1];
+      v2[0]=h[0][i0];
+      v2[1]=h[1][i0];
+      v2[2]=h[2][i0];
       tmp=ip(normal,v1)-ip(normal,v2);
       if(tmp!=0.f){
         t=(ip(normal,point)-ip(normal,v2))/tmp;
@@ -563,9 +568,9 @@ public class Plane {
       }
 
       // down 4
-      v1[0]=atoms.h[0][i0];
-      v1[1]=atoms.h[1][i0];
-      v1[2]=atoms.h[2][i0];
+      v1[0]=h[0][i0];
+      v1[1]=h[1][i0];
+      v1[2]=h[2][i0];
       v2[0]=0.f;
       v2[1]=0.f;
       v2[2]=0.f;
@@ -600,28 +605,33 @@ public class Plane {
    * 四面体を作成
    */
   private ArrayList<ArrayList<Float>> makeTetrahedron(int isp,float rcut,
-                                                      ArrayList<ArrayList<Integer>> lspr
-                                                      ){
+                                                      ArrayList<ArrayList<Integer>> lspr ){
+
+    int natm= atoms.getNumAtoms();
     ArrayList<ArrayList<Float>> tetra= new ArrayList<ArrayList<Float>>();
     float rcut2=rcut*rcut;
+    int[] vtag= rw.atmRndr.vtag;
 
-    for(int i=0;i<atoms.n;i++){
-      if(atoms.tag[i]!=isp)continue;
-      if(atoms.vtag[i]<0)continue;//skip invisible atom
+    for(int i=0; i<natm; i++ ){
+      Atom ai= atoms.getAtom(i);
+      if( ai.tag!=isp ) continue;
+      if( vtag[i]<0 ) continue;//skip invisible atom
 
-      float[] ri=atoms.r[i];
+      float[] ri= ai.pos;
       ArrayList<Integer> iList = lspr.get(i);
       ArrayList<Float> itetra= new ArrayList<Float>();
       for(int jj=0;jj<iList.size();jj++){
         int j= iList.get(jj);// obtain neighbor from lspr
-        if(atoms.vtag[j]<0)continue;//skip invisible atom
-        if(i==j)continue;
+        Atom aj= atoms.getAtom(j);
+        if( vtag[j]<0 ) continue;//skip invisible atom
+        if( i==j ) continue;
         float rij=0.f;
-        for(int l=0;l<3;l++)rij+=(atoms.r[j][l]-ri[l])*(atoms.r[j][l]-ri[l]);
-        if(rij<rcut2){
-          itetra.add(atoms.r[j][0]);
-          itetra.add(atoms.r[j][1]);
-          itetra.add(atoms.r[j][2]);
+        for(int l=0;l<3;l++)
+          rij+=( aj.pos[l]-ri[l] )*( aj.pos[l]-ri[l] );
+        if( rij<rcut2 ){
+          itetra.add( aj.pos[0]);
+          itetra.add( aj.pos[1]);
+          itetra.add( aj.pos[2]);
         }
       }//end of jj
       tetra.add(itetra);

@@ -10,7 +10,7 @@ import converter.*;
  *
  */
 public class Coord{
-  public static void conv(MyFileIO atomFileIO,ConvConfig cconf,
+  public static void conv(AkiraFileIO atomFileIO,ConvConfig cconf,
                           int itarget,int ithFrame){
 
 

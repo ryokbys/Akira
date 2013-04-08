@@ -41,26 +41,26 @@ public class Annotation{
 
     if(rw.visibleTime)
       showTime(rw.gl,rw.glu,rw.glut,rw.vconf,
-               rw.atoms.startTime, rw.atoms.timeInterval, rw.atoms.nframe);
+               rw.startTime, 
+               rw.timeInterval,
+               rw.atmRndr.nframe);
 
     if(rw.visibleLegend && rw.renderingAtomDataIndex>0){
       if(vconf.isVisibleAtomColorTable)
         showDataLegend(rw.gl,rw.glu,rw.glut,rw.vconf,
                        rw.vconf.ticsType,
-                       rw.atoms.ctable,
+                       rw.atmRndr.ctable,
                        vconf.atomColorTablePos,
                        vconf.dataLegend[rw.renderingAtomDataIndex-1],
-                       vconf.dataFormat[rw.renderingAtomDataIndex-1]
-                       );
+                       vconf.dataFormat[rw.renderingAtomDataIndex-1]);
     }
     if(vconf.isVisibleBondColorTable)
       showDataLegend(rw.gl,rw.glu,rw.glut,rw.vconf,
                      rw.vconf.ticsType,
-                     rw.bonds.ctable,
+                     rw.bndRndr.ctable,
                      vconf.bondColorTablePos,
                      vconf.bondLegend,
-                     vconf.bondColorTableFormat
-                     );
+                     vconf.bondColorTableFormat);
 
     if(vconf.isVisibleVecColorTable)
       showDataLegend(rw.gl,rw.glu,rw.glut,rw.vconf,
@@ -68,8 +68,7 @@ public class Annotation{
                      rw.vec.ctable,
                      vconf.vecColorTablePos,
                      vconf.vecLegend,
-                     vconf.vecColorTableFormat
-                     );
+                     vconf.vecColorTableFormat);
 
     if(vconf.isVisibleVolColorTable)
       showDataLegend(rw.gl,rw.glu,rw.glut,rw.vconf,
@@ -77,12 +76,7 @@ public class Annotation{
                      rw.volume.ctable,
                      vconf.volColorTablePos,
                      vconf.volLegend,
-                     vconf.volColorTableFormat
-                     );
-
-
-
-
+                     vconf.volColorTableFormat);
   }
 
   void showTime(GL2 gl, GLU glu, GLUT glut,

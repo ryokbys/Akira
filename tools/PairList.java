@@ -39,16 +39,19 @@ public class PairList{
     ArrayList<ArrayList<Integer>> lspr= PairList.makePairList(atoms,rcut,deleteVoxel,isConsiderPBC);
 
     ArrayList<ArrayList<Integer>> kthNeighbors= new ArrayList<ArrayList<Integer>>();
+    int natm= atoms.getNumAtoms();
 
-    for(int i=0;i<atoms.n;i++){
+    for( int i=0; i<natm; i++ ){
+      Atom ai= atoms.getAtom(i);
       LinkedList<MyLength> iLengthList= new LinkedList<MyLength>();
       ArrayList<Integer> iList = lspr.get(i);
       for(int jj=0;jj<iList.size();jj++){
         int j=iList.get(jj);
+        Atom aj= atoms.getAtom(j);
         //length
         double rij2=0.0;
         for(int l=0;l<3;l++){
-          rij2+=(atoms.r[j][l]-atoms.r[i][l])*(atoms.r[j][l]-atoms.r[i][l]);
+          rij2+=( aj.pos[l]-ai.pos[l] )*( aj.pos[l]-ai.pos[l] );
         }
 
         //add j to iLengthList in sorted order
@@ -67,9 +70,11 @@ public class PairList{
       //add only kth components
       ArrayList<Integer> iNeighbor=new ArrayList<Integer>();
       if(iLengthList.size()>kth){
-        for(int k=0;k<kth;k++)iNeighbor.add(iLengthList.get(k).n);
+        for(int k=0;k<kth;k++)
+          iNeighbor.add(iLengthList.get(k).n);
       }else{
-        for(int k=0;k<iLengthList.size();k++)iNeighbor.add(iLengthList.get(k).n);
+        for(int k=0;k<iLengthList.size();k++)
+          iNeighbor.add(iLengthList.get(k).n);
       }
 
 
@@ -89,15 +94,17 @@ public class PairList{
     //int ny= (int)(atoms.h[1][1]/rcut)+1;
     //int nz= (int)(atoms.h[2][2]/rcut)+1;
 
-    double lx=Math.sqrt(atoms.h[0][0]*atoms.h[0][0]+
-                        atoms.h[1][0]*atoms.h[1][0]+
-                        atoms.h[2][0]*atoms.h[2][0]);
-    double ly=Math.sqrt(atoms.h[0][1]*atoms.h[0][1]+
-                        atoms.h[1][1]*atoms.h[1][1]+
-                        atoms.h[2][1]*atoms.h[2][1]);
-    double lz=Math.sqrt(atoms.h[0][2]*atoms.h[0][2]+
-                        atoms.h[1][2]*atoms.h[1][2]+
-                        atoms.h[2][2]*atoms.h[2][2]);
+    float[][] h= atoms.hmat;
+
+    double lx=Math.sqrt(h[0][0]*h[0][0]+
+                        h[1][0]*h[1][0]+
+                        h[2][0]*h[2][0]);
+    double ly=Math.sqrt(h[0][1]*h[0][1]+
+                        h[1][1]*h[1][1]+
+                        h[2][1]*h[2][1]);
+    double lz=Math.sqrt(h[0][2]*h[0][2]+
+                        h[1][2]*h[1][2]+
+                        h[2][2]*h[2][2]);
 
     int nx= (int)(lx/rcut)+1; // num of cells along x-direction
     int ny= (int)(ly/rcut)+1;
@@ -105,15 +112,15 @@ public class PairList{
 
     if(nx < 3 || ny < 3 || nz < 3 ){
       // linked-list may not be necessary, because the system is small
-      return makePairListDirectly(atoms,rcut,deleteVoxel,isConsiderPBC);
+      return makePairListDirectly( atoms,rcut,deleteVoxel,isConsiderPBC );
     }else{ // enough large system
-      int nlist= atoms.n +nx*ny*nz; // size of the list
+      int nlist= atoms.getNumAtoms() +nx*ny*nz; // size of the list
       int[] llist= new int[nlist];
       //--- make linked-list
-      makeLinkedList(nx,ny,nz,nlist,llist,atoms,deleteVoxel);
+      makeLinkedList( nx,ny,nz,nlist,llist,atoms,deleteVoxel );
 
       //--- make pair-list using linked-list
-      return makePairListUsingLinkedList(rcut,nx,ny,nz,nlist,llist,atoms,deleteVoxel,isConsiderPBC);
+      return makePairListUsingLinkedList( rcut,nx,ny,nz,nlist,llist,atoms,deleteVoxel,isConsiderPBC );
     }
 
   }
@@ -121,17 +128,20 @@ public class PairList{
   // make linked-list
   public static void makeLinkedList(int nx, int ny, int nz, int nlist, int[] llist, Atoms atoms, boolean deleteVoxel){
     // [0:natm-1]=body, [natm:]=header
-    for(int i=0; i<nlist; i++)llist[i]= -1;
+    for(int i=0; i<nlist; i++)
+      llist[i]= -1;
 
     float dx=1.f/nx;
     float dy=1.f/ny;
     float dz=1.f/nz;
-
-    for(int i=0; i<atoms.n; i++){
-      int itag = atoms.tag[i];
-      if( itag < 0 )continue;
-      if(deleteVoxel &&  itag==Const.VOLUME_DATA_TAG)break;//原子，volumedataの順で格納されているのを仮定
-      float[] tp=mulH(atoms.hinv,atoms.r[i]);
+    int natm= atoms.getNumAtoms();
+    
+    for(int i=0; i<natm; i++){
+      Atom ai= atoms.getAtom(i);
+      int itag = ai.tag;
+      if( itag < 0 ) continue;
+      if( deleteVoxel &&  itag==Const.VOLUME_DATA_TAG ) break;//原子，volumedataの順で格納されているのを仮定
+      float[] tp=mulH( atoms.hmati, ai.pos );
       int ix= (int)(tp[0]/dx);
       if(ix<0)ix=0;
       if(ix>=nx)ix=nx-1;
@@ -143,9 +153,9 @@ public class PairList{
       if(iz>=nz)iz=nz-1;
 
       int ii= ix*ny*nz +iy*nz +iz;
-      int j= llist[atoms.n +ii];
+      int j= llist[natm +ii];
       llist[i]= j;
-      llist[atoms.n +ii]= i;
+      llist[natm +ii]= i;
     }
   }
 
@@ -156,13 +166,15 @@ public class PairList{
     float rc2= rcut*rcut;
     ArrayList<ArrayList<Integer>> lspr= new ArrayList<ArrayList<Integer>>();
     float ds[]  = new float[3];
+    int natm= atoms.getNumAtoms();
 
-    for(int i=0;i<atoms.n;i++){
-      int itag = atoms.tag[i];
+    for(int i=0;i<natm;i++){
+      Atom ai= atoms.getAtom(i);
+      int itag = ai.tag;
       if( itag < 0 )continue;
       //if( itag==Const.VOLUME_DATA_TAG)break;//原子，volumedataの順で格納されているのを仮定
       ArrayList<Integer> iList = new ArrayList<Integer>();
-      float[] xi=mulH(atoms.hinv,atoms.r[i]);
+      float[] xi=mulH(atoms.hmati, ai.pos);
       int ix= (int)(xi[0]*nx);
       int iy= (int)(xi[1]*ny);
       int iz= (int)(xi[2]*nz);
@@ -193,21 +205,23 @@ public class PairList{
 
             int jj=jx*ny*nz +jy*nz +jz;
 
-            int j=llist[atoms.n+jj];
+            int j=llist[natm+jj];
             while(j>=0){
-              int jtag = atoms.tag[j];
+              Atom aj= atoms.getAtom(j);
+              int jtag = aj.tag;
               if( j!=i && jtag > 0 && jtag!=Const.VOLUME_DATA_TAG){
-                float[] xj=mulH(atoms.hinv,atoms.r[j]);
-                for(int k=0;k<3;k++)ds[k]= (xj[k]-xi[k]);
+                float[] xj=mulH( atoms.hmati, aj.pos );
+                for(int k=0;k<3;k++)
+                  ds[k]= (xj[k]-xi[k]);
                 //consider PBC
                 if(isConsiderPBC){
                   for(int k=0;k<3;k++){
-                    if(ds[k]>0.5)ds[k]=ds[k]-1.0f;
-                    if(ds[k]<-0.5)ds[k]=ds[k]+1.0f;
+                    if(ds[k]>0.5) ds[k]=ds[k]-1.0f;
+                    if(ds[k]<-0.5) ds[k]=ds[k]+1.0f;
                   }
                 }
 
-                float[] d=mulH(atoms.h,ds);
+                float[] d=mulH( atoms.hmat,ds );
                 float r2= d[0]*d[0] +d[1]*d[1] +d[2]*d[2];
                 if(r2 < rc2)iList.add(j);
               }
@@ -230,18 +244,21 @@ public class PairList{
     float ds[]  = new float[3];
 
     ArrayList<ArrayList<Integer>> lspr= new ArrayList<ArrayList<Integer>>();
+    int natm= atoms.getNumAtoms();
 
-
-    for(int i=0; i<atoms.n; i++){
-      int itag = atoms.tag[i];
+    for(int i=0; i<natm; i++){
+      Atom ai= atoms.getAtom(i);
+      int itag = ai.tag;
       if( itag < 0 )continue;
-      if(deleteVoxel && itag==Const.VOLUME_DATA_TAG)break;//原子，volumedataの順で格納されているのを仮定
+      if( deleteVoxel && itag==Const.VOLUME_DATA_TAG ) break;//原子，volumedataの順で格納されているのを仮定
       ArrayList<Integer> iList = new ArrayList<Integer>();
-      float[] xi=mulH(atoms.hinv,atoms.r[i]);
-      for(int j=0; j<atoms.n; j++){
+      float[] xi=mulH(atoms.hmati, ai.pos );
+      for(int j=0; j<natm; j++){
+        Atom aj= atoms.getAtom(j);
         if(i==j)continue;
-        float[] xj=mulH(atoms.hinv,atoms.r[j]);
-        for(int k=0;k<3;k++)ds[k]= (xj[k]-xi[k]);
+        float[] xj=mulH( atoms.hmati, aj.pos );
+        for(int k=0;k<3;k++)
+          ds[k]= (xj[k]-xi[k]);
         //consider PBC
         if(isConsiderPBC){
           for(int k=0;k<3;k++){
@@ -250,7 +267,7 @@ public class PairList{
           }
         }
 
-        float[] d=mulH(atoms.h,ds);
+        float[] d=mulH(atoms.hmat,ds);
         float r2= d[0]*d[0] +d[1]*d[1] +d[2]*d[2];
         if(r2 < rc2)iList.add(j);
       }
@@ -272,10 +289,12 @@ public class PairList{
       Tokens tokens = new Tokens();
       tokens.setDelim( " " );
       Exponent epnum = new Exponent();
+      int natm= atoms.getNumAtoms();
 
       //read
-      for(int i=0; i<atoms.n; i++){
-        if(atoms.tag[i]==Const.VOLUME_DATA_TAG)break;
+      for(int i=0; i<natm; i++){
+        Atom ai= atoms.getAtom(i);
+        if( ai.tag==Const.VOLUME_DATA_TAG ) break;
 
         ArrayList<Integer> iList = new ArrayList<Integer>();
 

@@ -46,13 +46,29 @@ public class RenderingWindow extends JFrame implements GLEventListener,
 
   boolean clearTmpBond=false;//for dynamic bond creation
 
-
+  // variables related not only to one frame, but also to all frames
+  public String convDate;
+  public int totalFrame;
+  public float startTime;
+  public float timeInterval;
+  public byte numData;
+  //public float hMinLength;
+  public float minHmatLength;
+  //public float[][] originalDataRange = new float[Atom.MAX_NUM_DATA][2];
+  public float[][] orgDataRange = new float[Atom.MAX_NUM_DATA][2];
+  //public int maxNatom=0;
+  public int maxNumAtoms;
+  //public float[][] hMax = new float[3][3];
+  public float[][] maxHmat = new float[3][3];
+  public byte maxNumTag; 
+  public byte[] tags;
+  public boolean[] existBonds;
 
   public boolean visibleAtoms=true;
   boolean tmpVisibleAtoms=true;//for acceleration
   static final public int renderingAtomTypeMAX=3;//point or sphere or sphere(toon)
   public int renderingAtomType=0;
-  static final public int renderingAtomDataIndexMAX=Const.DATA;//tag + data coloring
+  static final public int renderingAtomDataIndexMAX=Atom.MAX_NUM_DATA; //tag + data coloring
   public int renderingAtomDataIndex=0;//this means data index
 
   //private boolean isAtomSelecting=false;
@@ -95,8 +111,9 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   public GLUT glut;
   public GLCanvas glCanvas;
 
-  public MyFileIO fileio;
-  public viewer.renderer.Atoms atoms;
+  public AkiraFileIO fileio;
+  public Atoms atoms;
+  public AtomRenderer atmRndr;
   public Viewpoint vp;
   public Axis axis;
   public Annotation annotation;
@@ -107,14 +124,13 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   public Plane plane;
   public AtomLabel atomlabel;
   public AtomSelector selector;
-  public viewer.renderer.Bonds bonds;
+  public BondRenderer bndRndr;
   public Vectors vec;
   public Volume volume;
   public SelectorQueue sq;
   public Snapshot snapshot;
   private TrackBall trackB;
   public Controller ctrl;
-
 
   //Animator
   public FPSAnimator animator;
@@ -167,8 +183,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     //set frame propeties
     setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
 
-
-
     //Toon rendering
     toon= new Toon(vconf);
   }
@@ -194,7 +208,9 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   public void updateStatusString(){
     spFrame.setValue(currentFrame+1);
 
-    String str=String.format("Frame: %3d/%d, ",currentFrame+1,atoms.totalFrame);
+    String str=String.format("Frame: %3d/%d, "
+                             ,currentFrame+1
+                             ,totalFrame);
     if(visibleAtoms){
       switch (renderingAtomType){
       case 0:
@@ -407,17 +423,18 @@ public class RenderingWindow extends JFrame implements GLEventListener,
 
     int nextFrame=next;
 
-    if(nextFrame<0)nextFrame+=atoms.totalFrame;
-    if(nextFrame>=atoms.totalFrame)nextFrame-=atoms.totalFrame;
+    if( nextFrame<0 )nextFrame+= totalFrame;
+    if( nextFrame>= totalFrame )
+      nextFrame-= totalFrame;
 
     //set
-    fileio.set(currentFrame,nextFrame,atoms,bonds);
+    fileio.set( currentFrame,nextFrame, this );
 
     clearTmpBond=true;
 
     //increment frame
     currentFrame=nextFrame;
-    atoms.nframe=currentFrame;
+    atmRndr.nframe=currentFrame;
     remakeFlag=true;
     if(sequentialImageSave)this.repaint();
     if(!isAnimating())this.repaint();
@@ -489,23 +506,23 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   }
 
   public int getVisibleNAtoms(){
-    return atoms.visibleNatoms;
+    return atmRndr.visibleNatoms;
   }
   public int getNAtoms(){
-    return atoms.n;
+    return atoms.getNumAtoms();
   }
-  public int[] getTags(){
-    return atoms.involvedTags;
+  public byte[] getTags(){
+    return tags;
   }
 
-  public viewer.renderer.Atoms getAtoms(){
+  public Atoms getAtoms(){
     return atoms;
   }
   public float[][] getH(){
-    return atoms.h;
+    return atoms.hmat;
   }
   public float[][] getDataRange(){
-    return atoms.originalDataRange;
+    return orgDataRange;
   }
   public String getFilePath(){
     return filePath;
@@ -563,26 +580,27 @@ public class RenderingWindow extends JFrame implements GLEventListener,
 
     //monitor = new JavaSysMon();
 
-    fileio=new MyFileIO(filepath);
-    //new viewer.renderer.Atoms
-    atoms=new viewer.renderer.Atoms(this);
+    fileio=new AkiraFileIO(filepath);
+    atoms= new Atoms();
     fileio.ropen();
-    fileio.readHeader(atoms);
-    fileio.readFooter(atoms);
-    atoms.allocate4Trj();
-
-    bonds=new viewer.renderer.Bonds(this);
-
+    fileio.readHeader( this );
+    fileio.readFooter( this );
     currentFrame=0;
-    fileio.set(currentFrame,currentFrame,atoms,bonds);
+    fileio.set( currentFrame,currentFrame, this );
     //ctrl.setFrameNm(currentFrame,atoms.totalFrame,false);
 
+    atmRndr= new viewer.renderer.AtomRenderer(this);
+    atmRndr.allocate4Trj();
+
+    bndRndr= new viewer.renderer.BondRenderer(this);
 
     //add status bar
     JStatusBar statusBar = new JStatusBar();
     lStatus = new JLabel();
     ctrl.updateStatusString();
-    spFrame = new JSpinner(new SpinnerNumberModel(currentFrame+1, 1, atoms.totalFrame,1));
+    spFrame = new JSpinner(new SpinnerNumberModel(currentFrame+1,
+                                                  1,
+                                                  totalFrame,1));
     spFrame.setFocusable(false);
     spFrame.setPreferredSize(new Dimension(30, 25));
     //spFrame.addActionListener(this);
@@ -607,8 +625,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
 
 
     //atoms.setGL(gl,glu,glut);
-    atoms.makePrimitiveObjects();
-
+    atmRndr.makePrimitiveObjects();
 
     //set animator
     animator = newFPSAnimator();
@@ -812,76 +829,80 @@ public class RenderingWindow extends JFrame implements GLEventListener,
         //System.out.println(String.format("id=%d",pickedAtomID));
       }else{
         tmpSelect=false;
-        pickedAtomID = selector.getID(gl,glu,glut,atoms,vp,pressedMouseX, pressedMouseY );
+        pickedAtomID = selector.getID(gl,glu,glut,
+                                      atmRndr,vp,
+                                      pressedMouseX,
+                                      pressedMouseY );
       }
 
       if(pickedAtomID>=0){
 
         ctrl.vcWin.focusOnStatus();
         System.out.println(String.format("picked id: %d",pickedAtomID+1));
-        atoms.makePickedAtom(pickedAtomID);
+        atmRndr.makePickedAtom(pickedAtomID);
 
         //trajectory
         ctrl.setPickedID4Trj(pickedAtomID);
 
         // Write information of picked atom
+        Atom ai= atoms.getAtom(pickedAtomID);
         float[] out = new float[3];
         for(int k=0; k<3; k++)
           out[k] =
-            atoms.hinv[k][0]*atoms.r[pickedAtomID][0]+
-            atoms.hinv[k][1]*atoms.r[pickedAtomID][1]+
-            atoms.hinv[k][2]*atoms.r[pickedAtomID][2];
+            atoms.hmati[k][0] *ai.pos[0]+
+            atoms.hmati[k][1] *ai.pos[1]+
+            atoms.hmati[k][2] *ai.pos[2];
 
         System.out.println(String.format(" pos=(%12.4e,%12.4e,%12.4e) =(%12.4e,%12.4e,%12.4e)"
-                                         ,atoms.r[pickedAtomID][0]
-                                         ,atoms.r[pickedAtomID][1]
-                                         ,atoms.r[pickedAtomID][2]
+                                         ,ai.pos[0]
+                                         ,ai.pos[1]
+                                         ,ai.pos[2]
                                          ,out[0],out[1],out[2]));
         if(renderingAtomDataIndex>0){
           System.out.println(String.format(" data[%1d]=%12.4e"
                                            ,renderingAtomDataIndex
-                                           ,atoms.data[pickedAtomID][renderingAtomDataIndex-1]));
+                                           ,ai.auxData[renderingAtomDataIndex-1]));
         }
-        sq.add(pickedAtomID, atoms.r[pickedAtomID]);
+        sq.add(pickedAtomID, ai.pos);
         sq.make();
         if(vconf.isSelectionLength)System.out.println(sq.showLength());
         if(vconf.isSelectionAngle)System.out.println(sq.showAngle());
         if(vconf.isSelectionTorsion)System.out.println(sq.showTorsion());
 
-    //lines
-    if(vconf.isSelectionInfo ||vconf.isSelectionLength  ||
-       vconf.isSelectionAngle  ||vconf.isSelectionTorsion)sq.show();
-
+        //lines
+        if(vconf.isSelectionInfo ||vconf.isSelectionLength  ||
+           vconf.isSelectionAngle  ||vconf.isSelectionTorsion) sq.show();
+        
       }
     }
     //isAtomSelecting=false;
 
 
     //------draw objects
-    if( isAnimating() )incrementFrame();
+    if( isAnimating() ) incrementFrame();
 
     //region selection
-    if(sq.isBandClose){
+    if( sq.isBandClose ){
       calRegionNP();
     }
 
     //make
     box.make();
-    if(primitiveObjectMakeFlag){
-      atoms.makePrimitiveObjects();
+    if( primitiveObjectMakeFlag ){
+      atmRndr.makePrimitiveObjects();
       primitiveObjectMakeFlag=false;
     }
     if(remakeFlag){
-      atoms.make();
+      atmRndr.make();
       if(visibleBonds){
         if(fileio.existBonds){
-          bonds.make();
+          bndRndr.make();
         }else{
           if(clearTmpBond){
-            bonds.clearList();
+            bndRndr.clearList();
             clearTmpBond=false;
           }else{
-            bonds.make();
+            bndRndr.make();
           }
         }
       }
@@ -890,7 +911,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
                              vconf.isSelectionAngle  ||
                              vconf.isSelectionTorsion
                              ))
-        atoms.makePickedAtom(pickedAtomID);
+        atmRndr.makePickedAtom(pickedAtomID);
 
       if(visibleVectors)vec.make();
       plane.make(pickedAtomID);
@@ -899,19 +920,19 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     }//end of remakeFlag
 
     if(vconf.isTrjMode){
-      if(currentFrame == 0) atoms.resetTrjDList();
-      atoms.makeTrajectory(ctrl.getTrj());
+      if(currentFrame == 0) atmRndr.resetTrjDList();
+      atmRndr.makeTrajectory(ctrl.getTrj());
     }
 
 
     //atoms
     if(visibleAtoms && tmpVisibleAtoms) {
-      if( renderingAtomType==2 ){ // Toon rendering
+      if( renderingAtomType==AtomRenderer.ATOM_TYPE_TOON ){ // Toon rendering
         toon.set();
-        atoms.show();
+        atmRndr.show();
         toon.unset();
       }else{
-        atoms.show();
+        atmRndr.show();
       }
     }
     //show volume render
@@ -922,19 +943,21 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     //picked atom
     if(vconf.isSelectionInfo ||vconf.isSelectionLength  || vconf.isSelectionAngle  ||
        vconf.isSelectionTorsion  ||tmpSelect
-       )atoms.showPickedAtom();
+       )atmRndr.showPickedAtom();
 
 
     //trj
-    if(vconf.isTrjMode)atoms.trajectoryShow();
+    if(vconf.isTrjMode)atmRndr.trajectoryShow();
     //bonds
     if(visibleBonds){
-      if( renderingBondType==1 && renderingAtomType==2 ){ // Toon rendering
+       // Toon rendering ?
+      if( renderingBondType==BondRenderer.BOND_TYPE_CYLINDER
+          && renderingAtomType==AtomRenderer.ATOM_TYPE_TOON ){
         toon.set();
-        bonds.show();
+        bndRndr.show();
         toon.unset();
       }else{
-        bonds.show();
+        bndRndr.show();
       }
     }
     //vector
@@ -978,7 +1001,7 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     //sequential shot
     if(sequentialImageSave){
       snapshot.writeImageSequential();
-      if(currentFrame == atoms.totalFrame-1){
+      if(currentFrame == totalFrame-1){
         sequentialImageSave=false;
       }else{
         incrementFrame();
@@ -1163,8 +1186,9 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     rotcent.setVisible(true);
 
     //atoms off
-    if( (renderingAtomType!=0 && atoms.n>10000) ||
-        (renderingAtomType==0 && atoms.n>100000) ) tmpVisibleAtoms=false;
+    if( (renderingAtomType!=0 && atoms.getNumAtoms()>10000) ||
+        (renderingAtomType==0 && atoms.getNumAtoms()>100000) )
+      tmpVisibleAtoms=false;
 
   }//mousePressed
 
@@ -1218,12 +1242,12 @@ public class RenderingWindow extends JFrame implements GLEventListener,
         if((me.getModifiers() & InputEvent.SHIFT_MASK) !=0){
           //+SHIFT: trans
           if(vconf.isTransXOnly){
-            vp.objCenter[0] = -dx*0.05f*atoms.hMinLength;
+            vp.objCenter[0] = -dx*0.05f*minHmatLength;
           }else if(vconf.isTransYOnly){
-            vp.objCenter[1] = -dy*0.05f*atoms.hMinLength;
+            vp.objCenter[1] = -dy*0.05f*minHmatLength;
           }else{
-            vp.objCenter[0] = -dx*0.05f*atoms.hMinLength;
-            vp.objCenter[1] = -dy*0.05f*atoms.hMinLength;
+            vp.objCenter[0] = -dx*0.05f*minHmatLength;
+            vp.objCenter[1] = -dy*0.05f*minHmatLength;
           }
         }else if((me.getModifiers() & InputEvent.ALT_MASK) !=0){
           //+ALT: zoom
@@ -1254,12 +1278,12 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     }else if( mouseRButton ){
       /* Right */
       if(vconf.isTransXOnly){
-        vp.objCenter[0] = -dx*0.05f*atoms.hMinLength;
+        vp.objCenter[0] = -dx*0.05f*minHmatLength;
       }else if(vconf.isTransYOnly){
-        vp.objCenter[1] = -dy*0.05f*atoms.hMinLength;
+        vp.objCenter[1] = -dy*0.05f*minHmatLength;
       }else{
-        vp.objCenter[0] = -dx*0.05f*atoms.hMinLength;
-        vp.objCenter[1] = -dy*0.05f*atoms.hMinLength;
+        vp.objCenter[0] = -dx*0.05f*minHmatLength;
+        vp.objCenter[1] = -dy*0.05f*minHmatLength;
       }
 
     }

@@ -644,8 +644,8 @@ public class VolumeRenderPanel extends JPanel implements ActionListener{
       setValue();
     }else if( ae.getSource() == setRangeButton){
       int i=(ctrl.getActiveRW()).renderingVolumeDataIndex-1;
-      vconf.volRange[0]=(ctrl.getActiveRW()).atoms.originalDataRange[i][0];
-      vconf.volRange[1]=(ctrl.getActiveRW()).atoms.originalDataRange[i][1];
+      vconf.volRange[0]=(ctrl.getActiveRW()).orgDataRange[i][0];
+      vconf.volRange[1]=(ctrl.getActiveRW()).orgDataRange[i][1];
       spRangeMin.setValue((double)vconf.volRange[0]);
       spRangeMax.setValue((double)vconf.volRange[1]);
     }else if( ae.getSource() == btn2Dplot){

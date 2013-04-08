@@ -63,7 +63,7 @@ public class Volume{
     GL2 gl=rw.gl;
     GLU glu=rw.glu;
     GLUT glut=rw.glut;
-    viewer.renderer.Atoms atoms=rw.atoms;
+    Atoms atoms=rw.atoms;
     ViewConfig vconf=rw.vconf;
     int dataIndex=rw.renderingVolumeDataIndex;
 
@@ -140,13 +140,13 @@ public class Volume{
             gl.glColor4fv(color, 0);
             gl.glMaterialfv( GL2.GL_FRONT_AND_BACK,GL2.GL_AMBIENT_AND_DIFFUSE,color, 0);
 
-            float[] tp=mulH(atoms.h,dx*ix,dy*iy,dz*(iz+0.5f));
+            float[] tp=mulH(atoms.hmat,dx*ix,dy*iy,dz*(iz+0.5f));
             gl.glVertex3fv(tp,0);
-            tp=mulH(atoms.h,dx*ix,dy*(iy+1),dz*(iz+0.5f));
+            tp=mulH(atoms.hmat,dx*ix,dy*(iy+1),dz*(iz+0.5f));
             gl.glVertex3fv(tp,0);
-            tp=mulH(atoms.h,dx*(ix+1), dy*(iy+1), dz*(iz+0.5f));
+            tp=mulH(atoms.hmat,dx*(ix+1), dy*(iy+1), dz*(iz+0.5f));
             gl.glVertex3fv(tp,0);
-            tp=mulH(atoms.h,dx*(ix+1), dy*iy,     dz*(iz+0.5f));
+            tp=mulH(atoms.hmat,dx*(ix+1), dy*iy,     dz*(iz+0.5f));
             gl.glVertex3fv(tp,0);
 
             gl.glEnd();
@@ -173,13 +173,13 @@ public class Volume{
             gl.glColor4fv(color, 0);
             gl.glMaterialfv( GL2.GL_FRONT_AND_BACK,GL2.GL_AMBIENT_AND_DIFFUSE,color, 0);
 
-            float[] tp=mulH(atoms.h,dx*ix,dy*iy, dz*iz);
+            float[] tp=mulH(atoms.hmat,dx*ix,dy*iy, dz*iz);
             gl.glVertex3fv(tp,0);
-            tp=mulH(atoms.h,dx*ix,dy*iy, dz*(iz+1));
+            tp=mulH(atoms.hmat,dx*ix,dy*iy, dz*(iz+1));
             gl.glVertex3fv(tp,0);
-            tp=mulH(atoms.h,dx*(ix+1), dy*iy, dz*(iz+1));
+            tp=mulH(atoms.hmat,dx*(ix+1), dy*iy, dz*(iz+1));
             gl.glVertex3fv(tp,0);
-            tp=mulH(atoms.h,dx*(ix+1), dy*iy, dz*iz);
+            tp=mulH(atoms.hmat,dx*(ix+1), dy*iy, dz*iz);
             gl.glVertex3fv(tp,0);
 
             gl.glEnd();
@@ -206,13 +206,13 @@ public class Volume{
             gl.glColor4fv(color, 0);
             gl.glMaterialfv( GL2.GL_FRONT_AND_BACK,GL2.GL_AMBIENT_AND_DIFFUSE,color, 0);
 
-            float[] tp=mulH(atoms.h,dx*ix, dy*iy,dz*iz);
+            float[] tp=mulH(atoms.hmat,dx*ix, dy*iy,dz*iz);
             gl.glVertex3fv(tp,0);
-            tp=mulH(atoms.h,dx*ix, dy*iy,dz*(iz+1));
+            tp=mulH(atoms.hmat,dx*ix, dy*iy,dz*(iz+1));
             gl.glVertex3fv(tp,0);
-            tp=mulH(atoms.h,dx*ix, dy*(iy+1), dz*(iz+1));
+            tp=mulH(atoms.hmat,dx*ix, dy*(iy+1), dz*(iz+1));
             gl.glVertex3fv(tp,0);
-            tp=mulH(atoms.h,dx*ix, dy*(iy+1), dz*iz);
+            tp=mulH(atoms.hmat,dx*ix, dy*(iy+1), dz*iz);
             gl.glVertex3fv(tp,0);
 
             gl.glEnd();
@@ -286,7 +286,7 @@ public class Volume{
 
   private void createContour(int dataIndex,
                              GL2 gl, GLU glu, GLUT glut,
-                             viewer.renderer.Atoms atoms,ViewConfig vconf){
+                             Atoms atoms,ViewConfig vconf){
 
     int ix,iy,iz;
     float x,y,z;
@@ -346,7 +346,7 @@ public class Volume{
           iz=(int)(z/dzMesh);
           int ir=iz+iy*vconf.volDrawMesh[2]+ix*vconf.volDrawMesh[2]*vconf.volDrawMesh[1];
 
-          float[] tp=mulH(atoms.h,x,y,z);
+          float[] tp=mulH(atoms.hmat,x,y,z);
           addPoint2D(invBasis,tp,drawVoxel[ir]);
           float[] color=ctable.getColor(drawVoxel[ir]);
           if( Float.isNaN(color[0]) || Float.isNaN(color[1]) ||
@@ -372,7 +372,7 @@ public class Volume{
           iy=(int)(y/dyMesh);
           int ir=iz+iy*vconf.volDrawMesh[2]+ix*vconf.volDrawMesh[2]*vconf.volDrawMesh[1];
 
-          float[] tp=mulH(atoms.h,x,y,z);
+          float[] tp=mulH(atoms.hmat,x,y,z);
           addPoint2D(invBasis,tp,drawVoxel[ir]);
           float[] color=ctable.getColor(drawVoxel[ir]);
           if( Float.isNaN(color[0]) || Float.isNaN(color[1]) ||
@@ -399,7 +399,7 @@ public class Volume{
           ix=(int)(x/dxMesh);
           int ir=iz+iy*vconf.volDrawMesh[2]+ix*vconf.volDrawMesh[2]*vconf.volDrawMesh[1];
 
-          float[] tp=mulH(atoms.h,x,y,z);
+          float[] tp=mulH(atoms.hmat,x,y,z);
           addPoint2D(invBasis,tp,drawVoxel[ir]);
           float[] color=ctable.getColor(drawVoxel[ir]);
           if( Float.isNaN(color[0]) || Float.isNaN(color[1]) ||
@@ -430,35 +430,38 @@ public class Volume{
     if(range[1]<val)range[1]=val;
   }
 
-  private void createDensityVoxelData(viewer.renderer.Atoms atoms,ViewConfig vconf){
+  private void createDensityVoxelData(Atoms atoms,ViewConfig vconf){
     nAveVoxel=vconf.volDataMesh[0]*vconf.volDataMesh[1]*vconf.volDataMesh[2];
     aveVoxel=null;
     aveVoxel=new float[nAveVoxel];
     for(int i=0;i<nAveVoxel;i++)aveVoxel[i]=0.f;
 
     int ix,iy,iz,ir;
-    float dxData=atoms.h[0][0]/(float)vconf.volDataMesh[0];
-    float dyData=atoms.h[1][1]/(float)vconf.volDataMesh[1];
-    float dzData=atoms.h[2][2]/(float)vconf.volDataMesh[2];
-    for(int i=0;i<atoms.n;i++){
-      ix=(int)(atoms.r[i][0]/dxData);
-      iy=(int)(atoms.r[i][1]/dyData);
-      iz=(int)(atoms.r[i][2]/dzData);
+    float dxData=atoms.hmat[0][0]/(float)vconf.volDataMesh[0];
+    float dyData=atoms.hmat[1][1]/(float)vconf.volDataMesh[1];
+    float dzData=atoms.hmat[2][2]/(float)vconf.volDataMesh[2];
+    int natm= atoms.getNumAtoms();
+    for(int i=0;i<natm;i++){
+      Atom ai= atoms.getAtom(i);
+      ix=(int)(ai.pos[0]/dxData);
+      iy=(int)(ai.pos[1]/dyData);
+      iz=(int)(ai.pos[2]/dzData);
       if(ix>=vconf.volDataMesh[0])ix=vconf.volDataMesh[0]-1;
       if(iy>=vconf.volDataMesh[1])iy=vconf.volDataMesh[1]-1;
       if(iz>=vconf.volDataMesh[2])iz=vconf.volDataMesh[2]-1;
       ir=iz+iy*vconf.volDataMesh[2]+ix*vconf.volDataMesh[2]*vconf.volDataMesh[1];
-      aveVoxel[ir]+=1.f/atoms.n;
+      aveVoxel[ir]+=1.f/natm;
     }
   }
 
-  void createRawVoxel(int dataIndex,viewer.renderer.Atoms atoms,ViewConfig vconf){
+  void createRawVoxel(int dataIndex,Atoms atoms,ViewConfig vconf){
 
     nAveVoxel=(vconf.volDataMesh[0]+1)*(vconf.volDataMesh[1]+1)*(vconf.volDataMesh[2]+1);
     aveVoxel=null;
     aveVoxel=new float[nAveVoxel];
+    int natm= atoms.getNumAtoms();
     //make fundamental aveVoxel data
-    int nlist= atoms.n+nAveVoxel; // [0:nAtoms-1]=body, [nAtoms:]=header.
+    int nlist= natm+nAveVoxel; // [0:nAtoms-1]=body, [nAtoms:]=header.
     int[] llist= new int[nlist];
     PairList.makeLinkedList(vconf.volDataMesh[0],vconf.volDataMesh[1],vconf.volDataMesh[2],
                             nlist,llist,atoms,false);
@@ -467,14 +470,15 @@ public class Volume{
     // region-ir
     for(int ir=0; ir<nAveVoxel; ir++){
       // atom-i in region-ir
-      int i= llist[atoms.n +ir];//header
+      int i= llist[natm +ir];//header
       int n=0;
+      Atom ai= atoms.getAtom(i);
 
       switch(rw.renderingVolumeType){
       case 0://only volume
         while(i>=0){
-          if(atoms.tag[i]==Const.VOLUME_DATA_TAG){
-            aveVoxel[ir]+=atoms.data[i][dataIndex-1];
+          if( ai.tag==Const.VOLUME_DATA_TAG){
+            aveVoxel[ir]+= ai.auxData[dataIndex-1];
             n++;
           }
           i= llist[i];// next-i in region-ir
@@ -482,7 +486,7 @@ public class Volume{
         break;
       case 1:// both atom, volume
         while(i>=0){
-          aveVoxel[ir]+=atoms.data[i][dataIndex-1];
+          aveVoxel[ir]+= ai.auxData[dataIndex-1];
           n++;
           i= llist[i];// next-i in region-ir
         }
@@ -493,7 +497,7 @@ public class Volume{
     llist=null;
   }
 
-  private void voxel2DrawVoxel(viewer.renderer.Atoms atoms,ViewConfig vconf){
+  private void voxel2DrawVoxel( Atoms atoms,ViewConfig vconf ){
     //create draw voxel
     nDrawVoxel=vconf.volDrawMesh[0]*vconf.volDrawMesh[1]*vconf.volDrawMesh[2];
     drawVoxel=null;
@@ -525,7 +529,6 @@ public class Volume{
           int ixp=ix+1;
           int iyp=iy+1;
           int izp=iz+1;
-
 
           if(ixp>=vconf.volDataMesh[0])ixp=0;
           if(iyp>=vconf.volDataMesh[1])iyp=0;
@@ -566,12 +569,13 @@ public class Volume{
 
   void createDotSurface(int dataIndex,
                         GL2 gl, GLU glu, GLUT glut,
-                        viewer.renderer.Atoms atoms,ViewConfig vconf){
+                        Atoms atoms,ViewConfig vconf){
     int ix,iy,iz,jx,jy,jz,ic,jc;
     float x,y,z;
     float dx=1.f/vconf.volDrawMesh[0];
     float dy=1.f/vconf.volDrawMesh[1];
     float dz=1.f/vconf.volDrawMesh[2];
+    float[][] h= atoms.hmat;
 
     float srfLevel=vconf.volSurfaceLevel*(vconf.dataRange[dataIndex-1][1]
                                           -vconf.dataRange[dataIndex-1][0]);
@@ -598,8 +602,8 @@ public class Volume{
                 if(ic==jc || jc>vconf.volDrawMesh[0]*vconf.volDrawMesh[1]*vconf.volDrawMesh[2] || jc<0)continue;
                 //interpolation
                 if(drawVoxel[ic]<=srfLevel && srfLevel<=drawVoxel[jc]){
-                  float[] tpi=mulH(atoms.h,dx*ix,dy*iy,dz*iz);
-                  float[] tpj=mulH(atoms.h,dx*jx,dy*jy,dz*jz);
+                  float[] tpi=mulH(h,dx*ix,dy*iy,dz*iz);
+                  float[] tpj=mulH(h,dx*jx,dy*jy,dz*jz);
 
                   x=(tpi[0]*(drawVoxel[jc]-srfLevel)+tpj[0]*(srfLevel-drawVoxel[ic]))
                     /(drawVoxel[jc]-drawVoxel[ic]);
@@ -658,7 +662,7 @@ public class Volume{
   }
 
   public void make_marching(GL2 gl, GLU glu, GLUT glut,
-                            viewer.renderer.Atoms atoms,ViewConfig vconf,
+                            Atoms atoms,ViewConfig vconf,
                             float range){
 
     //gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL);
@@ -670,7 +674,7 @@ public class Volume{
     gl.glEnd();
   }
   public void make_marching2(GL2 gl, GLU glu, GLUT glut,
-                             viewer.renderer.Atoms atoms, ViewConfig vconf,
+                             Atoms atoms, ViewConfig vconf,
                              float range){
 
     gl.glBegin(GL.GL_TRIANGLES);
@@ -683,7 +687,7 @@ public class Volume{
 
   //vMarchCube performs the Marching Cubes algorithm on a single cube
   void vMarchCube(GL2 gl, GLU glu, GLUT glut,
-                  viewer.renderer.Atoms atoms,ViewConfig vconf,
+                  Atoms atoms,ViewConfig vconf,
                   int ix,int iy,int iz,float range){
 
     float fTargetValue=range;
@@ -748,7 +752,7 @@ public class Volume{
         float fX=dx*ix;
         float fY=dy*iy;
         float fZ=dz*iz;
-        float[] tp=mulH(atoms.h,
+        float[] tp=mulH(atoms.hmat,
                         fX + dx*(a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][0]  +  fOffset * a2fEdgeDirection[iEdge][0])  ,
                         fY + dy*(a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][1]  +  fOffset * a2fEdgeDirection[iEdge][1])  ,
                         fZ + dz*(a2fVertexOffset[ a2iEdgeConnection[iEdge][0] ][2]  +  fOffset * a2fEdgeDirection[iEdge][2]) );
@@ -787,7 +791,7 @@ public class Volume{
 
   //vMarchCube2 performs the Marching Tetrahedrons algorithm on a single cube by making six calls to vMarchTetrahedron
   void vMarchCube2(GL2 gl, GLU glu, GLUT glut,
-                   viewer.renderer.Atoms atoms,ViewConfig vconf,
+                   Atoms atoms,ViewConfig vconf,
                    int ix,int iy,int iz,float range){
     float dx=1.f/vconf.volDrawMesh[0];
     float dy=1.f/vconf.volDrawMesh[1];
@@ -807,42 +811,42 @@ public class Volume{
     int ir;
     ir=iz+iy*vconf.volDrawMesh[2]+ix*vconf.volDrawMesh[2]*vconf.volDrawMesh[1];
     afCubeValue[0] =drawVoxel[ir];
-    tp=mulH(atoms.h,dx*ix,dy*iy,dz*iz);
+    tp=mulH(atoms.hmat,dx*ix,dy*iy,dz*iz);
     asCubePosition[0].set(tp[0],tp[1],tp[2]);
 
     ir=iz+iy*vconf.volDrawMesh[2]+(ix+1)*vconf.volDrawMesh[2]*vconf.volDrawMesh[1];
     afCubeValue[1] =drawVoxel[ir];
-    tp=mulH(atoms.h,dx*(ix+1),dy*iy,dz*iz);
+    tp=mulH(atoms.hmat,dx*(ix+1),dy*iy,dz*iz);
     asCubePosition[1].set(tp[0],tp[1],tp[2]);
 
     ir=iz+(iy+1)*vconf.volDrawMesh[2]+(ix+1)*vconf.volDrawMesh[2]*vconf.volDrawMesh[1];
     afCubeValue[2] =drawVoxel[ir];
-    tp=mulH(atoms.h,dx*(ix+1),dy*(iy+1),dz*iz);
+    tp=mulH(atoms.hmat,dx*(ix+1),dy*(iy+1),dz*iz);
     asCubePosition[2].set(tp[0],tp[1],tp[2]);
 
     ir=iz+(iy+1)*vconf.volDrawMesh[2]+ix*vconf.volDrawMesh[2]*vconf.volDrawMesh[1];
     afCubeValue[3] =drawVoxel[ir];
-    tp=mulH(atoms.h,dx*ix,dy*(iy+1),dz*iz);
+    tp=mulH(atoms.hmat,dx*ix,dy*(iy+1),dz*iz);
     asCubePosition[3].set(tp[0],tp[1],tp[2]);
 
     ir=iz+1+iy*vconf.volDrawMesh[2]+ix*vconf.volDrawMesh[2]*vconf.volDrawMesh[1];
     afCubeValue[4] =drawVoxel[ir];
-    tp=mulH(atoms.h,dx*ix,dy*iy,dz*(iz+1));
+    tp=mulH(atoms.hmat,dx*ix,dy*iy,dz*(iz+1));
     asCubePosition[4].set(tp[0],tp[1],tp[2]);
 
     ir=iz+1+iy*vconf.volDrawMesh[2]+(ix+1)*vconf.volDrawMesh[2]*vconf.volDrawMesh[1];
     afCubeValue[5] =drawVoxel[ir];
-    tp=mulH(atoms.h,dx*(ix+1),dy*iy,dz*(iz+1));
+    tp=mulH(atoms.hmat,dx*(ix+1),dy*iy,dz*(iz+1));
     asCubePosition[5].set(tp[0],tp[1],tp[2]);
 
     ir=iz+1+(iy+1)*vconf.volDrawMesh[2]+(ix+1)*vconf.volDrawMesh[2]*vconf.volDrawMesh[1];
     afCubeValue[6] =drawVoxel[ir];
-    tp=mulH(atoms.h,dx*(ix+1),dy*(iy+1),dz*(iz+1));
+    tp=mulH(atoms.hmat,dx*(ix+1),dy*(iy+1),dz*(iz+1));
     asCubePosition[6].set(tp[0],tp[1],tp[2]);
 
     ir=iz+1+(iy+1)*vconf.volDrawMesh[2]+ix*vconf.volDrawMesh[2]*vconf.volDrawMesh[1];
     afCubeValue[7] =drawVoxel[ir];
-    tp=mulH(atoms.h,dx*ix,dy*(iy+1),dz*(iz+1));
+    tp=mulH(atoms.hmat,dx*ix,dy*(iy+1),dz*(iz+1));
     asCubePosition[7].set(tp[0],tp[1],tp[2]);
 
     for(iTetrahedron = 0; iTetrahedron < 6; iTetrahedron++){

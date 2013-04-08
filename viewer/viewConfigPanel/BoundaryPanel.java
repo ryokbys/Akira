@@ -51,13 +51,13 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
       setValue();
       if(ctrl.getActiveRW()!=null){
         ctrl.getActiveRW().sq.clearWinPos();
-        ctrl.getActiveRW().atoms.resetVisualTag();
+        ctrl.getActiveRW().atmRndr.resetVisualTag();
       }
       ctrl.RWinRefresh();
     }else if(ae.getSource() == applyButton){
       updateList();
       if(ctrl.getActiveRW()!=null){
-        ctrl.getActiveRW().atoms.setVisualTag();
+        ctrl.getActiveRW().atmRndr.setVisualTag();
         ctrl.RWinRefresh();
       }
     }

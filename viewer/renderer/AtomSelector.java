@@ -19,7 +19,7 @@ public class AtomSelector{
   static final int bufferSize = 100000;
   ByteBuffer byteBuffer;
   IntBuffer selectBuf;
-  viewer.renderer.Atoms atoms;
+  AtomRenderer atmRndr;
 
   public AtomSelector(){
     //init
@@ -36,9 +36,13 @@ public class AtomSelector{
   int[] viewport = new int[4];
   int id;
   float z1, z2;
-  public int getID(GL2 gl,GLU glu, GLUT glut,
-                   viewer.renderer.Atoms atoms,Viewpoint vp,
-                   int prevMouseX, int prevMouseY ){
+  public int getID(GL2 gl,
+                   GLU glu,
+                   GLUT glut,
+                   AtomRenderer atmRndr,
+                   Viewpoint vp,
+                   int prevMouseX, 
+                   int prevMouseY ){
     //picked ID
     id = -1;
 
@@ -60,7 +64,7 @@ public class AtomSelector{
     gl.glPushMatrix();
 
     //make invisible atoms for picking
-    atoms.makePickingAtoms();
+    atmRndr.makePickingAtoms();
 
     gl.glPopMatrix();
     gl.glMatrixMode( GL2.GL_PROJECTION );

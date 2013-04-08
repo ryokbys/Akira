@@ -34,7 +34,7 @@ public class Box implements Renderer{
   public void make(){
     GL2 gl=rw.gl;
     ViewConfig vconf=rw.vconf;
-    float[][] size=rw.atoms.h;
+    float[][] size=rw.atoms.hmat;
 
     float tp[] = new float[3];
     float[] p;
