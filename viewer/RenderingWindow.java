@@ -746,8 +746,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
       visibleVolume=false;
     }
 
-
-
     //bg color
     gl.glClearColor(vconf.bgColor[0],vconf.bgColor[1],
                     vconf.bgColor[2],vconf.bgColor[3]);
@@ -803,11 +801,9 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     }
     isKeyZoom=true;
 
-
     gl.glMultMatrixf( vp.mvm, 0 );
 
     if( !vconf.isLightPosAuto ) light.set(gl,glu,glut,vconf);
-
 
     gl.glGetFloatv( GL2.GL_MODELVIEW_MATRIX, vp.mvm, 0 );
 
@@ -876,7 +872,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
       }
     }
     //isAtomSelecting=false;
-
 
     //------draw objects
     if( isAnimating() ) incrementFrame();

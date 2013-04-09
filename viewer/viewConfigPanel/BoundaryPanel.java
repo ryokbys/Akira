@@ -301,7 +301,6 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
     vconf.extendRenderingFactor[1][1]=(float)((Double)spExtendY2.getValue()).floatValue();
     vconf.extendRenderingFactor[1][2]=(float)((Double)spExtendZ2.getValue()).floatValue();
 
-
     Double data;
     for( int i=0; i<Const.PLANE; i++ ){
       isOn[i]=(Boolean)table.getValueAt(i,0);
@@ -319,6 +318,8 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
       posVec[i][2]=data.floatValue();
     }
   }
+
+  // Private class that provides table
   class MyTableModel extends DefaultTableModel {
     MyTableModel( String[] columnNames, int rowNum ){
       super( columnNames, rowNum );

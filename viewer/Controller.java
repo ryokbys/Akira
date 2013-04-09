@@ -116,7 +116,7 @@ public class Controller implements WindowListener{
 
   }
   public void RWinRefresh(){
-    if(getActiveRW()==null)return;
+    if( getActiveRW()==null ) return;
     getActiveRW().refresh();
   }
   public void RWinRepaint(){

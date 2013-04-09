@@ -11,6 +11,9 @@ public class Atom{
   public static final byte MAX_NUM_DATA= 9;
   public float[] auxData= new float[MAX_NUM_DATA];
 
+  // visualize
+  public boolean isVisible= true;
+
   // Constructor
   public Atom(){
   }

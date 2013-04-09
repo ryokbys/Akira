@@ -48,6 +48,9 @@ public class BondRenderer implements Renderer{
 
   public void make(){
     GL2 gl=rw.gl;
+    int natm= atoms.getNumAtoms();
+    float[][] hi= atoms.hmati;
+    
     if(bonds_t!=Const.DISPLAY_LIST_EMPTY)
       gl.glDeleteLists( bonds_t, 1 );
 
@@ -64,15 +67,28 @@ public class BondRenderer implements Renderer{
       break;
     }
 
+    //for extend rendering
+    float[][] ext= rw.vconf.extendRenderingFactor;
+
     float[] color=new float[4];
     switch(rw.renderingBondType){
     case BOND_TYPE_LINE: // line
       gl.glDisable( GL2.GL_LIGHTING );
       gl.glLineWidth(rw.vconf.bondRadius);
-      for(int i=0; i<atoms.getNumAtoms(); i++ ){
+      for(int i=0; i<natm; i++ ){
         Atom ai= atoms.getAtom(i);
-        if( rw.atmRndr.vtag[i] < 0 ) continue;
-        for(int j=0; j<ai.getNumBonds(); j++ ){
+        if( !ai.isVisible ) continue;
+        float[] pos= mulH( hi, ai.pos );
+
+        if( !(ext[0][0]<=pos[0] && pos[0]<ext[1][0]) )
+          continue;
+        if( !(ext[0][1]<=pos[1] && pos[1]<ext[1][1]) )
+          continue;
+        if( !(ext[0][2]<=pos[2] && pos[2]<ext[1][2]) )
+          continue;
+
+        int nbnd= ai.getNumBonds();
+        for(int j=0; j<nbnd; j++ ){
           Bond b= ai.getBond(j);
         
           gl.glPushMatrix();
@@ -111,11 +127,20 @@ public class BondRenderer implements Renderer{
       gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_EMISSION, rw.vconf.atomEmmission, 0 );
       gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, rw.vconf.atomAmb, 0 );
 
-      for(int i=0; i<atoms.getNumAtoms(); i++ ){
+      for(int i=0; i<natm; i++ ){
         Atom ai= atoms.getAtom(i);
-        //if( ai.tag < 0 ) continue;
-        if( rw.atmRndr.vtag[i] < 0 ) continue;
-        for( int j=0; j<ai.getNumBonds(); j++ ){
+        if( !ai.isVisible ) continue;
+        float[] pos= mulH( hi, ai.pos );
+
+        if( !(ext[0][0]<=pos[0] && pos[0]<ext[1][0]) )
+          continue;
+        if( !(ext[0][1]<=pos[1] && pos[1]<ext[1][1]) )
+          continue;
+        if( !(ext[0][2]<=pos[2] && pos[2]<ext[1][2]) )
+          continue;
+
+        int nbnd= ai.getNumBonds();
+        for( int j=0; j<nbnd; j++ ){
           Bond b= ai.getBond(j);
 
           gl.glPushMatrix();

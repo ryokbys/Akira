@@ -16,8 +16,10 @@ public class SplashWindow extends Window {
     super(parent);
     this.image = image;
 
-
     parent.setAlwaysOnTop(true);
+
+    // make background opaque
+    setBackground( new Color(0x00000000, true) );
 
     // Load the image
     MediaTracker mt = new MediaTracker(this);
