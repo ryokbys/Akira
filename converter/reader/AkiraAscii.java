@@ -87,8 +87,6 @@ public class AkiraAscii{
       int nvolBlock=Integer.parseInt( elem[2] );
       int nvolume=Integer.parseInt( elem[3] );
 
-      //atoms.allocate(natm+nvolume);
-
       //read h matrix
       for( int i=0; i<3; i++ ){
         line = br.readLine();
@@ -121,7 +119,6 @@ public class AkiraAscii{
           int inc=1;
           readTagCount.put(itag,inc);
         }
-
 
         // 2nd~4th colum is position data
         // position data is not scaled for cutRegion
@@ -159,8 +156,7 @@ public class AkiraAscii{
           for(int k=0;k<ndata;k++)
             atom.auxData[k]=data[k];
 
-          atoms.listAtom.add(atom);
-          //atoms.n++;
+          atoms.addAtom(atom);
 
           //tag count
           if(tagCount.containsKey(itag)){
@@ -217,7 +213,6 @@ public class AkiraAscii{
                                        object.intValue(),tagCount.get(object)));
       }
       System.out.print("\b\b )\n");
-
 
       //read volume data
       for(int iv=0;iv<nvolBlock;iv++){
@@ -311,9 +306,6 @@ public class AkiraAscii{
         System.out.print(String.format("  |- VOLUME%d      : %8d\n",iv,nvol));
         */
       }//end of iv
-
-
-
 
       br.close();
       fr.close();

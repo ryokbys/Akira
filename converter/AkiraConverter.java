@@ -89,7 +89,11 @@ public class AkiraConverter{
 
       //read files according to extension
       String format=cconf.readFileFormat.get(itarget);
-      //if(format.equalsIgnoreCase("chgcar")){
+      if(format.equalsIgnoreCase("akira")){
+        AkiraAscii.conv(atomFileIO,cconf,itarget,ithFrame);
+      }else if(format.equalsIgnoreCase("akiratgz")){
+        AkiraAsciiTgz.conv(atomFileIO,cconf,itarget,ithFrame);
+      //}else if(format.equalsIgnoreCase("chgcar")){
       //  CHGCAR.conv(atomFileIO,cconf,itarget,ithFrame);
       //}else if(format.equalsIgnoreCase("cube")){
       //  Cube.conv(atomFileIO,cconf,itarget,ithFrame);
@@ -103,10 +107,6 @@ public class AkiraConverter{
       //  XCrysDen.conv(atomFileIO,cconf,itarget,ithFrame);
       //}else if(format.equalsIgnoreCase("xcrysdentgz")){
       //  XCrysDenTgz.conv(atomFileIO,cconf,itarget,ithFrame);
-      //}else if(format.equalsIgnoreCase("akira")){
-      //  AkiraAscii.conv(atomFileIO,cconf,itarget,ithFrame);
-      //}else if(format.equalsIgnoreCase("akiratgz")){
-      //  AkiraAsciiTgz.conv(atomFileIO,cconf,itarget,ithFrame);
       //}else if(format.equalsIgnoreCase("akiratbz2")){
       //  AkiraAsciiTbz2.conv(atomFileIO,cconf,itarget,ithFrame);
       //}else if(format.equalsIgnoreCase("akirabintgz")){
@@ -115,8 +115,6 @@ public class AkiraConverter{
       //  AkiraBinaryTbz2.conv(atomFileIO,cconf,itarget,ithFrame);
       //}else if(format.equalsIgnoreCase("akirabin")){
       //  AkiraBinary.conv(atomFileIO,cconf,itarget,ithFrame);
-      if(format.equalsIgnoreCase("akira")){
-        AkiraAscii.conv(atomFileIO,cconf,itarget,ithFrame);
       }else{
         System.out.println("unknown file format!!");
         System.out.println("check akiraconv.conf");
