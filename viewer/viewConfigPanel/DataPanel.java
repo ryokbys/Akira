@@ -216,11 +216,10 @@ public class DataPanel extends JPanel implements ActionListener{
     float sum=0.f;
     int inc=0;
     int natm= rw.atoms.getNumAtoms();
-    int[] vtag= rw.atmRndr.vtag;
     int renderingAtomDataIndex= rw.renderingAtomDataIndex;
     for( int i=0; i<natm; i++ ){
-      if( vtag[i]<0 ) continue;
       Atom ai= rw.atoms.getAtom(i);
+      if( !ai.isVisible ) continue;
       if( renderingAtomDataIndex>0 ){
         sum+= ai.auxData[renderingAtomDataIndex-1];
         inc++;

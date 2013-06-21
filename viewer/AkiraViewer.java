@@ -54,7 +54,7 @@ public class AkiraViewer{
 
 
     //splash window
-    String filePath="/img/logo/Akira600x627.png";
+    String filePath="/img/logo/Akira.png";
     SplashWindow.splash(AkiraViewer.class.getResource(filePath));
 
     //switch action

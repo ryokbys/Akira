@@ -93,9 +93,9 @@ public class Vectors implements Renderer{
       gl.glDisable( GL2.GL_LIGHTING );
       gl.glLineWidth(2.f);
       for(int i=0; i<natm; i++ ){
-        if(rw.atmRndr.vtag[i]<0)continue;
-
         Atom ai= rw.atoms.getAtom(i);
+        if( !ai.isVisible ) continue;
+
         gl.glPushMatrix();
         gl.glTranslatef( ai.pos[0],ai.pos[1],ai.pos[2] );
 
@@ -131,9 +131,9 @@ public class Vectors implements Renderer{
       gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, vconf.atomAmb, 0 );
 
       for(int i=0; i<natm; i++ ){
-        if(rw.atmRndr.vtag[i]<0)continue;
-        
         Atom ai= rw.atoms.getAtom(i);
+        if( !ai.isVisible ) continue;
+        
         gl.glPushMatrix();
         gl.glTranslatef( ai.pos[0],ai.pos[1],ai.pos[2] );
 

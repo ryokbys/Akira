@@ -610,12 +610,11 @@ public class Plane {
     int natm= atoms.getNumAtoms();
     ArrayList<ArrayList<Float>> tetra= new ArrayList<ArrayList<Float>>();
     float rcut2=rcut*rcut;
-    int[] vtag= rw.atmRndr.vtag;
 
     for(int i=0; i<natm; i++ ){
       Atom ai= atoms.getAtom(i);
       if( ai.tag!=isp ) continue;
-      if( vtag[i]<0 ) continue;//skip invisible atom
+      if( !ai.isVisible ) continue;//skip invisible atom
 
       float[] ri= ai.pos;
       ArrayList<Integer> iList = lspr.get(i);
@@ -623,7 +622,7 @@ public class Plane {
       for(int jj=0;jj<iList.size();jj++){
         int j= iList.get(jj);// obtain neighbor from lspr
         Atom aj= atoms.getAtom(j);
-        if( vtag[j]<0 ) continue;//skip invisible atom
+        if( !aj.isVisible ) continue;//skip invisible atom
         if( i==j ) continue;
         float rij=0.f;
         for(int l=0;l<3;l++)

@@ -59,10 +59,9 @@ public class AtomLabel {
     label_t = gl.glGenLists(1);
     gl.glNewList( label_t, GL2.GL_COMPILE );
     int natm= atoms.getNumAtoms();
-    int[] vtag= rw.atmRndr.vtag;
     for( int i=0; i<natm; i++ ){
-      if( vtag[i]<0 )continue;
       Atom ai= atoms.getAtom(i);
+      if( ! ai.isVisible ) continue;
       int itag  = ai.tag-1;
       float[] pos= ai.pos;
       if( itag >= 0 ){
