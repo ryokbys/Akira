@@ -26,10 +26,10 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
     lFrame.setText(String.format("Frame No.: %d/%d",rw.currentFrame+1,rw.totalFrame));
     slFrame.setMaximum(rw.totalFrame-1);
     if(!rw.isAnimating())slFrame.setValue(rw.currentFrame);
-    lFPS.setText(String.format("Frame per Second: %d",rw.fps));
-    slFPS.setValue(rw.fps);
-    slFPS.setMinimum(rw.fpsMin);
-    slFPS.setMaximum(rw.fpsMax);
+    lFPS.setText(String.format("Frame per Second: %d",rw.vconf.fps));
+    slFPS.setValue(rw.vconf.fps);
+    slFPS.setMinimum(rw.vconf.fpsMin);
+    slFPS.setMaximum(rw.vconf.fpsMax);
 
 
 

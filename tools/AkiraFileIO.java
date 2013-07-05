@@ -137,8 +137,8 @@ public class AkiraFileIO{
         for(int k=0; k<mdata; k++){
           float data= ai.auxData[k];
           dos.writeFloat( data );
-          this.range[k][0]= Math.max( this.range[k][0], data );
-          this.range[k][1]= Math.min( this.range[k][1], data );
+          this.range[k][0]= Math.min( this.range[k][0], data );
+          this.range[k][1]= Math.max( this.range[k][1], data );
         }
         // bonds
         dos.writeInt( nbnd );

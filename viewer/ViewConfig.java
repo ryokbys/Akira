@@ -47,6 +47,11 @@ public class ViewConfig implements Serializable{
   public String timePrintFormat;
   public String imageFormat;
 
+  //animator
+  public int    fps= 2;
+  public int    fpsMin= 1;
+  public int    fpsMax= 10;
+
   //atom
   public String  tagName[]               = new String[Const.TAG];
   public boolean tagOnOff[]              = new boolean[Const.TAG];

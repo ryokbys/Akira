@@ -134,9 +134,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
 
   //Animator
   public FPSAnimator animator;
-  public int fps=2;
-  public int fpsMin=1;
-  public int fpsMax=10;
 
   //for mouse
   private int mouseX,mouseY;
@@ -1303,20 +1300,20 @@ public class RenderingWindow extends JFrame implements GLEventListener,
 
   //animator
   FPSAnimator newFPSAnimator(){
-    return new FPSAnimator( drawable, fps );
+    return new FPSAnimator( drawable, vconf.fps );
   }
   public void incrementFPS(){
-    fps++;
-    if( fps > fpsMax ) fps = fpsMax;
+    vconf.fps++;
+    if( vconf.fps > vconf.fpsMax ) vconf.fps = vconf.fpsMax;
     resetFPS();
   }
   public void decrementFPS(){
-    fps--;
-    if( fps < fpsMin) fps = fpsMin;
+    vconf.fps--;
+    if( vconf.fps < vconf.fpsMin) vconf.fps = vconf.fpsMin;
     resetFPS();
   }
   public void setFPS(int fps){
-    this.fps=fps;
+    vconf.fps=fps;
     resetFPS();
   }
   public void resetFPS(){
