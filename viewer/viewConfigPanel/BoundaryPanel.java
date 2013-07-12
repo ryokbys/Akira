@@ -71,7 +71,7 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
 
   JButton resetButton, applyButton;
 
-  final String[] colNames = { "On/Off", "Nx", "Ny", "Nz", "Px","Py","Pz"};
+  final String[] colNames = { "On", "Nx", "Ny", "Nz", "Px","Py","Pz"};
   MyTableModel tableModel;
   JTable table;
   JScrollPane sp;
@@ -96,7 +96,6 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
 
     JLabel lExtendY=new JLabel("<= b <");
     lExtendY.setFocusable(false);
-
     spExtendY1 = new JSpinner(new SpinnerNumberModel((double)vconf.extendRenderingFactor[0][1], null, null, 0.1));
     spExtendY1.setFocusable(false);
     spExtendY1.setPreferredSize(new Dimension(60, 25));
@@ -128,7 +127,7 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
     table.setRowHeight( 20 );
     table.setIntercellSpacing( new Dimension(2,2) );
     table.setColumnSelectionAllowed( true );
-
+    table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
     table.setDefaultRenderer( Color.class, new MyColorRenderer(true));
     table.setDefaultEditor( Color.class, new MyColorEditor() );
     table.setFocusable(false);
@@ -136,7 +135,7 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
     sp = new JScrollPane( table );
     sp.setFocusable(false);
     sp.setWheelScrollingEnabled( true );
-    sp.setPreferredSize( new Dimension(400,100) );
+    sp.setPreferredSize( new Dimension(300,300) );
 
     JLabel tableLabel = new JLabel("Plane Slicer");
 
@@ -144,13 +143,13 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
 
     DefaultTableColumnModel columnModel
       = (DefaultTableColumnModel)table.getColumnModel();
-    columnModel.getColumn(0).setPreferredWidth(2);
-    columnModel.getColumn(1).setPreferredWidth(3);
-    columnModel.getColumn(2).setPreferredWidth(4);
-    columnModel.getColumn(3).setPreferredWidth(4);
-    columnModel.getColumn(4).setPreferredWidth(4);
-    columnModel.getColumn(5).setPreferredWidth(4);
-    columnModel.getColumn(6).setPreferredWidth(4);
+    columnModel.getColumn(0).setPreferredWidth(30);
+    columnModel.getColumn(1).setPreferredWidth(30);
+    columnModel.getColumn(2).setPreferredWidth(30);
+    columnModel.getColumn(3).setPreferredWidth(30);
+    columnModel.getColumn(4).setPreferredWidth(50);
+    columnModel.getColumn(5).setPreferredWidth(50);
+    columnModel.getColumn(6).setPreferredWidth(50);
 
 
 
@@ -171,12 +170,10 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
 
 
     JLabel lExtend=new JLabel("Boundary");
-    add(lExtend);
     layout.putConstraint( SpringLayout.NORTH, lExtend, 10,
                           SpringLayout.NORTH, this);
     layout.putConstraint( SpringLayout.WEST, lExtend, 10,
                           SpringLayout.WEST, this);
-
     layout.putConstraint( SpringLayout.NORTH, spExtendX1, 10,
                           SpringLayout.SOUTH, lExtend);
     layout.putConstraint( SpringLayout.WEST, spExtendX1, 10,
@@ -216,29 +213,28 @@ public class BoundaryPanel extends JPanel implements ChangeListener,
     layout.putConstraint( SpringLayout.WEST, spExtendZ2, 0,
                           SpringLayout.WEST, spExtendY2);
 
-
-
-    //table
-    layout.putConstraint( SpringLayout.NORTH, tableLabel, 10, SpringLayout.NORTH, this );
-    layout.putConstraint( SpringLayout.WEST, sp, 20 ,SpringLayout.EAST,  spExtendX2);
-    layout.putConstraint( SpringLayout.SOUTH, sp, -10, SpringLayout.SOUTH, this);
+    //Table
+    layout.putConstraint( SpringLayout.NORTH, tableLabel, 20, SpringLayout.SOUTH, spExtendZ1 );
+    layout.putConstraint( SpringLayout.WEST, tableLabel, 0, SpringLayout.WEST, spExtendZ1 );
     layout.putConstraint( SpringLayout.NORTH, sp, 0, SpringLayout.SOUTH, tableLabel );
-
-    layout.putConstraint( SpringLayout.WEST, tableLabel, 0,SpringLayout.WEST, sp );
-
+    layout.putConstraint( SpringLayout.WEST, sp, 0 ,SpringLayout.WEST, tableLabel );
+    layout.putConstraint( SpringLayout.EAST, sp, -20 ,SpringLayout.EAST, this );
+    layout.putConstraint( SpringLayout.SOUTH, sp, -60 ,SpringLayout.SOUTH, this );
 
     //Button: Reset
-    layout.putConstraint( SpringLayout.SOUTH, applyButton, -10,SpringLayout.SOUTH, this );
-    layout.putConstraint( SpringLayout.WEST,  applyButton, 0,SpringLayout.EAST,  sp);
+    layout.putConstraint( SpringLayout.NORTH, resetButton, 0, SpringLayout.SOUTH, sp );
+    layout.putConstraint( SpringLayout.EAST,  resetButton, 0, SpringLayout.EAST,  sp);
+    layout.putConstraint( SpringLayout.SOUTH,  resetButton, -20, SpringLayout.SOUTH, this );
     //Button: Apply
-    layout.putConstraint( SpringLayout.NORTH, resetButton, 0,SpringLayout.NORTH, applyButton);
-    layout.putConstraint( SpringLayout.WEST,  resetButton, 10,SpringLayout.EAST,  applyButton );
+    layout.putConstraint( SpringLayout.NORTH, applyButton, 0, SpringLayout.SOUTH, sp);
+    layout.putConstraint( SpringLayout.WEST,  applyButton, 0, SpringLayout.WEST,  sp );
+    layout.putConstraint( SpringLayout.SOUTH,  applyButton, -20, SpringLayout.SOUTH, this );
 
 
 
 
     setLayout( layout );
-
+    add(lExtend);
     add(lExtendX);
     add(lExtendY);
     add(lExtendZ);

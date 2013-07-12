@@ -1364,9 +1364,9 @@ public class ViewConfig implements Serializable{
   /* window pos. and size */
   private Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 
-  public Rectangle rectViewConfigWin      = new Rectangle(2,22, d.width-100, 250 );
+  public Rectangle rectViewConfigWin      = new Rectangle(2,22, d.width/3, 600 );
   public boolean   isVisibleViewConfigWin = true;
-  public int       viewConfigWinTabIndex  = 0;
+  public int       viewConfigWinCardIndex  = 0;
 
   public Rectangle rectRWin = new Rectangle(2,  277, d.width-350, d.height-290 );
 
@@ -1378,7 +1378,7 @@ public class ViewConfig implements Serializable{
     //view config win
     rectViewConfigWin      = ctrl.vcWin.getBounds();
     isVisibleViewConfigWin = true;
-    viewConfigWinTabIndex  = ctrl.vcWin.tabbedPane.getSelectedIndex();
+    //viewConfigWinCardIndex  = ctrl.vcWin.jcPanelNameList.getSelectedIndex();
 
     rectStatusWin = ctrl.vcWin.statusPanel.statusFrame.getBounds();
     //rw

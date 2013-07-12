@@ -132,56 +132,39 @@ public class ComboPanel extends JPanel implements ActionListener{
     this.setLayout( layout );
 
 
-    layout.putConstraint( SpringLayout.NORTH, startButton, 10,
-                          SpringLayout.NORTH, this );
-    layout.putConstraint( SpringLayout.WEST, startButton, 10,
-                          SpringLayout.WEST, this );
 
-    layout.putConstraint( SpringLayout.NORTH, stopButton, 0,
-                          SpringLayout.NORTH, startButton );
-    layout.putConstraint( SpringLayout.WEST, stopButton, 2,
-                          SpringLayout.EAST, startButton );
+    layout.putConstraint( SpringLayout.NORTH, addRowButton, 10, SpringLayout.NORTH, this );
+    layout.putConstraint( SpringLayout.WEST, addRowButton, 10, SpringLayout.WEST, this );
 
-
-    layout.putConstraint( SpringLayout.NORTH, addRowButton, 0,
-                          SpringLayout.NORTH, stopButton );
-    layout.putConstraint( SpringLayout.WEST, addRowButton, 2,
-                          SpringLayout.EAST, stopButton );
-
-    layout.putConstraint( SpringLayout.NORTH, delRowButton, 0,
-                          SpringLayout.NORTH, addRowButton );
-    layout.putConstraint( SpringLayout.WEST, delRowButton, 2,
-                          SpringLayout.EAST, addRowButton );
+    layout.putConstraint( SpringLayout.NORTH, delRowButton, 0, SpringLayout.NORTH, addRowButton );
+    layout.putConstraint( SpringLayout.WEST, delRowButton, 2, SpringLayout.EAST, addRowButton );
 
     layout.putConstraint( SpringLayout.NORTH, resetButton, 0,SpringLayout.NORTH, delRowButton );
     layout.putConstraint( SpringLayout.WEST, resetButton, 2,SpringLayout.EAST, delRowButton);
 
-    layout.putConstraint( SpringLayout.NORTH, writeButton, 0,
-                          SpringLayout.NORTH, resetButton );
-    layout.putConstraint( SpringLayout.WEST, writeButton, 2,
-                          SpringLayout.EAST, resetButton );
+    layout.putConstraint( SpringLayout.NORTH, writeButton, 0, SpringLayout.NORTH, resetButton );
+    layout.putConstraint( SpringLayout.WEST, writeButton, 2, SpringLayout.EAST, resetButton );
 
-    layout.putConstraint( SpringLayout.NORTH, loadButton, 0,
-                          SpringLayout.NORTH, writeButton );
-    layout.putConstraint( SpringLayout.WEST, loadButton, 0,
-                          SpringLayout.EAST, writeButton );
+    layout.putConstraint( SpringLayout.NORTH, loadButton, 5, SpringLayout.SOUTH, addRowButton );
+    layout.putConstraint( SpringLayout.WEST, loadButton, 0, SpringLayout.WEST, addRowButton );
 
-    layout.putConstraint( SpringLayout.NORTH, loadDefaultButton, 0,
-                          SpringLayout.NORTH, loadButton );
-    layout.putConstraint( SpringLayout.WEST, loadDefaultButton, 0,
-                          SpringLayout.EAST, loadButton );
+    layout.putConstraint( SpringLayout.NORTH, loadDefaultButton, 0, SpringLayout.NORTH, loadButton );
+    layout.putConstraint( SpringLayout.WEST, loadDefaultButton, 2, SpringLayout.EAST, loadButton );
 
-    layout.putConstraint( SpringLayout.EAST, progressBar, -10,SpringLayout.EAST, this );
-    layout.putConstraint( SpringLayout.WEST, progressBar, 10,SpringLayout.EAST, loadDefaultButton);
-    layout.putConstraint( SpringLayout.NORTH, progressBar, 0,SpringLayout.NORTH, startButton);
-    layout.putConstraint( SpringLayout.SOUTH, progressBar, 0,SpringLayout.SOUTH, startButton);
+    layout.putConstraint( SpringLayout.NORTH, sp, 10, SpringLayout.SOUTH, loadButton);
+    layout.putConstraint( SpringLayout.SOUTH, sp, -10, SpringLayout.NORTH, startButton );
+    layout.putConstraint( SpringLayout.WEST, sp, 10, SpringLayout.WEST, this );
+    layout.putConstraint( SpringLayout.EAST, sp, -10, SpringLayout.EAST, this );
 
-    layout.putConstraint( SpringLayout.SOUTH, sp, -10,SpringLayout.SOUTH, this);
-    layout.putConstraint( SpringLayout.EAST, sp, -10,SpringLayout.EAST, this );
-    layout.putConstraint( SpringLayout.WEST, sp, 10,SpringLayout.WEST, this );
-    layout.putConstraint( SpringLayout.NORTH, sp, 10,SpringLayout.SOUTH, startButton);
+    layout.putConstraint( SpringLayout.SOUTH, startButton, -10, SpringLayout.SOUTH, this );
+    layout.putConstraint( SpringLayout.WEST, startButton, 10, SpringLayout.WEST, this );
 
+    layout.putConstraint( SpringLayout.NORTH, stopButton, 0, SpringLayout.NORTH, startButton );
+    layout.putConstraint( SpringLayout.WEST, stopButton, 2, SpringLayout.EAST, startButton );
 
+    layout.putConstraint( SpringLayout.NORTH, progressBar, 0, SpringLayout.NORTH, startButton);
+    layout.putConstraint( SpringLayout.EAST, progressBar, -10, SpringLayout.EAST, this );
+    layout.putConstraint( SpringLayout.WEST, progressBar, 10,SpringLayout.EAST, stopButton );
 
 
     this.add( startButton );

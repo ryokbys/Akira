@@ -403,19 +403,19 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
     zoomOutButton.setFocusable(false);
 
 
-  cbRotationXOnly =new JCheckBox("Rot. X Only",vconf.isRotationXOnly);
-  cbRotationXOnly.setFocusable(false);
-  cbRotationXOnly.addChangeListener(this);
-  cbRotationYOnly =new JCheckBox("Rot. Y Only",vconf.isRotationYOnly);
-  cbRotationYOnly.setFocusable(false);
-  cbRotationYOnly.addChangeListener(this);
+    cbRotationXOnly =new JCheckBox("Rot. X Only",vconf.isRotationXOnly);
+    cbRotationXOnly.setFocusable(false);
+    cbRotationXOnly.addChangeListener(this);
+    cbRotationYOnly =new JCheckBox("Rot. Y Only",vconf.isRotationYOnly);
+    cbRotationYOnly.setFocusable(false);
+    cbRotationYOnly.addChangeListener(this);
 
-  cbTransXOnly =new JCheckBox("Trans. X Only",vconf.isTransXOnly);
-  cbTransXOnly.setFocusable(false);
-  cbTransXOnly.addChangeListener(this);
-  cbTransYOnly =new JCheckBox("Trans. Y Only",vconf.isTransYOnly);
-  cbTransYOnly.setFocusable(false);
-  cbTransYOnly.addChangeListener(this);
+    cbTransXOnly =new JCheckBox("Trans. X Only",vconf.isTransXOnly);
+    cbTransXOnly.setFocusable(false);
+    cbTransXOnly.addChangeListener(this);
+    cbTransYOnly =new JCheckBox("Trans. Y Only",vconf.isTransYOnly);
+    cbTransYOnly.setFocusable(false);
+    cbTransYOnly.addChangeListener(this);
 
     JLabel imgFormatLabel=new JLabel("Save image format");
     String[] strImgFormat = {"png", "jpg", "bmp"};
@@ -465,76 +465,78 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
     double p= TableLayout.PREFERRED;
     double vg= 14;
     double hg= 5;
-    //x direction
-    double colSizeTL[]={vg,
-                        170,
-                        vg,
+    
+    //horizontal grid
+    double colSizeTL[]={vg,20,30,30,30,f,vg};
+                        
+    //vertical grid
+    double rowSizeTL[]={hg,
+                        120,
+                        hg,
                         30,//rot 3
                         30,
                         30,
-                        vg,
+                        hg,
                         30,//trans 7
                         30,
                         30,
-                        vg,
+                        hg,
                         30,//zoom 11
                         30,
-                        vg,
-                        30,//home 14
+                        hg,
+                        30,//view-point 14
                         30,
                         30,
-                        vg,
-                        30,//anime 18
+                        hg,
+                        30,//animation 18
                         30,
-                        30
+                        30,
+                        hg
     };
-
-    //y direction
-    double rowSizeTL[]= {hg,15,30,30,30,f,hg};//each side has gap.
 
     setFocusable(false);
     setLayout(new TableLayout(colSizeTL,rowSizeTL));
 
     //1st col
-    add(valPanel,       "1, 1, 1, 5");
+    add(valPanel,       "1, 1, 5, 1");
 
     JLabel lRot= new JLabel("Rotation");
     lRot.setFocusable(false);
-    add(lRot,                      "3, 2, 5, 2");
-    add(rotCounterClockWiseButton, "3, 3, f, f");
-    add(rotUpButton,               "4, 3, f, f");
-    add(rotClockWiseButton,        "5, 3, f, f");
-    add(rotLeftButton,             "3, 4, f, f");
-    add(rotDwnButton,              "4, 4, f, f");
-    add(rotRightButton,            "5, 4, f, f");
+    add(lRot,                      "2, 3, 4, 3");
+    add(rotCounterClockWiseButton, "2, 4, f, f");
+    add(rotUpButton,               "3, 4, f, f");
+    add(rotClockWiseButton,        "4, 4, f, f");
+    add(rotLeftButton,             "2, 5, f, f");
+    add(rotDwnButton,              "3, 5, f, f");
+    add(rotRightButton,            "4, 5, f, f");
 
     JLabel lTrs= new JLabel("Translation");
     lTrs.setFocusable(false);
-    add(lTrs,           "7, 2, 9, 2");
-    add(trnsUpButton,   "8, 3, f, f");
-    add(trnsDownButton, "8, 4, f, f");
-    add(trnsLeftButton, "7, 4, f, f");
-    add(trnsRightButton,"9, 4, f, f");
+    add(lTrs,           "2, 7, 4, 7");
+    add(trnsUpButton,   "3, 8, f, f");
+    add(trnsDownButton, "3, 9, f, f");
+    add(trnsLeftButton, "2, 9, f, f");
+    add(trnsRightButton,"4, 9, f, f");
 
     JLabel lZoom= new JLabel("Zoom");
-    add(lZoom,        "11, 2, 12, 2");
-    add(zoomInButton, "11, 3, f, f");
-    add(zoomOutButton,"12, 3, f, f");
+    add(lZoom,        "2, 11, 4, 11");
+    add(zoomInButton, "2, 12, f, f");
+    add(zoomOutButton,"3, 12, f, f");
 
     JLabel lHome= new JLabel("View Point");
-    add(lHome,                 "14,2, 16, 2");
-    add(revertHomeButton,      "14,3, f, f");
-    add(revertSavedHomeButton, "15,3, f, f");
-    add(saveViewPointButton,   "16,3, f, f");
-    add(revertXButton,      "14,4, f, f");
-    add(revertYButton,      "15,4, f, f");
+    add(lHome,                 "2, 14, 4, 14");
+    add(revertHomeButton,      "2, 15, f, f");
+    add(revertSavedHomeButton, "3, 15, f, f");
+    add(saveViewPointButton,   "4, 15, f, f");
+    add(revertXButton,         "2, 16, f, f");
+    add(revertYButton,         "3, 16, f, f");
 
     JLabel lAni= new JLabel("Anime");
-    add(lAni,            "18,2, 20, 2");
-    add(startStopButton, "18,3, f, f");
-    add(snapShotButton,  "19,3, f, f");
-    add(recordButton,    "20,3, f, f");
-    add(cmbImgFormat,    "19,4, 20, 4");
+    add(lAni,            "2, 18, 5, 18");
+    add(startStopButton, "2, 19, f, f");
+    add(snapShotButton,  "3, 19, f, f");
+    add(recordButton,    "4, 19, f, f");
+    add(cmbImgFormat,    "2, 20, 4, 20");
 
 
   }

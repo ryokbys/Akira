@@ -96,7 +96,7 @@ public class BondPanel extends JPanel implements ActionListener{
   private JSpinner CNMinSpinner,CNMaxSpinner;
   private JButton createButton;
   private JButton setRangeButton;
-  private final String[] colNames = { "On/Off", "Tag1", "Tag2", "Length"};
+  private final String[] colNames = { "On", "Tag1", "Tag2", "Length"};
   private MyTableModel tableModel;
   private JTable table;
   private JScrollPane sp;
@@ -128,7 +128,8 @@ public class BondPanel extends JPanel implements ActionListener{
     radiusSpinner.setPreferredSize(new Dimension(60, 25));
 
 
-    JLabel lengthMinLabel=new JLabel("Length Range Min");
+    JLabel lengthRangeLabel= new JLabel("Length Range:");
+    JLabel lengthMinLabel=new JLabel("Min");
     lengthMinSpinner = new JSpinner(new SpinnerNumberModel((double)vconf.bondLengthRange[0], 0., null, 1.));
     lengthMinSpinner.setFocusable(false);
     lengthMinSpinner.setPreferredSize(new Dimension(90, 25));
@@ -140,7 +141,8 @@ public class BondPanel extends JPanel implements ActionListener{
     lengthMaxSpinner.setPreferredSize(new Dimension(90, 25));
     lengthMaxSpinner.setEditor(new JSpinner.NumberEditor(lengthMaxSpinner, "0.####E0"));
 
-    JLabel CNMinLabel=new JLabel("CN Range Min");
+    JLabel CNRangeLabel= new JLabel("CN Range:");
+    JLabel CNMinLabel=new JLabel("Min");
     CNMinSpinner = new JSpinner(new SpinnerNumberModel((double)vconf.bondCNRange[0], 0., null, 1.));
     CNMinSpinner.setFocusable(false);
     CNMinSpinner.setPreferredSize(new Dimension(90, 25));
@@ -154,7 +156,7 @@ public class BondPanel extends JPanel implements ActionListener{
 
     //temporary create
     setRangeButton = new JButton("Load Original Range");
-    setRangeButton.setToolTipText("Create");
+    setRangeButton.setToolTipText("Load original range");
     setRangeButton.addActionListener( this );
     setRangeButton.setFocusable(false);
 
@@ -181,6 +183,7 @@ public class BondPanel extends JPanel implements ActionListener{
     tableModel = new MyTableModel( colNames, 0 );
     table = new JTable( tableModel );
     table.setRowHeight( 20 );
+    table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
     table.setIntercellSpacing( new Dimension(2,2) );
     table.setColumnSelectionAllowed( true );
 
@@ -191,16 +194,16 @@ public class BondPanel extends JPanel implements ActionListener{
     sp = new JScrollPane( table );
     sp.setFocusable(false);
     sp.setWheelScrollingEnabled( true );
-    sp.setPreferredSize( new Dimension(200,100) );
+    //sp.setPreferredSize( new Dimension(200,100) );
 
     addTable();
 
     DefaultTableColumnModel columnModel
       = (DefaultTableColumnModel)table.getColumnModel();
-    columnModel.getColumn(0).setPreferredWidth(8);
-    columnModel.getColumn(1).setPreferredWidth(4);
-    columnModel.getColumn(2).setPreferredWidth(4);
-    columnModel.getColumn(3).setPreferredWidth(4);
+    columnModel.getColumn(0).setPreferredWidth(30);
+    columnModel.getColumn(1).setPreferredWidth(50);
+    columnModel.getColumn(2).setPreferredWidth(50);
+    columnModel.getColumn(3).setPreferredWidth(50);
 
 
     applyButton  = new JButton( "Apply" );
@@ -215,63 +218,79 @@ public class BondPanel extends JPanel implements ActionListener{
 
     JLabel bondTypeLabel =new JLabel("Type");
     layout.putConstraint( SpringLayout.NORTH, bondTypeLabel, 10, SpringLayout.NORTH, this );
-    layout.putConstraint( SpringLayout.WEST,  bondTypeLabel, 10, SpringLayout.WEST, this );
+    layout.putConstraint( SpringLayout.WEST,  bondTypeLabel, 20, SpringLayout.WEST, this );
     layout.putConstraint( SpringLayout.NORTH, bondType, 0, SpringLayout.NORTH, bondTypeLabel);
     layout.putConstraint( SpringLayout.WEST,  bondType, 5, SpringLayout.EAST, bondTypeLabel);
     JLabel bondColorLabel =new JLabel("Color");
     layout.putConstraint( SpringLayout.NORTH, bondColorLabel, 5, SpringLayout.SOUTH, bondType);
-    layout.putConstraint( SpringLayout.WEST,  bondColorLabel, 10, SpringLayout.WEST, this );
+    layout.putConstraint( SpringLayout.WEST,  bondColorLabel, 0, SpringLayout.WEST, bondTypeLabel );
     layout.putConstraint( SpringLayout.NORTH, bondColor, 0, SpringLayout.NORTH, bondColorLabel);
     layout.putConstraint( SpringLayout.WEST,  bondColor, 5, SpringLayout.EAST, bondColorLabel);
 
-
     layout.putConstraint( SpringLayout.NORTH, radiusLabel, 5,SpringLayout.SOUTH, bondColor);
-    layout.putConstraint( SpringLayout.WEST, radiusLabel, 10,SpringLayout.WEST, this);
+    layout.putConstraint( SpringLayout.WEST, radiusLabel, 0,SpringLayout.WEST, bondTypeLabel );
     layout.putConstraint( SpringLayout.NORTH, radiusSpinner, 0,SpringLayout.NORTH, radiusLabel );
     layout.putConstraint( SpringLayout.WEST, radiusSpinner, 5,SpringLayout.EAST, radiusLabel );
 
     layout.putConstraint( SpringLayout.NORTH, lLegend, 10,SpringLayout.SOUTH, radiusSpinner);
-    layout.putConstraint( SpringLayout.WEST, lLegend, 0,SpringLayout.WEST, radiusLabel);
+    layout.putConstraint( SpringLayout.WEST, lLegend, 0,SpringLayout.WEST, bondTypeLabel );
     layout.putConstraint( SpringLayout.NORTH, taLegend, 0,SpringLayout.NORTH, lLegend);
     layout.putConstraint( SpringLayout.WEST, taLegend, 0,SpringLayout.EAST, lLegend);
-    layout.putConstraint( SpringLayout.NORTH, lFormat, 0,SpringLayout.NORTH, taLegend);
-    layout.putConstraint( SpringLayout.WEST, lFormat, 10,SpringLayout.EAST, taLegend);
+    layout.putConstraint( SpringLayout.NORTH, lFormat, 10,SpringLayout.SOUTH, taLegend);
+    layout.putConstraint( SpringLayout.WEST, lFormat, 0,SpringLayout.WEST, bondTypeLabel );
     layout.putConstraint( SpringLayout.NORTH, taFormat, 0,SpringLayout.NORTH, lFormat);
     layout.putConstraint( SpringLayout.WEST, taFormat, 0,SpringLayout.EAST, lFormat);
 
-
-    layout.putConstraint( SpringLayout.NORTH, lengthMinLabel, 10,SpringLayout.NORTH,this);
-    layout.putConstraint( SpringLayout.WEST, lengthMinLabel, 10,SpringLayout.EAST,bondColor);
-    layout.putConstraint( SpringLayout.NORTH, lengthMinSpinner, 0,SpringLayout.NORTH, lengthMinLabel);
+    //Length Range:
+    layout.putConstraint( SpringLayout.NORTH, lengthRangeLabel, 10, SpringLayout.SOUTH, taFormat );
+    layout.putConstraint( SpringLayout.WEST, lengthRangeLabel, 0, SpringLayout.WEST, bondTypeLabel );
+    //Length Min label
+    layout.putConstraint( SpringLayout.NORTH, lengthMinLabel, 5, SpringLayout.SOUTH, lengthRangeLabel );
+    layout.putConstraint( SpringLayout.WEST, lengthMinLabel, 20, SpringLayout.WEST, lengthRangeLabel );
+    //Length Min spinner
+    layout.putConstraint( SpringLayout.NORTH, lengthMinSpinner, 0, SpringLayout.NORTH, lengthMinLabel);
     layout.putConstraint( SpringLayout.WEST, lengthMinSpinner, 5,SpringLayout.EAST, lengthMinLabel);
+    //Length Max label
     layout.putConstraint( SpringLayout.NORTH, lengthMaxLabel, 0,SpringLayout.NORTH, lengthMinSpinner);
     layout.putConstraint( SpringLayout.WEST, lengthMaxLabel, 10,SpringLayout.EAST, lengthMinSpinner);
+    //Length Max spinner
     layout.putConstraint( SpringLayout.NORTH, lengthMaxSpinner, 0,SpringLayout.NORTH, lengthMaxLabel);
     layout.putConstraint( SpringLayout.WEST, lengthMaxSpinner, 5,SpringLayout.EAST, lengthMaxLabel);
 
-    layout.putConstraint( SpringLayout.NORTH, CNMinLabel, 15,SpringLayout.SOUTH, lengthMinLabel);
-    layout.putConstraint( SpringLayout.WEST, CNMinLabel, 0,SpringLayout.WEST, lengthMinLabel);
+    //CN Range:
+    layout.putConstraint( SpringLayout.NORTH, CNRangeLabel, 10, SpringLayout.SOUTH, lengthMaxSpinner );
+    layout.putConstraint( SpringLayout.WEST, CNRangeLabel, 0, SpringLayout.WEST, bondTypeLabel );
+    //CN Min Label
+    layout.putConstraint( SpringLayout.NORTH, CNMinLabel, 5, SpringLayout.SOUTH, CNRangeLabel);
+    layout.putConstraint( SpringLayout.WEST, CNMinLabel, 20, SpringLayout.WEST, CNRangeLabel );
+    //CN Min spinner
     layout.putConstraint( SpringLayout.NORTH, CNMinSpinner, 0,SpringLayout.NORTH, CNMinLabel);
-    layout.putConstraint( SpringLayout.WEST, CNMinSpinner, 0,SpringLayout.WEST, lengthMinSpinner);
+    layout.putConstraint( SpringLayout.WEST, CNMinSpinner, 5,SpringLayout.WEST, lengthMinSpinner);
+    //CN Max label
     layout.putConstraint( SpringLayout.NORTH, CNMaxLabel, 0,SpringLayout.NORTH, CNMinSpinner);
     layout.putConstraint( SpringLayout.WEST, CNMaxLabel, 10,SpringLayout.EAST, CNMinSpinner);
+    //CN Max spinner
     layout.putConstraint( SpringLayout.NORTH, CNMaxSpinner, 0,SpringLayout.NORTH, CNMaxLabel);
     layout.putConstraint( SpringLayout.WEST, CNMaxSpinner, 5,SpringLayout.EAST, CNMaxLabel);
 
-    layout.putConstraint( SpringLayout.NORTH, setRangeButton, 5,SpringLayout.SOUTH, CNMinSpinner);
-    layout.putConstraint( SpringLayout.EAST, setRangeButton, 0,SpringLayout.EAST, CNMaxSpinner);
+    //"Apply" button
+    layout.putConstraint( SpringLayout.NORTH, applyButton, 10,SpringLayout.SOUTH, CNMinSpinner );
+    layout.putConstraint( SpringLayout.WEST, applyButton, 0, SpringLayout.WEST, bondTypeLabel );
+    //"Load original range" button
+    layout.putConstraint( SpringLayout.NORTH, setRangeButton, 0, SpringLayout.NORTH, applyButton);
+    layout.putConstraint( SpringLayout.WEST, setRangeButton, 20, SpringLayout.EAST, applyButton );
+    //"Reset" button
+    layout.putConstraint( SpringLayout.NORTH, resetButton, 0, SpringLayout.NORTH, setRangeButton);
+    layout.putConstraint( SpringLayout.WEST, resetButton, 20, SpringLayout.EAST, setRangeButton);
 
-    layout.putConstraint( SpringLayout.NORTH, resetButton, 10,SpringLayout.SOUTH, setRangeButton);
-    layout.putConstraint( SpringLayout.EAST, resetButton, 0,SpringLayout.EAST,setRangeButton);
-    layout.putConstraint( SpringLayout.SOUTH, applyButton, 0,SpringLayout.SOUTH, resetButton);
-    layout.putConstraint( SpringLayout.EAST, applyButton, 0,SpringLayout.WEST, resetButton);
-
-    layout.putConstraint( SpringLayout.SOUTH, createButton, -10,SpringLayout.SOUTH, this);
-    layout.putConstraint( SpringLayout.EAST, createButton, 0,SpringLayout.EAST, sp);
-    layout.putConstraint( SpringLayout.SOUTH, sp, 0,SpringLayout.NORTH, createButton);
-    layout.putConstraint( SpringLayout.NORTH, sp, 10,SpringLayout.NORTH, this);
-    layout.putConstraint( SpringLayout.EAST, sp, -10,SpringLayout.EAST, this);
-    layout.putConstraint( SpringLayout.WEST, sp, 30, SpringLayout.EAST, lengthMaxSpinner);
+    //"Create" button
+    layout.putConstraint( SpringLayout.SOUTH, createButton, -10, SpringLayout.SOUTH, this);
+    layout.putConstraint( SpringLayout.EAST, createButton, 0, SpringLayout.EAST, sp);
+    //Slider panel
+    layout.putConstraint( SpringLayout.SOUTH, sp, 0, SpringLayout.NORTH, createButton);
+    layout.putConstraint( SpringLayout.NORTH, sp, 20, SpringLayout.SOUTH, applyButton );
+    layout.putConstraint( SpringLayout.EAST, sp, -10, SpringLayout.EAST, this);
+    layout.putConstraint( SpringLayout.WEST, sp, 0, SpringLayout.WEST, bondTypeLabel );
 
 
 
@@ -287,10 +306,12 @@ public class BondPanel extends JPanel implements ActionListener{
     add(bondColorLabel);
     add(bondColor);
     add(setRangeButton);
+    add(lengthRangeLabel);
     add(lengthMinLabel);
     add(lengthMinSpinner);
     add(lengthMaxLabel);
     add(lengthMaxSpinner);
+    add(CNRangeLabel);
     add(CNMinLabel);
     add(CNMinSpinner);
     add(CNMaxLabel);

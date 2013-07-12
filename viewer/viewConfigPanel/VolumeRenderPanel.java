@@ -282,24 +282,25 @@ public class VolumeRenderPanel extends JPanel implements ActionListener{
     setLayout(layout);
 
     //surface
-    layout.putConstraint(SpringLayout.NORTH, cbSrf, 10, SpringLayout.NORTH,this);
+    layout.putConstraint(SpringLayout.NORTH, cbSrf, 10, SpringLayout.NORTH, this );
     layout.putConstraint(SpringLayout.WEST, cbSrf, 10, SpringLayout.WEST, this);
-    layout.putConstraint(SpringLayout.NORTH, lSrf, 0, SpringLayout.NORTH, cbSrf);
-    layout.putConstraint(SpringLayout.WEST, lSrf, 5, SpringLayout.EAST, cbSrf);
+    layout.putConstraint(SpringLayout.NORTH, lSrf, 5, SpringLayout.SOUTH, cbSrf );
+    layout.putConstraint(SpringLayout.WEST, lSrf, 20, SpringLayout.WEST, cbSrf );
     layout.putConstraint(SpringLayout.NORTH, spSrfLevel, 0, SpringLayout.NORTH, lSrf);
-    layout.putConstraint(SpringLayout.WEST, spSrfLevel, 3, SpringLayout.EAST, lSrf);
-    //contour1
-    layout.putConstraint(SpringLayout.NORTH, cbContour, 15, SpringLayout.SOUTH, cbSrf);
+    layout.putConstraint(SpringLayout.WEST, spSrfLevel, 5, SpringLayout.EAST, lSrf);
+
+    //contour
+    layout.putConstraint(SpringLayout.NORTH, cbContour, 30, SpringLayout.SOUTH, cbSrf);
     layout.putConstraint(SpringLayout.WEST, cbContour, 0, SpringLayout.WEST, cbSrf);
-    layout.putConstraint(SpringLayout.NORTH, lContourPlaneNormal, -5, SpringLayout.NORTH, cbContour);
-    layout.putConstraint(SpringLayout.WEST, lContourPlaneNormal, 5,SpringLayout.EAST, cbContour);
+    layout.putConstraint(SpringLayout.NORTH, lContourPlaneNormal, 5, SpringLayout.SOUTH, cbContour);
+    layout.putConstraint(SpringLayout.WEST, lContourPlaneNormal, 20, SpringLayout.WEST, cbContour);
     layout.putConstraint(SpringLayout.NORTH, spContourPlaneNormalX, 0,SpringLayout.NORTH, lContourPlaneNormal);
     layout.putConstraint(SpringLayout.WEST, spContourPlaneNormalX, 5,SpringLayout.EAST, lContourPlaneNormal);
     layout.putConstraint(SpringLayout.NORTH, spContourPlaneNormalY, 0,SpringLayout.NORTH, spContourPlaneNormalX);
     layout.putConstraint(SpringLayout.WEST, spContourPlaneNormalY, 5,SpringLayout.EAST, spContourPlaneNormalX);
     layout.putConstraint(SpringLayout.NORTH, spContourPlaneNormalZ, 0,SpringLayout.NORTH, spContourPlaneNormalY);
     layout.putConstraint(SpringLayout.WEST, spContourPlaneNormalZ, 5,SpringLayout.EAST, spContourPlaneNormalY);
-    layout.putConstraint(SpringLayout.NORTH, lContourPlanePoint, 10,SpringLayout.SOUTH, lContourPlaneNormal);
+    layout.putConstraint(SpringLayout.NORTH, lContourPlanePoint, 5,SpringLayout.SOUTH, spContourPlaneNormalX);
     layout.putConstraint(SpringLayout.WEST, lContourPlanePoint, 0,SpringLayout.WEST, lContourPlaneNormal);
     layout.putConstraint(SpringLayout.NORTH, spContourPlanePointX, 0,SpringLayout.NORTH, lContourPlanePoint);
     layout.putConstraint(SpringLayout.WEST, spContourPlanePointX, 0,SpringLayout.WEST, spContourPlaneNormalX);
@@ -308,16 +309,14 @@ public class VolumeRenderPanel extends JPanel implements ActionListener{
     layout.putConstraint(SpringLayout.NORTH, spContourPlanePointZ, 0,SpringLayout.NORTH, spContourPlanePointY);
     layout.putConstraint(SpringLayout.WEST, spContourPlanePointZ, 5,SpringLayout.EAST, spContourPlanePointY);
 
-    //
     JLabel volDataLabel=new JLabel("Data");
-    layout.putConstraint( SpringLayout.NORTH, volDataLabel, 10, SpringLayout.NORTH, this);
-    layout.putConstraint( SpringLayout.WEST,  volDataLabel, 10, SpringLayout.EAST, spContourPlanePointZ);
+    layout.putConstraint( SpringLayout.NORTH, volDataLabel, 30, SpringLayout.SOUTH, spContourPlanePointX );
+    layout.putConstraint( SpringLayout.WEST,  volDataLabel, 0, SpringLayout.WEST, cbSrf );
     layout.putConstraint( SpringLayout.NORTH, cmbVolData, 0, SpringLayout.NORTH, volDataLabel);
     layout.putConstraint( SpringLayout.WEST,  cmbVolData, 5, SpringLayout.EAST, volDataLabel);
-
     //range
-    layout.putConstraint(SpringLayout.NORTH, lRange, 0, SpringLayout.NORTH,volDataLabel);
-    layout.putConstraint(SpringLayout.WEST, lRange, 10, SpringLayout.EAST, cmbVolData);
+    layout.putConstraint(SpringLayout.NORTH, lRange, 5, SpringLayout.SOUTH, cmbVolData );
+    layout.putConstraint(SpringLayout.WEST, lRange, 20, SpringLayout.WEST, volDataLabel );
     layout.putConstraint(SpringLayout.NORTH, spRangeMin, 0, SpringLayout.NORTH, lRange);
     layout.putConstraint(SpringLayout.WEST, spRangeMin, 0, SpringLayout.EAST, lRange);
     layout.putConstraint(SpringLayout.NORTH, spRangeMax, 0, SpringLayout.NORTH, spRangeMin);
@@ -325,27 +324,18 @@ public class VolumeRenderPanel extends JPanel implements ActionListener{
     layout.putConstraint(SpringLayout.NORTH, setRangeButton, 0, SpringLayout.SOUTH, spRangeMax);
     layout.putConstraint(SpringLayout.EAST, setRangeButton, 0, SpringLayout.EAST, spRangeMax);
     //legend
-    layout.putConstraint( SpringLayout.NORTH, lLegend, 5,SpringLayout.SOUTH, setRangeButton);
-    layout.putConstraint( SpringLayout.WEST, lLegend, 0,SpringLayout.WEST, volDataLabel);
-    layout.putConstraint( SpringLayout.NORTH, taLegend, 0,SpringLayout.NORTH, lLegend);
-    layout.putConstraint( SpringLayout.WEST, taLegend, 0,SpringLayout.EAST, lLegend);
-    layout.putConstraint( SpringLayout.NORTH, lFormat, 0,SpringLayout.NORTH, taLegend);
-    layout.putConstraint( SpringLayout.WEST, lFormat, 0,SpringLayout.EAST, taLegend);
-    layout.putConstraint( SpringLayout.NORTH, taFormat, 0,SpringLayout.NORTH, lFormat);
-    layout.putConstraint( SpringLayout.WEST, taFormat, 0,SpringLayout.EAST, lFormat);
-
-    //apply button
-    layout.putConstraint(SpringLayout.NORTH, btnApply, 10, SpringLayout.SOUTH, taFormat);
-    layout.putConstraint(SpringLayout.WEST, btnApply, 0, SpringLayout.WEST, volDataLabel);
-    layout.putConstraint( SpringLayout.SOUTH, resetButton, 0,SpringLayout.SOUTH, btnApply);
-    layout.putConstraint( SpringLayout.WEST, resetButton, 0,SpringLayout.EAST, btnApply);
-    layout.putConstraint(SpringLayout.SOUTH, btn2Dplot, 0, SpringLayout.SOUTH, resetButton);
-    layout.putConstraint(SpringLayout.WEST, btn2Dplot, 0, SpringLayout.EAST, resetButton);
-
+    layout.putConstraint( SpringLayout.NORTH, lLegend, 5, SpringLayout.SOUTH, setRangeButton);
+    layout.putConstraint( SpringLayout.WEST, lLegend, 0, SpringLayout.WEST, lRange );
+    layout.putConstraint( SpringLayout.NORTH, taLegend, 0, SpringLayout.NORTH, lLegend);
+    layout.putConstraint( SpringLayout.WEST, taLegend, 5, SpringLayout.EAST, lLegend);
+    layout.putConstraint( SpringLayout.NORTH, lFormat, 5, SpringLayout.SOUTH, taLegend );
+    layout.putConstraint( SpringLayout.WEST, lFormat, 0, SpringLayout.WEST, taLegend);
+    layout.putConstraint( SpringLayout.NORTH, taFormat, 0, SpringLayout.NORTH, lFormat);
+    layout.putConstraint( SpringLayout.WEST, taFormat, 5, SpringLayout.EAST, lFormat);
 
     //data mesh
-    layout.putConstraint(SpringLayout.NORTH, lData, 10, SpringLayout.NORTH, this);
-    layout.putConstraint(SpringLayout.WEST, lData, 20, SpringLayout.EAST, spRangeMax);
+    layout.putConstraint(SpringLayout.NORTH, lData, 30, SpringLayout.SOUTH, taFormat );
+    layout.putConstraint(SpringLayout.WEST, lData, 0, SpringLayout.WEST, cbSrf );
     layout.putConstraint(SpringLayout.NORTH, spDataX, 0, SpringLayout.NORTH, lData);
     layout.putConstraint(SpringLayout.WEST, spDataX, 5, SpringLayout.EAST, lData);
     layout.putConstraint(SpringLayout.NORTH, spDataY, 0, SpringLayout.NORTH, spDataX);
@@ -353,7 +343,7 @@ public class VolumeRenderPanel extends JPanel implements ActionListener{
     layout.putConstraint(SpringLayout.NORTH, spDataZ, 0, SpringLayout.NORTH, spDataY);
     layout.putConstraint(SpringLayout.WEST, spDataZ, 2, SpringLayout.EAST, spDataY);
     //draw mesh
-    layout.putConstraint(SpringLayout.NORTH, lDraw, 25, SpringLayout.NORTH, lData);
+    layout.putConstraint(SpringLayout.NORTH, lDraw, 5, SpringLayout.SOUTH, spDataX );
     layout.putConstraint(SpringLayout.WEST, lDraw, 0, SpringLayout.WEST, lData);
     layout.putConstraint(SpringLayout.NORTH, spDrawX, 0, SpringLayout.NORTH, lDraw);
     layout.putConstraint(SpringLayout.WEST, spDrawX, 2, SpringLayout.EAST, lDraw);
@@ -368,82 +358,14 @@ public class VolumeRenderPanel extends JPanel implements ActionListener{
     layout.putConstraint(SpringLayout.NORTH, spContourPointSize, 0, SpringLayout.NORTH, lContourPointSize);
     layout.putConstraint(SpringLayout.WEST, spContourPointSize, 5, SpringLayout.EAST, lContourPointSize);
 
-    //level cut
-    layout.putConstraint(SpringLayout.NORTH, cbLevel, 5, SpringLayout.SOUTH, spContourPointSize);
-    layout.putConstraint(SpringLayout.WEST, cbLevel, 0, SpringLayout.WEST, lContourPointSize);
-    //cut tiny
-    layout.putConstraint(SpringLayout.NORTH, cbCutTiny, 0, SpringLayout.NORTH, cbLevel);
-    layout.putConstraint(SpringLayout.WEST, cbCutTiny, 0, SpringLayout.EAST, cbLevel);
+    //apply button
+    layout.putConstraint(SpringLayout.NORTH, btn2Dplot, 0, SpringLayout.NORTH, btnApply );
+    layout.putConstraint(SpringLayout.WEST, btn2Dplot, 0, SpringLayout.WEST, cbSrf );
+    layout.putConstraint( SpringLayout.NORTH, resetButton, 0, SpringLayout.NORTH, btnApply);
+    layout.putConstraint( SpringLayout.EAST, resetButton, -10, SpringLayout.EAST, this );
+    layout.putConstraint(SpringLayout.NORTH, btnApply, 10, SpringLayout.SOUTH, spContourPointSize );
+    layout.putConstraint(SpringLayout.EAST, btnApply, -10, SpringLayout.WEST, resetButton );
 
-    //level
-    layout.putConstraint(SpringLayout.NORTH, lLevelMin, 0, SpringLayout.SOUTH, cbLevel);
-    layout.putConstraint(SpringLayout.WEST, lLevelMin, 10, SpringLayout.WEST, cbLevel);
-    layout.putConstraint(SpringLayout.NORTH, spLevelMin, 2, SpringLayout.NORTH, lLevelMin);
-    layout.putConstraint(SpringLayout.WEST, spLevelMin, 0, SpringLayout.EAST, lLevelMin);
-    layout.putConstraint(SpringLayout.NORTH, lLevelMax, 0, SpringLayout.NORTH, spLevelMin);
-    layout.putConstraint(SpringLayout.WEST, lLevelMax, 10, SpringLayout.EAST, spLevelMin);
-    layout.putConstraint(SpringLayout.NORTH, spLevelMax, 0, SpringLayout.NORTH, lLevelMax);
-    layout.putConstraint(SpringLayout.WEST, spLevelMax, 0, SpringLayout.EAST, lLevelMax);
-
-
-    //////enjoy mode
-    //xy, yz, zx
-    layout.putConstraint(SpringLayout.NORTH, cbxy, 0, SpringLayout.NORTH,spSrfLevel);
-    layout.putConstraint(SpringLayout.WEST, cbxy, 0, SpringLayout.EAST, spSrfLevel);
-    layout.putConstraint(SpringLayout.NORTH, cbxz, 0, SpringLayout.NORTH, cbxy);
-    layout.putConstraint(SpringLayout.WEST, cbxz, 0, SpringLayout.EAST, cbxy);
-    layout.putConstraint(SpringLayout.NORTH, cbyz, 0, SpringLayout.NORTH, cbxz);
-    layout.putConstraint(SpringLayout.WEST, cbyz, 0, SpringLayout.EAST, cbxz);
-    //dot
-    layout.putConstraint(SpringLayout.NORTH, lSrfNeighbors, 10, SpringLayout.NORTH, this);
-    layout.putConstraint(SpringLayout.WEST, lSrfNeighbors, 10, SpringLayout.EAST, spDataZ);
-    layout.putConstraint(SpringLayout.NORTH, spSrfNeighbors, 0, SpringLayout.NORTH, lSrfNeighbors);
-    layout.putConstraint(SpringLayout.WEST, spSrfNeighbors, 0, SpringLayout.EAST, lSrfNeighbors);
-    //dens
-    layout.putConstraint(SpringLayout.NORTH, lDensFac, 10, SpringLayout.SOUTH, lSrfNeighbors);
-    layout.putConstraint(SpringLayout.WEST, lDensFac, 0, SpringLayout.WEST, lSrfNeighbors);
-    layout.putConstraint(SpringLayout.NORTH, spDensFac, 0, SpringLayout.NORTH, lDensFac);
-    layout.putConstraint(SpringLayout.WEST, spDensFac, 0, SpringLayout.EAST, lDensFac);
-    //surface type
-    layout.putConstraint(SpringLayout.NORTH, cmbSurfaceType, 10, SpringLayout.SOUTH, spDensFac);
-    layout.putConstraint(SpringLayout.WEST, cmbSurfaceType, 0, SpringLayout.WEST, lDensFac);
-
-    JLabel cmbVolExcludeLabel=new JLabel("Data Type");
-    layout.putConstraint( SpringLayout.NORTH, cmbVolExcludeLabel, 10, SpringLayout.SOUTH, cmbSurfaceType);
-    layout.putConstraint( SpringLayout.WEST,  cmbVolExcludeLabel, 0, SpringLayout.WEST, cmbSurfaceType);
-    layout.putConstraint( SpringLayout.NORTH, cmbVolExclude, 0, SpringLayout.SOUTH, cmbVolExcludeLabel);
-    layout.putConstraint( SpringLayout.WEST,  cmbVolExclude, 10, SpringLayout.WEST, cmbVolExcludeLabel);
-
-
-
-
-
-    //surface2
-    layout.putConstraint(SpringLayout.NORTH, cbSrf2, 5, SpringLayout.SOUTH, spContourPlanePointZ);
-    layout.putConstraint(SpringLayout.WEST, cbSrf2, 0, SpringLayout.WEST, cbContour);
-    layout.putConstraint(SpringLayout.NORTH, lSrf2, 0, SpringLayout.NORTH, cbSrf2);
-    layout.putConstraint(SpringLayout.WEST, lSrf2, 5, SpringLayout.EAST, cbSrf2);
-    layout.putConstraint(SpringLayout.NORTH, spSrfLevel2, 0, SpringLayout.NORTH, cbSrf2);
-    layout.putConstraint(SpringLayout.WEST, spSrfLevel2, 3, SpringLayout.EAST, lSrf);
-    //contour2
-    layout.putConstraint(SpringLayout.NORTH, cbContour2, 5, SpringLayout.SOUTH, spSrfLevel2);
-    layout.putConstraint(SpringLayout.WEST, cbContour2, 0, SpringLayout.WEST, cbSrf2);
-    layout.putConstraint(SpringLayout.NORTH, lContour2PlaneNormal, -5, SpringLayout.NORTH, cbContour2);
-    layout.putConstraint(SpringLayout.WEST, lContour2PlaneNormal, 5,SpringLayout.EAST, cbContour2);
-    layout.putConstraint(SpringLayout.NORTH, spContour2PlaneNormalX, 0,SpringLayout.NORTH, lContour2PlaneNormal);
-    layout.putConstraint(SpringLayout.WEST, spContour2PlaneNormalX, 5,SpringLayout.EAST, lContour2PlaneNormal);
-    layout.putConstraint(SpringLayout.NORTH, spContour2PlaneNormalY, 0,SpringLayout.NORTH, spContour2PlaneNormalX);
-    layout.putConstraint(SpringLayout.WEST, spContour2PlaneNormalY, 5,SpringLayout.EAST, spContour2PlaneNormalX);
-    layout.putConstraint(SpringLayout.NORTH, spContour2PlaneNormalZ, 0,SpringLayout.NORTH, spContour2PlaneNormalY);
-    layout.putConstraint(SpringLayout.WEST, spContour2PlaneNormalZ, 5,SpringLayout.EAST, spContour2PlaneNormalY);
-    layout.putConstraint(SpringLayout.NORTH, lContour2PlanePoint, 10,SpringLayout.SOUTH, lContour2PlaneNormal);
-    layout.putConstraint(SpringLayout.WEST, lContour2PlanePoint, 0,SpringLayout.WEST, lContour2PlaneNormal);
-    layout.putConstraint(SpringLayout.NORTH, spContour2PlanePointX, 0,SpringLayout.NORTH, lContour2PlanePoint);
-    layout.putConstraint(SpringLayout.WEST, spContour2PlanePointX, 0,SpringLayout.WEST, spContour2PlaneNormalX);
-    layout.putConstraint(SpringLayout.NORTH, spContour2PlanePointY, 0,SpringLayout.NORTH, spContour2PlanePointX);
-    layout.putConstraint(SpringLayout.WEST, spContour2PlanePointY, 5,SpringLayout.EAST, spContour2PlanePointX);
-    layout.putConstraint(SpringLayout.NORTH, spContour2PlanePointZ, 0,SpringLayout.NORTH, spContour2PlanePointY);
-    layout.putConstraint(SpringLayout.WEST, spContour2PlanePointZ, 5,SpringLayout.EAST, spContour2PlanePointY);
 
 
     //add
@@ -494,6 +416,7 @@ public class VolumeRenderPanel extends JPanel implements ActionListener{
     add(lLegend);
     add(taFormat);
     add(taLegend);
+
     //if(ctrl.isEnjoyMode){
       /*
        * add(cbCutTiny);

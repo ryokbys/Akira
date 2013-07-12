@@ -63,7 +63,7 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     ticsType.addKeyListener(ctrl.keyCtrl);
 
     //atom
-    cbA =new JCheckBox("Atom Color Table",vconf.isVisibleAtomColorTable);
+    cbA =new JCheckBox("Atom:",vconf.isVisibleAtomColorTable);
     cbA.setFocusable(false);
     cbA.addChangeListener(this);
     spAX =new JSpinner( new SpinnerNumberModel((double)vconf.atomColorTablePos[0],0.0, 1.0, 0.1 ) );
@@ -79,7 +79,7 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     spAH.setPreferredSize( new Dimension(60,25) );
     spAH.addChangeListener( this );
     //bond
-    cbB =new JCheckBox("Bond Color Table",vconf.isVisibleBondColorTable);
+    cbB =new JCheckBox("Bond:",vconf.isVisibleBondColorTable);
     cbB.setFocusable(false);
     cbB.addChangeListener(this);
     spBX =new JSpinner( new SpinnerNumberModel((double)vconf.bondColorTablePos[0],0.0, 1.0, 0.1 ) );
@@ -95,7 +95,7 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     spBH.setPreferredSize( new Dimension(60,25) );
     spBH.addChangeListener( this );
     //vec
-    cbV =new JCheckBox("Vec. Color Table",vconf.isVisibleVecColorTable);
+    cbV =new JCheckBox("Vector",vconf.isVisibleVecColorTable);
     cbV.setFocusable(false);
     cbV.addChangeListener(this);
     spVX =new JSpinner( new SpinnerNumberModel((double)vconf.vecColorTablePos[0],0.0, 1.0, 0.1 ) );
@@ -111,7 +111,7 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     spVH.setPreferredSize( new Dimension(60,25) );
     spVH.addChangeListener( this );
     //vol
-    cbVol =new JCheckBox("Vol. Color Table",vconf.isVisibleVolColorTable);
+    cbVol =new JCheckBox("Volume",vconf.isVisibleVolColorTable);
     cbVol.setFocusable(false);
     cbVol.addChangeListener(this);
     spVolX =new JSpinner( new SpinnerNumberModel((double)vconf.volColorTablePos[0],0.0, 1.0, 0.1 ) );
@@ -152,20 +152,23 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     SpringLayout layout = new SpringLayout();
     setLayout( layout );
 
-    //
+    //Color type
     layout.putConstraint( SpringLayout.NORTH, colorLabel, 10, SpringLayout.NORTH, this );
     layout.putConstraint( SpringLayout.WEST, colorLabel, 10, SpringLayout.WEST, this );
     layout.putConstraint( SpringLayout.NORTH, ctableType, 0, SpringLayout.NORTH, colorLabel);
     layout.putConstraint( SpringLayout.WEST, ctableType, 5, SpringLayout.EAST, colorLabel);
-
+    //Tics type
     layout.putConstraint( SpringLayout.NORTH, ticsLabel, 10, SpringLayout.SOUTH, colorLabel);
     layout.putConstraint( SpringLayout.WEST, ticsLabel, 0, SpringLayout.WEST,colorLabel);
     layout.putConstraint( SpringLayout.NORTH, ticsType, 0, SpringLayout.NORTH, ticsLabel);
     layout.putConstraint( SpringLayout.WEST, ticsType, 0, SpringLayout.WEST, ctableType);
 
-    //
-    layout.putConstraint( SpringLayout.NORTH, cbA, 20, SpringLayout.NORTH, this);
-    layout.putConstraint( SpringLayout.WEST, cbA, 8, SpringLayout.EAST, ctableType);
+    JLabel lColorTable= new JLabel("Color Tables:");
+    layout.putConstraint( SpringLayout.NORTH, lColorTable, 20, SpringLayout.SOUTH, ticsType );
+    layout.putConstraint( SpringLayout.WEST, lColorTable, 0, SpringLayout.WEST, colorLabel );
+    //Check boxes
+    layout.putConstraint( SpringLayout.NORTH, cbA, 10, SpringLayout.SOUTH, lColorTable );
+    layout.putConstraint( SpringLayout.WEST, cbA, 0, SpringLayout.WEST, colorLabel );
     layout.putConstraint( SpringLayout.NORTH, cbB, 10, SpringLayout.SOUTH, cbA);
     layout.putConstraint( SpringLayout.WEST, cbB, 0, SpringLayout.WEST, cbA);
     layout.putConstraint( SpringLayout.NORTH, cbV, 10, SpringLayout.SOUTH, cbB);
@@ -173,7 +176,7 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     layout.putConstraint( SpringLayout.NORTH, cbVol, 10, SpringLayout.SOUTH, cbV);
     layout.putConstraint( SpringLayout.WEST, cbVol, 0, SpringLayout.WEST, cbV);
 
-
+    //Spinners for Atom color
     layout.putConstraint( SpringLayout.NORTH, spAX, 0, SpringLayout.NORTH, cbA);
     layout.putConstraint( SpringLayout.WEST, spAX, 5, SpringLayout.EAST, cbA);
     layout.putConstraint( SpringLayout.NORTH, spAY, 0, SpringLayout.NORTH, spAX);
@@ -183,6 +186,7 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     layout.putConstraint( SpringLayout.NORTH, spAH, 0, SpringLayout.NORTH, spAW);
     layout.putConstraint( SpringLayout.WEST, spAH, 5, SpringLayout.EAST, spAW);
 
+    //Spinners for bond color
     layout.putConstraint( SpringLayout.NORTH, spBX, 0, SpringLayout.NORTH, cbB);
     layout.putConstraint( SpringLayout.WEST, spBX, 0, SpringLayout.WEST, spAX);
     layout.putConstraint( SpringLayout.NORTH, spBY, 0, SpringLayout.NORTH, spBX);
@@ -192,6 +196,7 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     layout.putConstraint( SpringLayout.NORTH, spBH, 0, SpringLayout.NORTH, spBW);
     layout.putConstraint( SpringLayout.WEST, spBH, 5, SpringLayout.EAST, spBW);
 
+    //Spinners for vector color
     layout.putConstraint( SpringLayout.NORTH, spVX, 0, SpringLayout.NORTH, cbV);
     layout.putConstraint( SpringLayout.WEST, spVX, 0, SpringLayout.WEST, spBX);
     layout.putConstraint( SpringLayout.NORTH, spVY, 0, SpringLayout.NORTH, spVX);
@@ -201,6 +206,7 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     layout.putConstraint( SpringLayout.NORTH, spVH, 0, SpringLayout.NORTH, spVW);
     layout.putConstraint( SpringLayout.WEST, spVH, 5, SpringLayout.EAST, spVW);
 
+    //Spinners for volume color
     layout.putConstraint( SpringLayout.NORTH, spVolX, 0, SpringLayout.NORTH, cbVol);
     layout.putConstraint( SpringLayout.WEST, spVolX, 0, SpringLayout.WEST, spVX);
     layout.putConstraint( SpringLayout.NORTH, spVolY, 0, SpringLayout.NORTH, spVolX);
@@ -224,26 +230,28 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     layout.putConstraint( SpringLayout.SOUTH, lHeight, 0, SpringLayout.NORTH, spAH);
     layout.putConstraint( SpringLayout.WEST, lHeight, 0, SpringLayout.WEST, spAH);
 
-
-    JLabel lTitle=new JLabel("Title Pos.");
-    layout.putConstraint( SpringLayout.NORTH, lTitle, 0, SpringLayout.NORTH, lPosx);
-    layout.putConstraint( SpringLayout.WEST, lTitle, 20, SpringLayout.EAST, spAH);
-    layout.putConstraint( SpringLayout.NORTH, spTitleDx, 0, SpringLayout.SOUTH, lTitle);
-    layout.putConstraint( SpringLayout.WEST, spTitleDx, 0, SpringLayout.WEST, lTitle);
-    layout.putConstraint( SpringLayout.NORTH, spTitleDy, 0, SpringLayout.NORTH, spTitleDx);
-    layout.putConstraint( SpringLayout.WEST, spTitleDy, 0, SpringLayout.EAST, spTitleDx);
-    JLabel lNumPos=new JLabel("Num. Pos.");
-    layout.putConstraint( SpringLayout.NORTH, lNumPos, 10, SpringLayout.SOUTH, spTitleDx);
-    layout.putConstraint( SpringLayout.WEST, lNumPos, 0, SpringLayout.WEST, lTitle);
-    layout.putConstraint( SpringLayout.NORTH, spNumDx, 0, SpringLayout.SOUTH, lNumPos);
-    layout.putConstraint( SpringLayout.WEST, spNumDx, 0, SpringLayout.WEST, lNumPos);
+    JLabel lTitle=new JLabel("Title Position:");
+    layout.putConstraint( SpringLayout.NORTH, lTitle, 30, SpringLayout.SOUTH, spVolX );
+    layout.putConstraint( SpringLayout.WEST, lTitle, 0, SpringLayout.WEST, colorLabel );
+    layout.putConstraint( SpringLayout.NORTH, spTitleDx, 0, SpringLayout.NORTH, lTitle );
+    layout.putConstraint( SpringLayout.WEST, spTitleDx, 30, SpringLayout.EAST, lTitle );
+    layout.putConstraint( SpringLayout.NORTH, spTitleDy, 0, SpringLayout.NORTH, spTitleDx );
+    layout.putConstraint( SpringLayout.WEST, spTitleDy, 0, SpringLayout.EAST, spTitleDx );
+    JLabel lNumPos=new JLabel("Number Position:");
+    layout.putConstraint( SpringLayout.NORTH, lNumPos, 5, SpringLayout.SOUTH, spTitleDx );
+    layout.putConstraint( SpringLayout.WEST, lNumPos, 0, SpringLayout.WEST, lTitle );
+    layout.putConstraint( SpringLayout.NORTH, spNumDx, 0, SpringLayout.NORTH, lNumPos);
+    layout.putConstraint( SpringLayout.WEST, spNumDx, 0, SpringLayout.WEST, spTitleDx );
     layout.putConstraint( SpringLayout.NORTH, spNumDy, 0, SpringLayout.NORTH, spNumDx);
-    layout.putConstraint( SpringLayout.WEST, spNumDy, 0, SpringLayout.EAST, spNumDx);
+    layout.putConstraint( SpringLayout.WEST, spNumDy, 0, SpringLayout.WEST, spTitleDy );
 
-    layout.putConstraint( SpringLayout.SOUTH, applyButton, -10,SpringLayout.SOUTH, this);
-    layout.putConstraint( SpringLayout.WEST, applyButton, 0,SpringLayout.EAST, spNumDy);
-    layout.putConstraint( SpringLayout.SOUTH, resetButton, 0,SpringLayout.SOUTH, applyButton);
-    layout.putConstraint( SpringLayout.WEST, resetButton, 0,SpringLayout.EAST, applyButton);
+    //Apply button
+    //layout.putConstraint( SpringLayout.SOUTH, applyButton, -10,SpringLayout.SOUTH, this);
+    layout.putConstraint( SpringLayout.NORTH, applyButton, 20,SpringLayout.SOUTH, spNumDx );
+    layout.putConstraint( SpringLayout.EAST, applyButton, -10, SpringLayout.WEST, resetButton );
+    //Rest button
+    layout.putConstraint( SpringLayout.NORTH, resetButton, 0, SpringLayout.NORTH, applyButton );
+    layout.putConstraint( SpringLayout.EAST, resetButton, -10, SpringLayout.EAST, this );
 
 
     //add
@@ -258,7 +266,7 @@ public class ColorTablePanel extends JPanel implements ActionListener,ChangeList
     this.add( ticsLabel);
     this.add( ticsType );
 
-
+    add(lColorTable);
     this.add(cbA);
     this.add(spAX);
     this.add(spAY);

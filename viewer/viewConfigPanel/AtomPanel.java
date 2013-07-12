@@ -9,7 +9,7 @@ import java.awt.event.*;
 import java.awt.*;
 
 import javax.swing.event.*;
-
+import info.clearthought.layout.*;
 
 import viewer.*;
 import data.*;
@@ -129,7 +129,7 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
 
   JButton applyButton;
   private JButton resetButton;
-  final String[] colNames = { "Tag", "Name", "On/Off", "Radius",
+  final String[] colNames = { "Tag", "Name", "On", "Radius",
                               "Slices", "Stacks","Color" };
   MyTableModel tableModel;
   JTable table;
@@ -149,6 +149,8 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
 
   public void createPanel(){
     this.addKeyListener(ctrl.keyCtrl);
+    //General panel
+    setFocusable( false );
 
     String[] lStr={"Invisible","ID","Species","Tag Name","Tag Name+ID","Tag Name+Num."};
     labelType= new JComboBox(lStr);
@@ -165,9 +167,6 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
     atomColor.setSelectedIndex(0);
     atomColor.setFocusable(false);
     atomColor.addKeyListener(ctrl.keyCtrl);
-
-    //General panel
-    setFocusable( false );
 
     applyButton = new JButton( "Apply" );
     applyButton.addActionListener( this );
@@ -186,25 +185,23 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
 
     ///
     vconf.isSelectionInfo=false;
-    cbSelectionMode =new JCheckBox("Select Info",vconf.isSelectionInfo);
+    cbSelectionMode =new JCheckBox("atom info",vconf.isSelectionInfo);
     cbSelectionMode.setFocusable(false);
     cbSelectionMode.addChangeListener(this);
     cbSelectionMode.addKeyListener(ctrl.keyCtrl);
 
-
-
     vconf.isSelectionLength=false;
-    cbLength =new JCheckBox("Select Length",vconf.isSelectionLength);
+    cbLength =new JCheckBox("bond length",vconf.isSelectionLength);
     cbLength.setFocusable(false);
     cbLength.addChangeListener(this);
 
     vconf.isSelectionAngle=false;
-    cbAngle =new JCheckBox("Select Angle",vconf.isSelectionAngle);
+    cbAngle =new JCheckBox("bond angle",vconf.isSelectionAngle);
     cbAngle.setFocusable(false);
     cbAngle.addChangeListener(this);
 
     vconf.isSelectionTorsion=false;
-    cbTorsion =new JCheckBox("Select Torsion",vconf.isSelectionTorsion);
+    cbTorsion =new JCheckBox("torsion angle",vconf.isSelectionTorsion);
     cbTorsion.setFocusable(false);
     cbTorsion.addChangeListener(this);
 
@@ -232,91 +229,88 @@ public class AtomPanel extends JPanel implements ActionListener,ChangeListener{
 
     DefaultTableColumnModel columnModel
       = (DefaultTableColumnModel)table.getColumnModel();
-    columnModel.getColumn(0).setPreferredWidth(20);
-    columnModel.getColumn(1).setPreferredWidth(60);
-    columnModel.getColumn(2).setPreferredWidth(20);
+    columnModel.getColumn(0).setPreferredWidth(10);
+    columnModel.getColumn(1).setPreferredWidth(30);
+    columnModel.getColumn(2).setPreferredWidth(10);
     columnModel.getColumn(3).setPreferredWidth(20);
     columnModel.getColumn(4).setPreferredWidth(20);
     columnModel.getColumn(5).setPreferredWidth(20);
     columnModel.getColumn(6).setPreferredWidth(4);
 
-    SpringLayout layout = new SpringLayout();
-    setLayout( layout );
+    JLabel atomTypeLabel=new JLabel("Rendering Type:");
+    JLabel atomColorLabel=new JLabel("Atom Color:");
+    JLabel lLabel=new JLabel("Label:");
+    JLabel selLabel= new JLabel("Select:");
 
-    JLabel atomTypeLabel=new JLabel("Rendering Type");
+    //Panel for selection info,length,angle,torsion
+    JPanel selPanel= new JPanel();
+    SpringLayout layout= new SpringLayout();
+    String north= SpringLayout.NORTH;
+    String south= SpringLayout.SOUTH;
+    String east = SpringLayout.EAST;
+    String west = SpringLayout.WEST;
+    selPanel.setLayout( layout );
+    selLabel.setFocusable( false );
+    layout.putConstraint( north, selLabel, 10, north, selPanel );
+    layout.putConstraint( west,  selLabel, 10, west, selPanel );
+    layout.putConstraint( north, cbSelectionMode, 5, south, selLabel );
+    layout.putConstraint( west, cbSelectionMode, 0, west, selLabel );
+    layout.putConstraint( north, cbLength, 0, south, cbSelectionMode );
+    layout.putConstraint( west,  cbLength, 0, west, cbSelectionMode );
+    layout.putConstraint( north, cbAngle, 0, south, cbLength );
+    layout.putConstraint( west,  cbAngle, 0, west, cbLength );
+    layout.putConstraint( north, cbTorsion, 0, south, cbAngle );
+    layout.putConstraint( west,  cbTorsion, 0, west, cbAngle );
+    selPanel.add( selLabel );
+    selPanel.add( cbSelectionMode );
+    selPanel.add( cbLength );
+    selPanel.add( cbAngle );
+    selPanel.add( cbTorsion );
 
-    layout.putConstraint( SpringLayout.NORTH, atomTypeLabel, 10, SpringLayout.NORTH, this );
-    layout.putConstraint( SpringLayout.WEST,  atomTypeLabel, 10, SpringLayout.WEST, this );
-    layout.putConstraint( SpringLayout.NORTH, atomType, 0, SpringLayout.SOUTH, atomTypeLabel);
-    layout.putConstraint( SpringLayout.WEST, atomType, 5, SpringLayout.WEST, atomTypeLabel);
+    //.....table layout from here
+    //-----constants for TableLayout
+    // f : FILL
+    // p : PREFERRED
+    // vb: vertical border
+    // vg: vertical gap between elements
+    // hb: horizontal border
+    // hs: horizontal space between labels and fields
+    // hg: horizontal gap between elements
+    double f= TableLayout.FILL;
+    double p= TableLayout.PREFERRED;
+    double vg= 10;
+    double hg= 5;
+    
+    //horizontal grid
+    double colSizeTL[]={vg,150,vg,f,vg};
+                        
+    //vertical grid
+    double rowSizeTL[]={hg,
+                        20,// 1:rendering type
+                        30,
+                        20,// 3:atom color
+                        30,
+                        20,// 5:label
+                        30,
+                        hg,
+                        f, // 8:table
+                        hg,
+                        30,//10:apply button 
+                        hg
+    };
 
-    JLabel atomColorLabel=new JLabel("Atom Color");
-    layout.putConstraint( SpringLayout.NORTH, atomColorLabel, 5, SpringLayout.SOUTH, atomType);
-    layout.putConstraint( SpringLayout.WEST,  atomColorLabel, 10, SpringLayout.WEST, this );
-    layout.putConstraint( SpringLayout.NORTH, atomColor, 0, SpringLayout.SOUTH, atomColorLabel);
-    layout.putConstraint( SpringLayout.WEST,  atomColor, 5, SpringLayout.WEST, atomColorLabel);
-
-    layout.putConstraint( SpringLayout.SOUTH, sp, -10, SpringLayout.SOUTH, this );
-    layout.putConstraint( SpringLayout.NORTH, sp, 10, SpringLayout.NORTH, this );
-    layout.putConstraint( SpringLayout.WEST, sp, 5, SpringLayout.EAST, atomType);
-
-
-    layout.putConstraint( SpringLayout.SOUTH, applyButton, 0,
-                          SpringLayout.SOUTH, sp );
-    layout.putConstraint( SpringLayout.WEST, applyButton, 5,
-                          SpringLayout.EAST, sp  );
-    layout.putConstraint( SpringLayout.NORTH, resetButton, 0,
-                          SpringLayout.NORTH, applyButton );
-    layout.putConstraint( SpringLayout.WEST, resetButton, 5,
-                          SpringLayout.EAST, applyButton  );
-
-    //label
-    JLabel lLabel=new JLabel("Label");
-    add(lLabel);
-    layout.putConstraint( SpringLayout.NORTH, lLabel, 10, SpringLayout.NORTH,this);
-    layout.putConstraint( SpringLayout.WEST,  lLabel, 10, SpringLayout.EAST, sp);
-    layout.putConstraint( SpringLayout.NORTH, labelType, 0, SpringLayout.SOUTH, lLabel);
-    layout.putConstraint( SpringLayout.WEST,  labelType, 5, SpringLayout.WEST, lLabel);
-
-
-    layout.putConstraint( SpringLayout.NORTH, cbSelectionMode, 10,
-                          SpringLayout.NORTH, this);
-    layout.putConstraint( SpringLayout.WEST, cbSelectionMode, 10,
-                          SpringLayout.EAST, labelType);
-
-    layout.putConstraint( SpringLayout.NORTH, cbLength, 0,
-                          SpringLayout.SOUTH, cbSelectionMode);
-    layout.putConstraint( SpringLayout.WEST, cbLength, 0,
-                          SpringLayout.WEST, cbSelectionMode);
-    layout.putConstraint( SpringLayout.NORTH, cbAngle, 0,
-                          SpringLayout.SOUTH, cbLength);
-    layout.putConstraint( SpringLayout.WEST, cbAngle, 0,
-                          SpringLayout.WEST, cbLength);
-    layout.putConstraint( SpringLayout.NORTH, cbTorsion, 0,
-                          SpringLayout.SOUTH, cbAngle);
-    layout.putConstraint( SpringLayout.WEST, cbTorsion, 0,
-                          SpringLayout.WEST, cbAngle);
-
-
-
-
-
-    add(labelType);
-
-    add(atomTypeLabel);
-    add(atomColorLabel);
-    add( atomType );
-    add( atomColor );
-    add( sp );
-
-    add(cbSelectionMode);
-    add(cbLength);
-    add(cbAngle);
-    add(cbTorsion);
-
-    add( applyButton );
-    add( resetButton );
-
+    setLayout(new TableLayout(colSizeTL,rowSizeTL));
+    
+    add( atomTypeLabel, "1, 1, f, f" );// atom type
+    add( atomType, "1, 2, f, f" );
+    add( atomColorLabel, "1, 3, f, f" );// atom color
+    add( atomColor, "1, 4, f, f" );
+    add( lLabel, "1,5, f, f" );// label type
+    add( labelType, "1, 6, f, f" );
+    add( selPanel, "3, 1, 3, 6" ); // selection panel
+    add( sp, "1, 8, 3, 8" );
+    add( applyButton, "1, 10, f, f" );
+    add( resetButton, "3, 10, f, f" );
   }
 
   void applyModification2Table(){

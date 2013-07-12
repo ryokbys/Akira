@@ -43,6 +43,7 @@ public class DataPanel extends JPanel implements ActionListener{
   public DataPanel(Controller ctrl){
     this.ctrl=ctrl;
     this.vconf=ctrl.vconf;
+    //System.out.println(String.format("newing DataPanel...")); 
     createPanel();
     //Set up the picker that the button brings up.
   }
@@ -85,6 +86,7 @@ public class DataPanel extends JPanel implements ActionListener{
     table = new JTable( tableModel );
     table.setFocusable(false);
     table.setRowHeight( 20 );
+    table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
     table.setIntercellSpacing( new Dimension(2,2) );
 
     table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -106,54 +108,44 @@ public class DataPanel extends JPanel implements ActionListener{
     addTable();
 
     DefaultTableColumnModel columnModel = (DefaultTableColumnModel)table.getColumnModel();
-    columnModel.getColumn(0).setPreferredWidth(5);
-    columnModel.getColumn(1).setPreferredWidth(16);
-    columnModel.getColumn(2).setPreferredWidth(10);
-    columnModel.getColumn(3).setPreferredWidth(10);
-    columnModel.getColumn(4).setPreferredWidth(10);
-    columnModel.getColumn(5).setPreferredWidth(10);
-    columnModel.getColumn(6).setPreferredWidth(10);
+    columnModel.getColumn(0).setPreferredWidth(30);
+    columnModel.getColumn(1).setPreferredWidth(100);
+    columnModel.getColumn(2).setPreferredWidth(50);
+    columnModel.getColumn(3).setPreferredWidth(70);
+    columnModel.getColumn(4).setPreferredWidth(70);
+    columnModel.getColumn(5).setPreferredWidth(70);
+    columnModel.getColumn(6).setPreferredWidth(70);
 
-
-
-
+    //columnModel.getColumn(0).setMinWidth(30);
+    //columnModel.getColumn(1).setMinWidth(50);
+    //columnModel.getColumn(2).setMinWidth(30);
+    //columnModel.getColumn(3).setMinWidth(50);
+    //columnModel.getColumn(4).setMinWidth(50);
+    //columnModel.getColumn(5).setMinWidth(50);
+    //columnModel.getColumn(6).setMinWidth(50);
 
 
     SpringLayout layout = new SpringLayout();
     setLayout( layout );
-
-    layout.putConstraint( SpringLayout.SOUTH, sp, -10,SpringLayout.SOUTH, this );
-    layout.putConstraint( SpringLayout.NORTH, sp, 10,SpringLayout.NORTH, this );
-    layout.putConstraint( SpringLayout.WEST, sp, 10,SpringLayout.WEST, this );
-
-    layout.putConstraint( SpringLayout.SOUTH, applyButton, 0, SpringLayout.SOUTH, sp );
-    layout.putConstraint( SpringLayout.WEST, applyButton, 5, SpringLayout.EAST, sp);
-    layout.putConstraint( SpringLayout.NORTH, resetButton, 0, SpringLayout.NORTH, applyButton );
-    layout.putConstraint( SpringLayout.WEST, resetButton, 5, SpringLayout.EAST, applyButton );
-    layout.putConstraint( SpringLayout.SOUTH, loadRangeButton, -5, SpringLayout.NORTH, applyButton);
-    layout.putConstraint( SpringLayout.WEST, loadRangeButton, 5, SpringLayout.EAST, sp);
-
-    //enjoy
-
-
-
+    String north= SpringLayout.NORTH;
+    String south= SpringLayout.SOUTH;
+    String east = SpringLayout.EAST;
+    String west = SpringLayout.WEST;
+    layout.putConstraint( north, loadRangeButton, 5, north, this );
+    layout.putConstraint( west, loadRangeButton, 5, west, this);
+    layout.putConstraint( north, sp, 5, south, loadRangeButton );
+    layout.putConstraint( west, sp, 0, west, loadRangeButton );
+    layout.putConstraint( east, sp, -10, east, this );
+    layout.putConstraint( south, sp, -5, north, applyButton );
+    layout.putConstraint( south, applyButton, -10, south, this );
+    layout.putConstraint( west, applyButton, 0, west, sp);
+    layout.putConstraint( north, resetButton, 0, north, applyButton );
+    layout.putConstraint( east, resetButton, 5, east, sp );
 
     add( sp );
     add( applyButton );
     add( resetButton );
     add( loadRangeButton );
-
-
-      /*
-       * add(cutRangeMinLabel);
-       * add(cutRangeMaxLabel);
-       * add(cutRangeMinSpinner);
-       * add(cutRangeMaxSpinner);
-       * add(calButton);
-       * add(factorLabel);
-       * add(factorSpinner);
-       */
-
   }
 
   float[][] refDataRange = new float[Atom.MAX_NUM_DATA][2];

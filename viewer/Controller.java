@@ -157,7 +157,6 @@ public class Controller implements WindowListener{
     //keyevent
     keyCtrl=new KeyController(this);
 
-
     //viewConfig window
     vcWin = new ViewConfigWindow(this);
     vcWinMenu=new ViewConfigWindowMenuController(this);
@@ -167,8 +166,6 @@ public class Controller implements WindowListener{
     vcWin.setVisible(vconf.isVisibleViewConfigWin);
     vcWin.addWindowListener(this);
     vcWin.addKeyListener(keyCtrl);
-
-
   }
 
   public void myExit(){

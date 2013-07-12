@@ -8,7 +8,7 @@ import viewer.*;
 import viewer.renderer.*;
 import viewer.viewConfigPanel.*;
 
-public class ViewConfigWindow extends JFrame{
+public class ViewConfigWindow extends JFrame implements ItemListener{
 
   /* accesser starts */
   public void updateStatusString(RenderingWindow rw){
@@ -55,132 +55,131 @@ public class ViewConfigWindow extends JFrame{
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
     //tabbed Pane
-    createTabbedPane();
+    //createTabbedPane();
+
+    basePanel= new JPanel();
+    getContentPane().add(basePanel);
+
+    createComboBox();
+    createPanels();
+    createCardPanel();
+
+    SpringLayout layout= new SpringLayout();
+    basePanel.setLayout(layout);
+    layout.putConstraint( SpringLayout.NORTH, jcPanelNameList, 10, SpringLayout.NORTH, basePanel );
+    layout.putConstraint( SpringLayout.WEST, jcPanelNameList, 10, SpringLayout.WEST, basePanel );
+    basePanel.add(jcPanelNameList);
+
+    layout.putConstraint( SpringLayout.NORTH, cardPanel, 10, SpringLayout.SOUTH, jcPanelNameList );
+    layout.putConstraint( SpringLayout.SOUTH, cardPanel, 0, SpringLayout.SOUTH, basePanel );
+    layout.putConstraint( SpringLayout.WEST, cardPanel, 0, SpringLayout.WEST, basePanel );
+    layout.putConstraint( SpringLayout.EAST, cardPanel, 0, SpringLayout.EAST, basePanel );
+    basePanel.add(cardPanel);
+    
+    requestFocusInWindow();
   }
 
-  public JTabbedPane tabbedPane;
-  StatusPanel statusPanel;
+  private JPanel basePanel;
+  private JPanel cardPanel;
+  public StatusPanel statusPanel;
   private ManipulationPanel maniPanel;
   private AtomPanel atom;
   private DataPanel data;
   private BondPanel bond;
+  private ColorTablePanel ctable;
+  private AnnotationPanel annotationPanel;
   private VectorPanel vec;
   private BoundaryPanel boundary;
   private VolumeRenderPanel volumerender;
   private ComboPanel combo;
   private TrajectoryPanel trj;
+  private PlanePanel plane;
 
+  private String[] strPanelNameList={"Status",
+                                      "Manipulation",
+                                      "Atom",
+                                      "Data",
+                                      "Bond",
+                                      "Color Table",
+                                      "Annotation",
+                                      "Vector",
+                                      "Boundary",
+                                      "Volume rendering",
+                                      "Combo",
+                                      "Trajectory",
+                                      "Plane"};
+  public JComboBox jcPanelNameList;
 
-
-  private void createTabbedPane(){
-
-    //create tabbed pane
-    tabbedPane = new JTabbedPane(JTabbedPane.TOP,JTabbedPane.WRAP_TAB_LAYOUT);
-    tabbedPane.setFocusable(false);
-
-
-
-    //statusPanel panel
+  void createComboBox(){
+    jcPanelNameList= new JComboBox(strPanelNameList);
+    jcPanelNameList.setSelectedIndex(0);
+    jcPanelNameList.setFocusable(false);
+    jcPanelNameList.addItemListener(this);
+  }
+  
+  void createPanels(){
+    //status
     statusPanel = new StatusPanel(ctrl);
     statusPanel.setFocusable(false);
-    tabbedPane.addTab(null,
-                      new ImageIcon(this.getClass().getResource("/img/tab/status.png")),
-                      statusPanel,
-                      "Status Panel");
     //manipulation
     maniPanel=new ManipulationPanel(ctrl);
-    tabbedPane.addTab(null,
-                      new ImageIcon(this.getClass().getResource("/img/tab/manipulation.png")),
-                      maniPanel,
-                      "Manipulation Panel");
+    maniPanel.setFocusable(false);
     //atom panel
     atom = new AtomPanel(ctrl);
     atom.setFocusable(false);
-    tabbedPane.addTab(null,
-                      new ImageIcon(this.getClass().getResource("/img/tab/atom.png")),
-                      atom,
-                      "Atom Property");
     //data panel
     data = new DataPanel(ctrl);
     data.setFocusable(false);
-    tabbedPane.addTab(null,
-                      new ImageIcon(this.getClass().getResource("/img/tab/data.png")),
-                      data,
-                      "Data range");
     //boundary panel
     boundary=new BoundaryPanel(ctrl);
     boundary.setFocusable(false);
-    tabbedPane.addTab(null,
-                      new ImageIcon(this.getClass().getResource("/img/tab/boundary.png")),
-                      boundary,
-                      "Boundary");
     //bond
     bond = new BondPanel(ctrl);
     bond.setFocusable(false);
-    tabbedPane.addTab(null,
-                      new ImageIcon(this.getClass().getResource("/img/tab/bond.png")),
-                      bond,
-                      "Bond setting");
     //color table
-    ColorTablePanel ctable =new ColorTablePanel(ctrl);
+    ctable =new ColorTablePanel(ctrl);
     ctable.setFocusable(false);
-    tabbedPane.addTab(null,
-                      new ImageIcon(this.getClass().getResource("/img/tab/color.png")),
-                      ctable,
-                      "Color table");
     //annotaion
-    AnnotationPanel annotaionPanel=new AnnotationPanel(ctrl);
-    annotaionPanel.setFocusable(false);
-    tabbedPane.addTab(null,
-                      new ImageIcon(this.getClass().getResource("/img/tab/annotation.png")),
-                      annotaionPanel,
-                      "Annotation");
+    annotationPanel=new AnnotationPanel(ctrl);
+    annotationPanel.setFocusable(false);
     //volume rendering
     volumerender=new VolumeRenderPanel(ctrl);
     volumerender.setFocusable(false);
-    tabbedPane.addTab(null,
-                      new ImageIcon(this.getClass().getResource("/img/tab/volume.png")),
-                      volumerender,
-                      "Volume Rendering");
     //vector
     vec = new VectorPanel(ctrl);
     vec.setFocusable(false);
-    tabbedPane.addTab(null,
-                      new ImageIcon(this.getClass().getResource("/img/tab/vector.png")),
-                      vec,
-                      "Vectors");
     //combo
     combo = new ComboPanel(ctrl);
     combo.setFocusable(false);
-    tabbedPane.addTab(null,
-                      new ImageIcon(this.getClass().getResource("/img/tab/combo.png")),
-                      combo,
-                      "Combo");
     //trj
     trj=new TrajectoryPanel(ctrl);
     trj.setFocusable(false);
-    tabbedPane.addTab(null,
-                      new ImageIcon(this.getClass().getResource("/img/tab/trj.png")),
-                      trj,
-                      "Trajectory");
-
     //plane panel
-    PlanePanel plane=new PlanePanel(ctrl);
+    plane=new PlanePanel(ctrl);
     plane.setFocusable(false);
-    tabbedPane.addTab(null,
-                      new ImageIcon(this.getClass().getResource("/img/tab/plane.png")),
-                      plane,
-                      "Plane");
-
-
-    if(ctrl.vconf.viewConfigWinTabIndex < tabbedPane.getTabCount())
-      tabbedPane.setSelectedIndex(ctrl.vconf.viewConfigWinTabIndex);
-    else
-      tabbedPane.setSelectedIndex(0);
-
-    //add tabbedPane to frame
-    add(tabbedPane);
-    requestFocusInWindow();
   }
 
+  //create cardPanel
+  void createCardPanel(){
+    cardPanel= new JPanel();
+    cardPanel.setLayout(new CardLayout());
+    cardPanel.add(statusPanel,strPanelNameList[0]);
+    cardPanel.add(maniPanel,strPanelNameList[1]);
+    cardPanel.add(atom,strPanelNameList[2]);
+    cardPanel.add(data,strPanelNameList[3]);
+    cardPanel.add(bond,strPanelNameList[4]);
+    cardPanel.add(ctable,strPanelNameList[5]);
+    cardPanel.add(annotationPanel,strPanelNameList[6]);
+    cardPanel.add(vec,strPanelNameList[7]);
+    cardPanel.add(boundary,strPanelNameList[8]);
+    cardPanel.add(volumerender,strPanelNameList[9]);
+    cardPanel.add(combo,strPanelNameList[10]);
+    cardPanel.add(trj,strPanelNameList[11]);
+    cardPanel.add(plane,strPanelNameList[12]);
+  }
+
+  public void itemStateChanged(ItemEvent e){
+    CardLayout cl= (CardLayout)(cardPanel.getLayout());
+    cl.show(cardPanel,(String)e.getItem());
+  }
 }

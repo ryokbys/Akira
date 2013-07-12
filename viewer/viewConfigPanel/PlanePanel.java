@@ -128,60 +128,39 @@ public class PlanePanel extends JPanel implements ActionListener{
     SpringLayout layout = new SpringLayout();
     setLayout( layout );
 
-
+    //tetrahedron mode
+    layout.putConstraint( SpringLayout.NORTH, cbTetrahedron, 10, SpringLayout.NORTH, this  );
+    layout.putConstraint( SpringLayout.WEST, cbTetrahedron, 10, SpringLayout.WEST, this );
+    JLabel tetraSpeciesLabel=new JLabel("Tag:");
+    layout.putConstraint( SpringLayout.NORTH, tetraSpeciesLabel, 5, SpringLayout.SOUTH,  cbTetrahedron);
+    layout.putConstraint( SpringLayout.WEST, tetraSpeciesLabel, 20, SpringLayout.WEST, cbTetrahedron);
+    layout.putConstraint( SpringLayout.NORTH, spTetraSpecies, 0, SpringLayout.NORTH, tetraSpeciesLabel);
+    layout.putConstraint( SpringLayout.WEST, spTetraSpecies, 5, SpringLayout.EAST, tetraSpeciesLabel);
+    //color
+    JLabel lColor= new JLabel("Color:");
+    layout.putConstraint( SpringLayout.NORTH, lColor, 5, SpringLayout.SOUTH, spTetraSpecies );
+    layout.putConstraint( SpringLayout.WEST, lColor, 0, SpringLayout.WEST, tetraSpeciesLabel );
+    layout.putConstraint( SpringLayout.NORTH, singlePlaneColorButton, 5, SpringLayout.NORTH, lColor );
+    layout.putConstraint( SpringLayout.WEST, singlePlaneColorButton, 5, SpringLayout.EAST, lColor);
+    JLabel rcutLabel=new JLabel("Rcut");
+    layout.putConstraint( SpringLayout.NORTH, rcutLabel, 5, SpringLayout.SOUTH, singlePlaneColorButton );
+    layout.putConstraint( SpringLayout.WEST, rcutLabel, 0, SpringLayout.WEST, lColor );
+    layout.putConstraint( SpringLayout.NORTH, spRcut, 0, SpringLayout.NORTH, rcutLabel);
+    layout.putConstraint( SpringLayout.WEST, spRcut, 5, SpringLayout.EAST, rcutLabel);
 
     //table
-    layout.putConstraint( SpringLayout.SOUTH, sp, -10,
-                          SpringLayout.SOUTH, this );
-    layout.putConstraint( SpringLayout.NORTH, sp, 10,
-                          SpringLayout.NORTH, this );
-    layout.putConstraint( SpringLayout.WEST, sp, 10,
-                          SpringLayout.WEST, this );
-
-    //tetrahedron mode
-    layout.putConstraint( SpringLayout.NORTH, cbTetrahedron, 10,
-                          SpringLayout.NORTH, this  );
-    layout.putConstraint( SpringLayout.WEST, cbTetrahedron, 0,
-                          SpringLayout.EAST, sp);
-    JLabel tetraSpeciesLabel=new JLabel("Tag");
-    layout.putConstraint( SpringLayout.NORTH, tetraSpeciesLabel, 0,
-                          SpringLayout.SOUTH,  cbTetrahedron);
-    layout.putConstraint( SpringLayout.WEST, tetraSpeciesLabel, 25,
-                          SpringLayout.WEST, cbTetrahedron);
-    layout.putConstraint( SpringLayout.NORTH, spTetraSpecies, 0,
-                          SpringLayout.NORTH, tetraSpeciesLabel);
-    layout.putConstraint( SpringLayout.WEST, spTetraSpecies, 0,
-                          SpringLayout.EAST, tetraSpeciesLabel);
-
-
-
-    //color
-    layout.putConstraint( SpringLayout.NORTH, singlePlaneColorButton, 10,
-                          SpringLayout.NORTH, this);
-    layout.putConstraint( SpringLayout.WEST, singlePlaneColorButton, 10,
-                          SpringLayout.EAST, cbTetrahedron);
-    JLabel rcutLabel=new JLabel("Rcut");
-    layout.putConstraint( SpringLayout.NORTH, rcutLabel, 0,
-                          SpringLayout.NORTH,  singlePlaneColorButton);
-    layout.putConstraint( SpringLayout.WEST, rcutLabel, 10,
-                          SpringLayout.EAST, singlePlaneColorButton);
-    layout.putConstraint( SpringLayout.NORTH, spRcut, 0,
-                          SpringLayout.NORTH, rcutLabel);
-    layout.putConstraint( SpringLayout.WEST, spRcut, 0,
-                          SpringLayout.EAST, rcutLabel);
-
+    layout.putConstraint( SpringLayout.NORTH, sp, 10, SpringLayout.SOUTH, spRcut );
+    layout.putConstraint( SpringLayout.SOUTH, sp, -10, SpringLayout.NORTH, applyButton );
+    layout.putConstraint( SpringLayout.WEST, sp, 10, SpringLayout.WEST, this );
+    layout.putConstraint( SpringLayout.EAST, sp, -10, SpringLayout.EAST, this );
 
 
     //reset
-    layout.putConstraint( SpringLayout.SOUTH, applyButton, -10,
-                          SpringLayout.SOUTH, this);
-    layout.putConstraint( SpringLayout.WEST, applyButton, 10,
-                          SpringLayout.EAST,  sp);
+    layout.putConstraint( SpringLayout.SOUTH, applyButton, -10, SpringLayout.SOUTH, this);
+    layout.putConstraint( SpringLayout.WEST, applyButton, 10, SpringLayout.WEST, this );
 
-    layout.putConstraint( SpringLayout.SOUTH, resetButton, 0,
-                          SpringLayout.SOUTH,  applyButton);
-    layout.putConstraint( SpringLayout.WEST, resetButton, 5,
-                          SpringLayout.EAST, applyButton );
+    layout.putConstraint( SpringLayout.SOUTH, resetButton, 0, SpringLayout.SOUTH, applyButton );
+    layout.putConstraint( SpringLayout.EAST, resetButton, -10, SpringLayout.EAST, this );
 
 
     //addition
@@ -191,6 +170,7 @@ public class PlanePanel extends JPanel implements ActionListener{
     add(sp);
     add(spTetraSpecies);
     add(spRcut);
+    add(lColor);
     add(singlePlaneColorButton);
     add(tetraSpeciesLabel);
     add(rcutLabel);

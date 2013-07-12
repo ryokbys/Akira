@@ -216,38 +216,36 @@ public class VectorPanel extends JPanel implements ActionListener{
     SpringLayout layout = new SpringLayout();
     setLayout( layout );
 
-    JLabel vecTypeLabel =new JLabel("Type");
+    JLabel vecTypeLabel =new JLabel("Type:");
     layout.putConstraint( SpringLayout.NORTH, vecTypeLabel, 10, SpringLayout.NORTH, this );
-    layout.putConstraint( SpringLayout.WEST,  vecTypeLabel, 10, SpringLayout.WEST, this );
-    layout.putConstraint( SpringLayout.NORTH, vecType, 0, SpringLayout.SOUTH, vecTypeLabel);
-    layout.putConstraint( SpringLayout.WEST,  vecType, 5, SpringLayout.WEST, vecTypeLabel);
+    layout.putConstraint( SpringLayout.WEST,  vecTypeLabel, 20, SpringLayout.WEST, this );
+    layout.putConstraint( SpringLayout.NORTH, vecType, 0, SpringLayout.NORTH, vecTypeLabel);
+    layout.putConstraint( SpringLayout.WEST,  vecType, 5, SpringLayout.EAST, vecTypeLabel);
 
-    JLabel vecColorLabel =new JLabel("Color");
-    layout.putConstraint( SpringLayout.NORTH, vecColorLabel, 5, SpringLayout.SOUTH, vecType);
-    layout.putConstraint( SpringLayout.WEST,  vecColorLabel, 0, SpringLayout.WEST, vecType);
-    layout.putConstraint( SpringLayout.NORTH, vecColor, 0, SpringLayout.SOUTH, vecColorLabel);
-    layout.putConstraint( SpringLayout.WEST,  vecColor, 5, SpringLayout.WEST, vecColorLabel);
+    JLabel vecColorLabel =new JLabel("Color:");
+    layout.putConstraint( SpringLayout.NORTH, vecColorLabel, 5, SpringLayout.SOUTH, vecType );
+    layout.putConstraint( SpringLayout.WEST,  vecColorLabel, 0, SpringLayout.WEST, vecTypeLabel );
+    layout.putConstraint( SpringLayout.NORTH, vecColor, 0, SpringLayout.NORTH, vecColorLabel);
+    layout.putConstraint( SpringLayout.WEST,  vecColor, 5, SpringLayout.EAST, vecColorLabel);
 
-    layout.putConstraint( SpringLayout.NORTH, vecXLabel, 0, SpringLayout.NORTH, vecTypeLabel);
-    layout.putConstraint( SpringLayout.WEST,  vecXLabel, 10, SpringLayout.EAST,  vecType);
+    layout.putConstraint( SpringLayout.NORTH, vecXLabel, 10, SpringLayout.SOUTH, vecColor );
+    layout.putConstraint( SpringLayout.WEST,  vecXLabel, 0, SpringLayout.WEST,  vecColorLabel );
     layout.putConstraint( SpringLayout.NORTH, vecX, 0, SpringLayout.NORTH, vecXLabel);
     layout.putConstraint( SpringLayout.WEST,  vecX, 10, SpringLayout.EAST,  vecXLabel);
 
-    layout.putConstraint( SpringLayout.NORTH, vecYLabel, 10, SpringLayout.SOUTH, vecXLabel);
+    layout.putConstraint( SpringLayout.NORTH, vecYLabel, 5, SpringLayout.SOUTH, vecX );
     layout.putConstraint( SpringLayout.WEST,  vecYLabel, 0, SpringLayout.WEST,  vecXLabel);
     layout.putConstraint( SpringLayout.NORTH, vecY, 0, SpringLayout.NORTH, vecYLabel);
     layout.putConstraint( SpringLayout.WEST,  vecY, 10, SpringLayout.EAST,  vecYLabel);
 
-    layout.putConstraint( SpringLayout.NORTH, vecZLabel, 10, SpringLayout.SOUTH, vecYLabel);
-    layout.putConstraint( SpringLayout.WEST,  vecZLabel, 0, SpringLayout.WEST,  vecYLabel);
-    layout.putConstraint( SpringLayout.NORTH, vecZ, 0, SpringLayout.NORTH, vecZLabel);
-    layout.putConstraint( SpringLayout.WEST,  vecZ, 10, SpringLayout.EAST,  vecZLabel);
-
-
+    layout.putConstraint( SpringLayout.NORTH, vecZLabel, 5, SpringLayout.SOUTH, vecY );
+    layout.putConstraint( SpringLayout.WEST,  vecZLabel, 0, SpringLayout.WEST,  vecYLabel );
+    layout.putConstraint( SpringLayout.NORTH, vecZ, 0, SpringLayout.NORTH, vecZLabel );
+    layout.putConstraint( SpringLayout.WEST,  vecZ, 10, SpringLayout.EAST,  vecZLabel );
 
     //range
-    layout.putConstraint( SpringLayout.NORTH, lengthMinLabel, 10, SpringLayout.NORTH, this);
-    layout.putConstraint( SpringLayout.WEST, lengthMinLabel, 10, SpringLayout.EAST, vecZ);
+    layout.putConstraint( SpringLayout.NORTH, lengthMinLabel, 30, SpringLayout.SOUTH, vecZ );
+    layout.putConstraint( SpringLayout.WEST, lengthMinLabel, 0, SpringLayout.WEST, vecZLabel );
     layout.putConstraint( SpringLayout.NORTH, lengthMinSpinner, 0, SpringLayout.NORTH, lengthMinLabel);
     layout.putConstraint( SpringLayout.WEST, lengthMinSpinner, 0, SpringLayout.EAST,  lengthMinLabel);
     layout.putConstraint( SpringLayout.NORTH, lengthMaxLabel, 0, SpringLayout.NORTH, lengthMinSpinner);
@@ -259,30 +257,24 @@ public class VectorPanel extends JPanel implements ActionListener{
 
     //legend
     layout.putConstraint( SpringLayout.NORTH, lLegend, 10,SpringLayout.SOUTH, setRangeButton);
-    layout.putConstraint( SpringLayout.WEST, lLegend, 0,SpringLayout.WEST, lengthMinLabel);
+    layout.putConstraint( SpringLayout.WEST, lLegend, 0,SpringLayout.WEST, lengthMinLabel );
     layout.putConstraint( SpringLayout.NORTH, taLegend, 0,SpringLayout.NORTH, lLegend);
-    layout.putConstraint( SpringLayout.WEST, taLegend, 0,SpringLayout.EAST, lLegend);
-    layout.putConstraint( SpringLayout.NORTH, lFormat, 0,SpringLayout.NORTH, taLegend);
-    layout.putConstraint( SpringLayout.WEST, lFormat, 10,SpringLayout.EAST, taLegend);
+    layout.putConstraint( SpringLayout.WEST, taLegend, 5,SpringLayout.EAST, lLegend);
+    layout.putConstraint( SpringLayout.NORTH, lFormat, 5, SpringLayout.SOUTH, taLegend);
+    layout.putConstraint( SpringLayout.WEST, lFormat, 0,SpringLayout.WEST, lLegend );
     layout.putConstraint( SpringLayout.NORTH, taFormat, 0,SpringLayout.NORTH, lFormat);
-    layout.putConstraint( SpringLayout.WEST, taFormat, 0,SpringLayout.EAST, lFormat);
+    layout.putConstraint( SpringLayout.WEST, taFormat, 5,SpringLayout.EAST, lFormat);
 
-    //button
-    layout.putConstraint( SpringLayout.NORTH, applyButton, 20,SpringLayout.SOUTH, lLegend);
-    layout.putConstraint( SpringLayout.WEST, applyButton, 0,SpringLayout.WEST, lLegend);
-    layout.putConstraint( SpringLayout.NORTH, resetButton, 0,SpringLayout.NORTH, applyButton);
-    layout.putConstraint( SpringLayout.WEST, resetButton, 10,SpringLayout.EAST, applyButton);
-
-    //property
-    layout.putConstraint( SpringLayout.NORTH, cylinderRadiusLabel, 10,SpringLayout.NORTH, this);
-    layout.putConstraint( SpringLayout.WEST,  cylinderRadiusLabel, 20,SpringLayout.EAST,  lengthMaxSpinner);
+    //properties
+    layout.putConstraint( SpringLayout.NORTH, cylinderRadiusLabel, 30, SpringLayout.SOUTH, taFormat );
+    layout.putConstraint( SpringLayout.WEST,  cylinderRadiusLabel, 0, SpringLayout.WEST,  lFormat );
     layout.putConstraint( SpringLayout.NORTH, cylinderRadiusSpinner, 0, SpringLayout.NORTH, cylinderRadiusLabel );
-    layout.putConstraint( SpringLayout.WEST,  cylinderRadiusSpinner, 0, SpringLayout.EAST,  cylinderRadiusLabel );
+    layout.putConstraint( SpringLayout.WEST,  cylinderRadiusSpinner, 5, SpringLayout.EAST,  cylinderRadiusLabel );
 
     layout.putConstraint( SpringLayout.NORTH, radiusLabel, 5, SpringLayout.SOUTH,cylinderRadiusSpinner);
     layout.putConstraint( SpringLayout.WEST,  radiusLabel, 0, SpringLayout.WEST,cylinderRadiusLabel);
     layout.putConstraint( SpringLayout.NORTH, coneRadiusSpinner, 0, SpringLayout.NORTH, radiusLabel);
-    layout.putConstraint( SpringLayout.WEST,  coneRadiusSpinner, 0, SpringLayout.WEST,cylinderRadiusSpinner);
+    layout.putConstraint( SpringLayout.WEST,  coneRadiusSpinner, 0, SpringLayout.WEST, cylinderRadiusSpinner);
 
     layout.putConstraint( SpringLayout.NORTH, heightLabel, 5, SpringLayout.SOUTH, coneRadiusSpinner );
     layout.putConstraint( SpringLayout.WEST,  heightLabel, 0, SpringLayout.WEST,  radiusLabel);
@@ -298,6 +290,13 @@ public class VectorPanel extends JPanel implements ActionListener{
     layout.putConstraint( SpringLayout.WEST,  sliceLabel, 0,SpringLayout.WEST,  lengthRatioLabel);
     layout.putConstraint( SpringLayout.NORTH, sliceSpinner, 0, SpringLayout.NORTH, sliceLabel );
     layout.putConstraint( SpringLayout.WEST,  sliceSpinner, 0, SpringLayout.WEST,cylinderRadiusSpinner);
+
+    //button
+    layout.putConstraint( SpringLayout.NORTH, resetButton, 10, SpringLayout.SOUTH, sliceSpinner );
+    layout.putConstraint( SpringLayout.EAST, resetButton, -10, SpringLayout.EAST, this );
+    layout.putConstraint( SpringLayout.NORTH, applyButton, 0, SpringLayout.NORTH, resetButton );
+    layout.putConstraint( SpringLayout.EAST, applyButton, -10, SpringLayout.WEST, resetButton );
+
 
     add(vecType);
     add(vecTypeLabel);

@@ -23,10 +23,10 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
     lBox2.setText(String.format("%7.1f %7.1f %7.1f",h[1][0],h[1][1],h[1][2]));
     lBox3.setText(String.format("%7.1f %7.1f %7.1f",h[2][0],h[2][1],h[2][2]));
 
-    lFrame.setText(String.format("Frame No.: %d/%d",rw.currentFrame+1,rw.totalFrame));
+    lFrame.setText(String.format("Frame number: %d/%d",rw.currentFrame+1,rw.totalFrame));
     slFrame.setMaximum(rw.totalFrame-1);
     if(!rw.isAnimating())slFrame.setValue(rw.currentFrame);
-    lFPS.setText(String.format("Frame per Second: %d",rw.vconf.fps));
+    lFPS.setText(String.format("Frame per second: %d",rw.vconf.fps));
     slFPS.setValue(rw.vconf.fps);
     slFPS.setMinimum(rw.vconf.fpsMin);
     slFPS.setMaximum(rw.vconf.fpsMax);
@@ -147,21 +147,21 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
     cbAlwaysTop.setFocusable(false);
     cbAlwaysTop.addChangeListener(this);
 
-    //-----left column: num of atoms, box matrix
-    JPanel leftPanel= new JPanel();
-    leftPanel.setLayout(new BoxLayout(leftPanel,BoxLayout.Y_AXIS));
-    leftPanel.add(lNatm);
-    leftPanel.add(lBoxMat);
-    leftPanel.add(lBox1);
-    leftPanel.add(lBox2);
-    leftPanel.add(lBox3);
-    //
-    JPanel rightPanel= new JPanel();
-    rightPanel.setLayout(new BoxLayout(rightPanel,BoxLayout.Y_AXIS));
-    rightPanel.add(lFrame);
-    rightPanel.add(slFrame);
-    rightPanel.add(lFPS);
-    rightPanel.add(slFPS);
+    // top: num of atoms, box matrix
+    JPanel topPanel= new JPanel();
+    topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.Y_AXIS));
+    topPanel.add(lNatm);
+    topPanel.add(lBoxMat);
+    topPanel.add(lBox1);
+    topPanel.add(lBox2);
+    topPanel.add(lBox3);
+    // middle: frame slider and fps slider
+    JPanel bottomPanel= new JPanel();
+    bottomPanel.setLayout(new BoxLayout(bottomPanel,BoxLayout.Y_AXIS));
+    bottomPanel.add(lFrame);
+    bottomPanel.add(slFrame);
+    bottomPanel.add(lFPS);
+    bottomPanel.add(slFPS);
 
     // outout area
     JTextArea outArea = new JTextArea();
@@ -183,25 +183,26 @@ public class StatusPanel extends JPanel implements ActionListener,ChangeListener
     System.setErr(new PrintStream(new JTextAreaOutputStream(System.out,outArea)));
     System.setOut(new PrintStream(new JTextAreaOutputStream(System.out,outArea)));
 
-    leftPanel.setPreferredSize(new Dimension(200, 10));
-    rightPanel.setPreferredSize(new Dimension(200, 10));
+    topPanel.setPreferredSize(new Dimension(200, 100));
+    bottomPanel.setPreferredSize(new Dimension(200, 100));
 
     //-----constants for TableLayout
     double f= TableLayout.FILL;
     double p= TableLayout.PREFERRED;
     double hb= 10;//10px
-    double colSizeTL[]= {hb,p,hb,p,hb,f,p,hb};
-    double rowSizeTL[]= {hb,f,p,p,hb};
+    //double colSizeTL[]= {hb,p,hb,p,hb,f,p,hb};
+    double colSizeTL[]= {hb,f,hb};
+    //double rowSizeTL[]= {hb,f,p,p,hb};
+    double rowSizeTL[]= {hb,p,p,p,hb};
+    
 
     setLayout(new TableLayout(colSizeTL,rowSizeTL));
 
-    this.add(leftPanel,    "1,1,1,3");
-    this.add(rightPanel,   "3,1,3,3");
-    //this.add(cbAlwaysTop,  "3,2,r,b");
-    //this.add(popoutButton, "3,3,r,b");
-    this.add(sPanel,"5,1,5,3");
-    this.add(cbAlwaysTop,  "6,2,r,b");
-    this.add(popoutButton, "6,3,r,b");
+    this.add(topPanel,    "1,1,l,b");
+    this.add(bottomPanel,   "1,2,l,b");
+    //this.add(sPanel,"5,1,5,3");
+    this.add(cbAlwaysTop,  "1,3,l,b");
+    //this.add(popoutButton, "6,3,r,b");
 
   }
 

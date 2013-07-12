@@ -162,8 +162,8 @@ public class TrajectoryPanel extends JPanel
     layout.putConstraint(SpringLayout.WEST, cbTrjMode, 10, SpringLayout.WEST, this);
     layout.putConstraint(SpringLayout.NORTH, cbTrjMode, 10, SpringLayout.NORTH, this);
 
-    layout.putConstraint(SpringLayout.WEST, jbDel, 0, SpringLayout.EAST, cbTrjMode);
-    layout.putConstraint(SpringLayout.NORTH, jbDel, 0, SpringLayout.NORTH, cbTrjMode);
+    layout.putConstraint(SpringLayout.NORTH, jbDel, 5, SpringLayout.SOUTH, cbTrjMode);
+    layout.putConstraint(SpringLayout.WEST, jbDel, 0, SpringLayout.WEST, cbTrjMode);
 
     layout.putConstraint(SpringLayout.WEST, jbAddAll, 0, SpringLayout.EAST, jbDel);
     layout.putConstraint(SpringLayout.NORTH, jbAddAll, 0, SpringLayout.NORTH, jbDel);
@@ -174,9 +174,8 @@ public class TrajectoryPanel extends JPanel
     layout.putConstraint(SpringLayout.WEST, refreshButton, 0, SpringLayout.EAST, jbClear);
     layout.putConstraint(SpringLayout.NORTH,refreshButton, 0, SpringLayout.NORTH, jbClear);
 
-
-    layout.putConstraint(SpringLayout.NORTH, writeButton, 0, SpringLayout.NORTH, refreshButton);
-    layout.putConstraint(SpringLayout.WEST, writeButton, 0, SpringLayout.EAST, refreshButton);
+    layout.putConstraint(SpringLayout.NORTH, writeButton, 0, SpringLayout.SOUTH, jbDel );
+    layout.putConstraint(SpringLayout.WEST, writeButton, 0, SpringLayout.WEST, jbDel );
 
     layout.putConstraint(SpringLayout.WEST, revertButton, 0, SpringLayout.EAST, writeButton);
     layout.putConstraint(SpringLayout.NORTH, revertButton, 0, SpringLayout.NORTH,writeButton);
@@ -184,11 +183,10 @@ public class TrajectoryPanel extends JPanel
     layout.putConstraint(SpringLayout.WEST, editButton, 0, SpringLayout.EAST, revertButton);
     layout.putConstraint(SpringLayout.NORTH, editButton, 0, SpringLayout.NORTH,revertButton);
 
-
-    layout.putConstraint(SpringLayout.EAST, sp, -10, SpringLayout.EAST, this);
-    layout.putConstraint(SpringLayout.WEST, sp, 10, SpringLayout.WEST, this);
+    layout.putConstraint(SpringLayout.NORTH, sp, 10, SpringLayout.SOUTH, writeButton );
     layout.putConstraint(SpringLayout.SOUTH, sp, -10, SpringLayout.SOUTH, this);
-    layout.putConstraint(SpringLayout.NORTH, sp, 10, SpringLayout.SOUTH, writeButton);
+    layout.putConstraint(SpringLayout.WEST, sp, 10, SpringLayout.WEST, this);
+    layout.putConstraint(SpringLayout.EAST, sp, -10, SpringLayout.EAST, this);
 
     this.add( cbTrjMode);
     this.add( jbDel );

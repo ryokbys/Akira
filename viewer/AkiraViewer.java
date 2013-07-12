@@ -11,9 +11,9 @@ import tools.*;
 
 public class AkiraViewer{
   /**
-   * This class is root of AKIRAView.
-   *   The role of this class is analyzing command line arguments
-   *   and newing Controller class.
+   * This class is the root of AKIRAView.
+   * This class analyzes command line arguments
+   * and create Controller class which controls almost everything.
    *
    * If you want to implement splash window or progress bar,
    * you should write codes to this.

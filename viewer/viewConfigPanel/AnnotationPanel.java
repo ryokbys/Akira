@@ -176,15 +176,15 @@ public class AnnotationPanel extends JPanel implements ActionListener,ChangeList
     //General panel
     setFocusable( false );
 
-    cbAxis= new JCheckBox( "Axis",true);
+    cbAxis= new JCheckBox( "Show axis",true);
     cbAxis.addActionListener(this);
     cbAxis.setFocusable(false);
 
-    cbTime= new JCheckBox( "Time",true);
+    cbTime= new JCheckBox( "Show time",true);
     cbTime.addActionListener(this);
     cbTime.setFocusable(false);
 
-    cbBox= new JCheckBox( "Box",true);
+    cbBox= new JCheckBox( "Draw simulation box",true);
     cbBox.addActionListener(this);
     cbBox.setFocusable(false);
 
@@ -313,17 +313,17 @@ public class AnnotationPanel extends JPanel implements ActionListener,ChangeList
     setLayout( layout );
 
     //axis
-    layout.putConstraint( SpringLayout.NORTH, cbAxis, 10, SpringLayout.NORTH,this);
-    layout.putConstraint( SpringLayout.WEST,  cbAxis, 10, SpringLayout.WEST, this);
+    layout.putConstraint( SpringLayout.NORTH, cbAxis, 10, SpringLayout.NORTH,this );
+    layout.putConstraint( SpringLayout.WEST,  cbAxis, 20, SpringLayout.WEST, this );
     //time
-    layout.putConstraint( SpringLayout.NORTH, cbTime, 10, SpringLayout.NORTH, this);
-    layout.putConstraint( SpringLayout.WEST, cbTime, 10, SpringLayout.EAST,cbAxis);
-    JLabel lTime=new JLabel("Format");
+    layout.putConstraint( SpringLayout.NORTH, cbTime, 30, SpringLayout.SOUTH, cbAxis );
+    layout.putConstraint( SpringLayout.WEST, cbTime, 0, SpringLayout.WEST, cbAxis );
+    JLabel lTime=new JLabel("Format:");
     layout.putConstraint( SpringLayout.NORTH, lTime, 10, SpringLayout.SOUTH, cbTime);
-    layout.putConstraint( SpringLayout.WEST, lTime, 10, SpringLayout.WEST, cbTime);
+    layout.putConstraint( SpringLayout.WEST, lTime, 20, SpringLayout.WEST, cbTime);
     layout.putConstraint( SpringLayout.NORTH, timeFormatTextArea, 0, SpringLayout.NORTH, lTime);
     layout.putConstraint( SpringLayout.WEST, timeFormatTextArea, 5, SpringLayout.EAST, lTime);
-    JLabel lTimePos=new JLabel("Legend Pos.");
+    JLabel lTimePos=new JLabel("Legend Position:");
     layout.putConstraint( SpringLayout.NORTH, lTimePos, 10, SpringLayout.SOUTH, timeFormatTextArea);
     layout.putConstraint( SpringLayout.WEST, lTimePos, 0, SpringLayout.WEST, lTime);
     layout.putConstraint( SpringLayout.NORTH, spTX, 0, SpringLayout.NORTH,lTimePos);
@@ -332,61 +332,53 @@ public class AnnotationPanel extends JPanel implements ActionListener,ChangeList
     layout.putConstraint( SpringLayout.WEST, spTY, 5, SpringLayout.EAST, spTX);
 
     //box
-    layout.putConstraint( SpringLayout.NORTH, cbBox, 10, SpringLayout.NORTH,this);
-    layout.putConstraint( SpringLayout.WEST,  cbBox, 10, SpringLayout.EAST, spTY);
+    layout.putConstraint( SpringLayout.NORTH, cbBox, 30, SpringLayout.SOUTH, spTX );
+    layout.putConstraint( SpringLayout.WEST,  cbBox, 0, SpringLayout.WEST, cbAxis );
     layout.putConstraint( SpringLayout.NORTH, boxColorLabel, 5, SpringLayout.SOUTH, cbBox);
-    layout.putConstraint( SpringLayout.WEST, boxColorLabel, 10, SpringLayout.WEST, cbBox);
+    layout.putConstraint( SpringLayout.WEST, boxColorLabel, 20, SpringLayout.WEST, cbBox);
     layout.putConstraint( SpringLayout.NORTH, boxColorPanel, 0, SpringLayout.NORTH,boxColorLabel);
-    layout.putConstraint( SpringLayout.WEST, boxColorPanel, 0, SpringLayout.EAST, boxColorLabel);
+    layout.putConstraint( SpringLayout.WEST, boxColorPanel, 10, SpringLayout.EAST, boxColorLabel);
     JLabel lBoxW=new JLabel("Box Line Width");
-    layout.putConstraint( SpringLayout.NORTH, lBoxW, 10 ,SpringLayout.SOUTH,boxColorLabel);
-    layout.putConstraint( SpringLayout.WEST, lBoxW, 0, SpringLayout.WEST, boxColorLabel);
+    layout.putConstraint( SpringLayout.NORTH, lBoxW, 10 ,SpringLayout.SOUTH,boxColorPanel );
+    layout.putConstraint( SpringLayout.WEST, lBoxW, 0, SpringLayout.WEST, boxColorLabel );
     layout.putConstraint( SpringLayout.NORTH, spBoxW, 0, SpringLayout.NORTH,lBoxW);
-    layout.putConstraint( SpringLayout.WEST, spBoxW, 0, SpringLayout.EAST, lBoxW);
+    layout.putConstraint( SpringLayout.WEST, spBoxW, 10, SpringLayout.EAST, lBoxW);
 
 
     //background
-    layout.putConstraint( SpringLayout.NORTH, bgColorLabel, 10, SpringLayout.NORTH, this);
-    layout.putConstraint( SpringLayout.WEST, bgColorLabel, 10, SpringLayout.EAST, spBoxW);
+    layout.putConstraint( SpringLayout.NORTH, bgColorLabel, 30, SpringLayout.SOUTH, spBoxW );
+    layout.putConstraint( SpringLayout.WEST, bgColorLabel, 0, SpringLayout.WEST, cbAxis );
     layout.putConstraint( SpringLayout.NORTH, bgColorPanel, 0, SpringLayout.NORTH, bgColorLabel);
-    layout.putConstraint( SpringLayout.WEST, bgColorPanel, 0, SpringLayout.EAST, bgColorLabel);
+    layout.putConstraint( SpringLayout.WEST, bgColorPanel, 10, SpringLayout.EAST, bgColorLabel);
 
     //font
-    JLabel lFont=new JLabel("Font");
+    JLabel lFont=new JLabel("Font:");
     add(lFont);
-    layout.putConstraint( SpringLayout.NORTH, lFont, 10, SpringLayout.NORTH, this);
-    layout.putConstraint( SpringLayout.WEST, lFont, 10, SpringLayout.EAST, bgColorPanel);
+    layout.putConstraint( SpringLayout.NORTH, lFont, 30, SpringLayout.SOUTH, bgColorPanel );
+    layout.putConstraint( SpringLayout.WEST, lFont, 0, SpringLayout.WEST, cbAxis );
     layout.putConstraint( SpringLayout.NORTH, fontsComboBox, 0, SpringLayout.NORTH, lFont);
-    layout.putConstraint( SpringLayout.WEST, fontsComboBox, 10, SpringLayout.EAST, lFont);
-    JLabel lFontStyle=new JLabel("Style");
+    layout.putConstraint( SpringLayout.WEST, fontsComboBox, 5, SpringLayout.EAST, lFont);
+    JLabel lFontStyle=new JLabel("Style:");
     add(lFontStyle);
     layout.putConstraint( SpringLayout.NORTH, lFontStyle, 5, SpringLayout.SOUTH, fontsComboBox);
-    layout.putConstraint( SpringLayout.WEST,  lFontStyle, 0, SpringLayout.WEST, lFont);
+    layout.putConstraint( SpringLayout.WEST,  lFontStyle, 20, SpringLayout.WEST, lFont);
     layout.putConstraint( SpringLayout.NORTH, fontStyleComboBox, 0, SpringLayout.NORTH, lFontStyle);
-    layout.putConstraint( SpringLayout.WEST, fontStyleComboBox, 0, SpringLayout.EAST, lFontStyle);
-    JLabel lFontSize=new JLabel("Size");
+    layout.putConstraint( SpringLayout.WEST, fontStyleComboBox, 5, SpringLayout.EAST, lFontStyle);
+    JLabel lFontSize=new JLabel("Size:");
     layout.putConstraint( SpringLayout.NORTH, lFontSize, 5, SpringLayout.SOUTH, fontStyleComboBox);
     layout.putConstraint( SpringLayout.WEST, lFontSize, 0, SpringLayout.WEST, lFontStyle);
     layout.putConstraint( SpringLayout.NORTH, fontSizeSP, 0, SpringLayout.NORTH, lFontSize);
-    layout.putConstraint( SpringLayout.WEST, fontSizeSP, 0, SpringLayout.EAST, lFontSize);
+    layout.putConstraint( SpringLayout.WEST, fontSizeSP, 5, SpringLayout.EAST, lFontSize);
     layout.putConstraint( SpringLayout.NORTH, txtColorLabel, 0, SpringLayout.SOUTH, fontSizeSP);
     layout.putConstraint( SpringLayout.WEST, txtColorLabel, 0, SpringLayout.WEST, lFontSize);
     layout.putConstraint( SpringLayout.NORTH, txtColorPanel, 0, SpringLayout.NORTH, txtColorLabel);
     layout.putConstraint( SpringLayout.WEST, txtColorPanel, 5, SpringLayout.EAST, txtColorLabel);
 
+    layout.putConstraint( SpringLayout.NORTH, applyTimeFormatButton, 20, SpringLayout.SOUTH, txtColorPanel );
+    layout.putConstraint( SpringLayout.EAST, applyTimeFormatButton, -10, SpringLayout.WEST, resetButton );
 
-
-
-
-
-    layout.putConstraint( SpringLayout.SOUTH, applyTimeFormatButton,-10,SpringLayout.SOUTH,this);
-    layout.putConstraint( SpringLayout.WEST, applyTimeFormatButton,40,SpringLayout.WEST, cbBox);
-
-    layout.putConstraint( SpringLayout.SOUTH, resetButton,0,SpringLayout.SOUTH,applyTimeFormatButton);
-    layout.putConstraint( SpringLayout.WEST, resetButton,0,SpringLayout.EAST, applyTimeFormatButton);
-
-
-
+    layout.putConstraint( SpringLayout.NORTH, resetButton,0,SpringLayout.NORTH, applyTimeFormatButton );
+    layout.putConstraint( SpringLayout.EAST, resetButton, -10, SpringLayout.EAST, this );
 
     add(cbAxis);
     add(cbTime);
