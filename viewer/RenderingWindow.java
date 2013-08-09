@@ -180,8 +180,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     //set frame propeties
     setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
 
-    //Toon rendering
-    toon= new Toon(vconf);
   }
 
   /* accesser  block starts *******************************************/
@@ -316,8 +314,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
   }
   public void setViewMode(){
     vp.setViewportMode();
-    // Reset toon shading code
-    toon.changeShaderProgram();
     if(vconf.viewMode == 0){
       System.out.println("view mode: perspective");
     }else{
@@ -659,10 +655,6 @@ public class RenderingWindow extends JFrame implements GLEventListener,
     //gl.glEnable(GL2.GL_COLOR_MATERIAL);
     //gl.glEnable(GL2.GL_CULL_FACE);
 
-    //Toon rendering
-    toon.setGL( drawable, gl, glu, glut );
-    toon.init();
-
     vec=new Vectors(this);
 
     light =new Light();
@@ -701,6 +693,10 @@ public class RenderingWindow extends JFrame implements GLEventListener,
 
     volume =new Volume(this);
 
+    //Toon rendering
+    toon= new Toon(vconf,vp);
+    toon.setGL( drawable, gl, glu, glut );
+    toon.init();
 
     trackB= new TrackBall();
     trackB.trackball( vp.curquat, 0.0f, 0.0f, 0.0f, 0.0f );

@@ -1,3 +1,7 @@
+
+uniform int mode;
+uniform vec3 eye;
+
 varying vec3 normal;
 varying vec3 light;
 varying vec4 view4;
@@ -8,7 +12,13 @@ void main (void)
   float s = 20.0;
   float i = floor( ndotl*s )/s + 0.1;
   vec3 nv   = normalize( view4.xyz );
-  float ndotv= max( dot(normal,nv), 0.0 );
+  float ndotv;
+  if( mode == 0 ){
+    ndotv= max( dot(normal,nv), 0.0 );
+  } else {
+    ndotv= max( dot(normal,eye), 0.0 );
+  }
+  ndotv= floor( ndotv*s )/s +0.1;
  
   vec4 color = vec4( 0.0, 0.0, 0.0, 1.0 );
   const vec4 black = vec4( 0.0, 0.0, 0.0, 1.0 );
