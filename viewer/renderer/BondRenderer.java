@@ -49,6 +49,7 @@ public class BondRenderer implements Renderer{
   public void make(){
     GL2 gl=rw.gl;
     int natm= atoms.getNumAtoms();
+    float[][] h = atoms.hmat;
     float[][] hi= atoms.hmati;
     
     if(bonds_t!=Const.DISPLAY_LIST_EMPTY)
@@ -70,6 +71,8 @@ public class BondRenderer implements Renderer{
     //for extend rendering
     float[][] ext= rw.vconf.extendRenderingFactor;
 
+    float[] sft= {rw.vconf.pshiftx,rw.vconf.pshifty,rw.vconf.pshiftz};
+
     float[] color=new float[4];
     switch(rw.renderingBondType){
     case BOND_TYPE_LINE: // line
@@ -87,12 +90,20 @@ public class BondRenderer implements Renderer{
         if( !(ext[0][2]<=pos[2] && pos[2]<ext[1][2]) )
           continue;
 
+        pos[0]= pos[0] +sft[0];
+        pos[1]= pos[1] +sft[1];
+        pos[2]= pos[2] +sft[2];
+        pos[0]= pbc(pos[0]);
+        pos[1]= pbc(pos[1]);
+        pos[2]= pbc(pos[2]);
+        pos= mulH(h,pos);
+
         int nbnd= ai.getNumBonds();
         for(int j=0; j<nbnd; j++ ){
           Bond b= ai.getBond(j);
         
           gl.glPushMatrix();
-          gl.glTranslatef( ai.pos[0],ai.pos[1],ai.pos[2]);
+          gl.glTranslatef( pos[0],pos[1],pos[2]);
           gl.glRotatef( b.phi,   0.0f, 0.0f, 1.0f );
           gl.glRotatef( b.theta, 0.0f, 1.0f, 0.0f );
 
@@ -139,12 +150,20 @@ public class BondRenderer implements Renderer{
         if( !(ext[0][2]<=pos[2] && pos[2]<ext[1][2]) )
           continue;
 
+        pos[0]= pos[0] +sft[0];
+        pos[1]= pos[1] +sft[1];
+        pos[2]= pos[2] +sft[2];
+        pos[0]= pbc(pos[0]);
+        pos[1]= pbc(pos[1]);
+        pos[2]= pbc(pos[2]);
+        pos= mulH(h,pos);
+
         int nbnd= ai.getNumBonds();
         for( int j=0; j<nbnd; j++ ){
           Bond b= ai.getBond(j);
 
           gl.glPushMatrix();
-          gl.glTranslatef( ai.pos[0],ai.pos[1],ai.pos[2]);
+          gl.glTranslatef( pos[0],pos[1],pos[2]);
           gl.glRotatef( b.phi,   0.0f, 0.0f, 1.0f );
           gl.glRotatef( b.theta, 0.0f, 1.0f, 0.0f );
 
@@ -180,4 +199,9 @@ public class BondRenderer implements Renderer{
     return out;
   }
 
+  private float pbc(float x){
+    if( x >= 1.f ) x= x -1.f;
+    if( x <  0.f ) x= x +1.f;
+    return x;
+  }
 }

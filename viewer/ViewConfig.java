@@ -34,6 +34,9 @@ public class ViewConfig implements Serializable{
   public boolean isTransXOnly;
   public boolean isTransYOnly;
   public boolean isTrjMode;
+  public float   pshiftx= 0.f;
+  public float   pshifty= 0.f;
+  public float   pshiftz= 0.f;
 
   //misc
   public Font   annotationFont  = new Font("courier",Font.BOLD,18);

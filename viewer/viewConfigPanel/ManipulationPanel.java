@@ -119,12 +119,16 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
 
 
   public void stateChanged( ChangeEvent ce ){
-    vconf.ControllerValue=(Float)valInputSpinner.getValue();
+    vconf.ControllerValue=((Double)valInputSpinner.getValue()).floatValue();
+    vconf.pshiftx=((Double)psxSpinner.getValue()).floatValue();
+    vconf.pshifty=((Double)psySpinner.getValue()).floatValue();
+    vconf.pshiftz=((Double)pszSpinner.getValue()).floatValue();
     vconf.isRotationXOnly=cbRotationXOnly.isSelected();
     vconf.isRotationYOnly=cbRotationYOnly.isSelected();
     vconf.isTransXOnly=cbTransXOnly.isSelected();
     vconf.isTransYOnly=cbTransYOnly.isSelected();
     requestFocusInWindow();
+    ctrl.RWinRefresh();
   }
 
   /* create Controller frame */
@@ -207,6 +211,7 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
 
 
   JSpinner valInputSpinner;
+  JSpinner psxSpinner,psySpinner,pszSpinner;
   private void createPanel(){
     this.addKeyListener(ctrl.keyCtrl);
     //input field
@@ -216,9 +221,7 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
     valLabel.setFocusable(false);
 
 
-    valInputSpinner = new JSpinner(new SpinnerNumberModel(vconf.ControllerValue, 0.f, null, 10.f));
-    valInputSpinner.setFocusable(false);
-
+    valInputSpinner = new JSpinner(new SpinnerNumberModel((double)vconf.ControllerValue, 0.0, null, 10.0));
     valInputSpinner.setPreferredSize(new Dimension(70, 25));
     valInputSpinner.setFocusable(false);
     valInputSpinner.addChangeListener(this);
@@ -386,6 +389,21 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
     trnsZdownButton.addActionListener( this );
     trnsZdownButton.setFocusable(false);
 
+    // periodic shift
+    psxSpinner = new JSpinner(new SpinnerNumberModel((double)vconf.pshiftx, -1.0, 1.0, 0.1));
+    psxSpinner.setPreferredSize(new Dimension(70, 25));
+    psxSpinner.setFocusable(false);
+    psxSpinner.addChangeListener(this);
+    psySpinner = new JSpinner(new SpinnerNumberModel((double)vconf.pshifty, -1.0, 1.0, 0.1));
+    psySpinner.setPreferredSize(new Dimension(70, 25));
+    psySpinner.setFocusable(false);
+    psySpinner.addChangeListener(this);
+    pszSpinner = new JSpinner(new SpinnerNumberModel((double)vconf.pshiftz, -1.0, 1.0, 0.1));
+    pszSpinner.setPreferredSize(new Dimension(70, 25));
+    pszSpinner.setFocusable(false);
+    pszSpinner.addChangeListener(this);
+
+
     //zoom-in
     zoomInButton= new JButton(icnZmIn);
     zoomInButton.setToolTipText("Zoom In: z");
@@ -425,6 +443,9 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
     cmbImgFormat.setFocusable(false);
 
 
+    JLabel lPS= new JLabel("Periodic shift: x,y,z");
+    lPS.setFocusable(false);
+
     JPanel valPanel= new JPanel();
     valPanel.setFocusable(false);
 
@@ -445,12 +466,25 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
     layout.putConstraint(SpringLayout.NORTH, cbTransYOnly , 0, SpringLayout.SOUTH, cbTransXOnly);
     layout.putConstraint(SpringLayout.WEST,  cbTransYOnly, 0, SpringLayout.WEST, cbTransXOnly);
 
+    layout.putConstraint(SpringLayout.NORTH, lPS, 5, SpringLayout.SOUTH, cbTransYOnly);
+    layout.putConstraint(SpringLayout.WEST, lPS, 5, SpringLayout.WEST, cbTransYOnly);
+    layout.putConstraint(SpringLayout.NORTH, psxSpinner, 0, SpringLayout.SOUTH, lPS);
+    layout.putConstraint(SpringLayout.WEST, psxSpinner, 0, SpringLayout.WEST, lPS);
+    layout.putConstraint(SpringLayout.NORTH, psySpinner, 0, SpringLayout.NORTH, psxSpinner);
+    layout.putConstraint(SpringLayout.WEST, psySpinner, 0, SpringLayout.EAST, psxSpinner);
+    layout.putConstraint(SpringLayout.NORTH, pszSpinner, 0, SpringLayout.NORTH, psxSpinner);
+    layout.putConstraint(SpringLayout.WEST, pszSpinner, 0, SpringLayout.EAST, psySpinner);
+
     valPanel.add(valLabel);
     valPanel.add(valInputSpinner);
     valPanel.add(cbRotationXOnly);
     valPanel.add(cbRotationYOnly);
     valPanel.add(cbTransXOnly);
     valPanel.add(cbTransYOnly);
+    valPanel.add(lPS);
+    valPanel.add(psxSpinner);
+    valPanel.add(psySpinner);
+    valPanel.add(pszSpinner);
 
 
     //-----constants for TableLayout
@@ -471,7 +505,7 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
                         
     //vertical grid
     double rowSizeTL[]={hg,
-                        120,
+                        160,//valPanel
                         hg,
                         30,//rot 3
                         30,
@@ -537,7 +571,6 @@ public class ManipulationPanel extends JPanel implements ActionListener,MouseLis
     add(snapShotButton,  "3, 19, f, f");
     add(recordButton,    "4, 19, f, f");
     add(cmbImgFormat,    "2, 20, 4, 20");
-
 
   }
 
