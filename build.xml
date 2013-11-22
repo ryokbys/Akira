@@ -64,6 +64,7 @@
         <include name="converter/*.java" />
         <!-- <include name="converter/reader/*.java" /> -->
         <include name="converter/reader/AkiraAscii.java" />
+        <include name="converter/reader/AkiraAsciiTgz.java" />
         <classpath refid="jogl_libpath_ref" />
       </javac>
     </target>

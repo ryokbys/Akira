@@ -79,12 +79,6 @@ public class AtomRenderer implements Renderer{
     specialTag.put(i,val);
   }
 
-  private float[] mulH( float[][] h,float[] in ){
-    float[] out = new float[3];
-    for(int k=0; k<3; k++) out[k] =h[k][0]*in[0] +h[k][1]*in[1] +h[k][2]*in[2];
-    return out;
-  }
-
   public void make(){
     ViewConfig vconf=rw.vconf;
     if( rw.renderingAtomDataIndex>0 )
@@ -128,15 +122,15 @@ public class AtomRenderer implements Renderer{
       rw.gl.glColor3fv(color, 0 );
 
       // tmp[0:2]: atom position scaled by h-matrix, value range=[0:1]
-      float[] tmp=mulH( hi, ai.pos );
+      float[] tmp=MDMath.mulH( hi, ai.pos );
       float[] posi= new float[3];
       posi[0]= tmp[0]+sft[0];
       posi[1]= tmp[1]+sft[1];
       posi[2]= tmp[2]+sft[2];
-      posi[0]= pbc(posi[0]);
-      posi[1]= pbc(posi[1]);
-      posi[2]= pbc(posi[2]);
-      posi= mulH(h,posi);
+      posi[0]= MDMath.pbc(posi[0]);
+      posi[1]= MDMath.pbc(posi[1]);
+      posi[2]= MDMath.pbc(posi[2]);
+      posi= MDMath.mulH(h,posi);
 
       for(int ix=extendNx1;ix<=extendNx2;ix++){
         if(!(ext[0][0]<=ix+tmp[0] && ix+tmp[0]<ext[1][0])){
@@ -278,14 +272,14 @@ public class AtomRenderer implements Renderer{
 
       if( ! ai.isVisible ) continue MAINLOOP;
 
-      float[] ri= mulH(atoms.hmati,ai.pos);
+      float[] ri= MDMath.mulH(atoms.hmati,ai.pos);
       ri[0]= ri[0]+sft[0];
       ri[1]= ri[1]+sft[1];
       ri[2]= ri[2]+sft[2];
-      ri[0]= pbc(ri[0]);
-      ri[1]= pbc(ri[1]);
-      ri[2]= pbc(ri[2]);
-      ri= mulH(atoms.hmati,ri);
+      ri[0]= MDMath.pbc(ri[0]);
+      ri[1]= MDMath.pbc(ri[1]);
+      ri[2]= MDMath.pbc(ri[2]);
+      ri= MDMath.mulH(atoms.hmati,ri);
 
       //region cut
       if(rw.sq.isBandClose){
@@ -374,14 +368,14 @@ public class AtomRenderer implements Renderer{
       rw.gl.glLoadName(i);
       //render invisible atom
       if( ! ai.isVisible ) continue; //skip negative tag
-      float[] posi= mulH(atoms.hmati,ai.pos);
+      float[] posi= MDMath.mulH(atoms.hmati,ai.pos);
       posi[0]= posi[0] +sft[0];
       posi[1]= posi[1] +sft[1];
       posi[2]= posi[2] +sft[2];
-      posi[0]= pbc(posi[0]);
-      posi[1]= pbc(posi[1]);
-      posi[2]= pbc(posi[2]);
-      posi= mulH(atoms.hmat,posi);
+      posi[0]= MDMath.pbc(posi[0]);
+      posi[1]= MDMath.pbc(posi[1]);
+      posi[2]= MDMath.pbc(posi[2]);
+      posi= MDMath.mulH(atoms.hmat,posi);
 
       rw.gl.glTranslatef( posi[0],posi[1],posi[2] );
       rw.glut.glutSolidSphere( vconf.tagRadius[ai.tag],6,6);
@@ -397,14 +391,14 @@ public class AtomRenderer implements Renderer{
     ViewConfig vconf=rw.vconf;
     if( id<0 ) return;
     float[] sft= {vconf.pshiftx,vconf.pshifty,vconf.pshiftz};
-    float[] posi= mulH(atoms.hmati,aid.pos);
+    float[] posi= MDMath.mulH(atoms.hmati,aid.pos);
     posi[0]= posi[0]+sft[0];
     posi[1]= posi[1]+sft[1];
     posi[2]= posi[2]+sft[2];
-    posi[0]= pbc(posi[0]);
-    posi[1]= pbc(posi[1]);
-    posi[2]= pbc(posi[2]);
-    posi= mulH(atoms.hmat,posi);
+    posi[0]= MDMath.pbc(posi[0]);
+    posi[1]= MDMath.pbc(posi[1]);
+    posi[2]= MDMath.pbc(posi[2]);
+    posi= MDMath.mulH(atoms.hmat,posi);
     
     rw.gl.glMaterialfv( GL2.GL_FRONT, GL2.GL_SPECULAR, vconf.lightSpc, 0 );
     rw.gl.glMateriali( GL2.GL_FRONT, GL2.GL_SHININESS, vconf.lightShininess );
@@ -525,10 +519,5 @@ public class AtomRenderer implements Renderer{
   public void trajectoryShow(){
     for(int i=0;i<trjList.size();i++)
       rw.gl.glCallList(trjList.get(i));
-  }
-  private float pbc(float x){
-    if( x >= 1.f ) x= x -1.f;
-    if( x <  0.f ) x= x +1.f;
-    return x;
   }
 }

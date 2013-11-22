@@ -126,7 +126,7 @@ public class AkiraAscii{
           epnum.setString( elem[k+1] );
           tp[k] = (float)epnum.getNumber();
         }
-        ra =  Tool.mulH( atoms.hmat, tp );
+        ra =  MDMath.mulH( atoms.hmat, tp );
 
         float[] data=new float[ndata];
         for( int k=0; k<ndata; k++ ){
@@ -147,12 +147,9 @@ public class AkiraAscii{
         //add
         if(itag>0){
           Atom atom= new Atom((byte)itag);
-          //atoms.tag[atoms.n]=(byte)itag;
-          //for(int k=0;k<3;k++)atoms.r[atoms.n][k]=ra[k];
           atom.pos[0]= ra[0];
           atom.pos[1]= ra[1];
           atom.pos[2]= ra[2];
-          //for(int k=0;k<Atom.MAX_NUM_DATA;k++)atoms.data[atoms.n][k]=data[k];
           for(int k=0;k<ndata;k++)
             atom.auxData[k]=data[k];
 
@@ -275,7 +272,7 @@ public class AkiraAscii{
               tp[2]=(ivz+0.5f)/(float)nvz;
               //add
               atoms.tag[atoms.n]=(byte)Const.VOLUME_DATA_TAG;
-              atoms.r[atoms.n]=Tool.mulH( hv, tp);
+              atoms.r[atoms.n]=MDMath.mulH( hv, tp);
               atoms.r[atoms.n][0]+=vorg[0];
               atoms.r[atoms.n][1]+=vorg[1];
               atoms.r[atoms.n][2]+=vorg[2];

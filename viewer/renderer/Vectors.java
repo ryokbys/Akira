@@ -34,16 +34,6 @@ public class Vectors implements Renderer{
   }
   public ColorTable ctable;
 
-
-
-  private float[] mulH( float[][] h,float[] in ){
-    float[] out = new float[3];
-    for(int k=0; k<3; k++)
-      out[k] = (h[k][0]*in[0] +h[k][1]*in[1] +h[k][2]*in[2]);
-    return out;
-  }
-
-
   public void show(){
     rw.gl.glCallList( vec_t );
   }

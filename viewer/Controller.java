@@ -101,7 +101,7 @@ public class Controller implements WindowListener{
   }
 
   public void setFrontViewConfigWin(int i){
-    if(i>=0)vcWin.tabbedPane.setSelectedIndex(i);
+    //if(i>=0)vcWin.tabbedPane.setSelectedIndex(i);
     vcWin.setVisible(true);
     vcWin.toFront();
   }

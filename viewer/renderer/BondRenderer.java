@@ -18,6 +18,7 @@ import javax.media.opengl.awt.*;
 
 import viewer.*;
 import data.*;
+import tools.MDMath;
 
 public class BondRenderer implements Renderer{
   
@@ -81,7 +82,7 @@ public class BondRenderer implements Renderer{
       for(int i=0; i<natm; i++ ){
         Atom ai= atoms.getAtom(i);
         if( !ai.isVisible ) continue;
-        float[] pos= mulH( hi, ai.pos );
+        float[] pos= MDMath.mulH( hi, ai.pos );
 
         if( !(ext[0][0]<=pos[0] && pos[0]<ext[1][0]) )
           continue;
@@ -93,10 +94,10 @@ public class BondRenderer implements Renderer{
         pos[0]= pos[0] +sft[0];
         pos[1]= pos[1] +sft[1];
         pos[2]= pos[2] +sft[2];
-        pos[0]= pbc(pos[0]);
-        pos[1]= pbc(pos[1]);
-        pos[2]= pbc(pos[2]);
-        pos= mulH(h,pos);
+        pos[0]= MDMath.pbc(pos[0]);
+        pos[1]= MDMath.pbc(pos[1]);
+        pos[2]= MDMath.pbc(pos[2]);
+        pos= MDMath.mulH(h,pos);
 
         int nbnd= ai.getNumBonds();
         for(int j=0; j<nbnd; j++ ){
@@ -141,7 +142,7 @@ public class BondRenderer implements Renderer{
       for(int i=0; i<natm; i++ ){
         Atom ai= atoms.getAtom(i);
         if( !ai.isVisible ) continue;
-        float[] pos= mulH( hi, ai.pos );
+        float[] pos= MDMath.mulH( hi, ai.pos );
 
         if( !(ext[0][0]<=pos[0] && pos[0]<ext[1][0]) )
           continue;
@@ -153,10 +154,10 @@ public class BondRenderer implements Renderer{
         pos[0]= pos[0] +sft[0];
         pos[1]= pos[1] +sft[1];
         pos[2]= pos[2] +sft[2];
-        pos[0]= pbc(pos[0]);
-        pos[1]= pbc(pos[1]);
-        pos[2]= pbc(pos[2]);
-        pos= mulH(h,pos);
+        pos[0]= MDMath.pbc(pos[0]);
+        pos[1]= MDMath.pbc(pos[1]);
+        pos[2]= MDMath.pbc(pos[2]);
+        pos= MDMath.mulH(h,pos);
 
         int nbnd= ai.getNumBonds();
         for( int j=0; j<nbnd; j++ ){
@@ -192,16 +193,4 @@ public class BondRenderer implements Renderer{
     rw.gl.glCallList( bonds_t );
   }
 
-  private float[] mulH( float[][] h,float[] in ){
-    float[] out = new float[3];
-    for(int k=0; k<3; k++)
-      out[k] =h[k][0]*in[0] +h[k][1]*in[1] +h[k][2]*in[2];
-    return out;
-  }
-
-  private float pbc(float x){
-    if( x >= 1.f ) x= x -1.f;
-    if( x <  0.f ) x= x +1.f;
-    return x;
-  }
 }

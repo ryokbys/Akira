@@ -155,7 +155,7 @@ public class CHGCAR{
           atoms.tag[iatm]=(byte)is;
 
           atoms.data[iatm][0]=0.f;
-          atoms.r[iatm]=Tool.mulH( atoms.h, tmpAtoms[i] );
+          atoms.r[iatm]=MDMath.mulH( atoms.h, tmpAtoms[i] );
           iatm++;
         }
 
@@ -193,7 +193,7 @@ public class CHGCAR{
             tp[1]=(iy+0.5f)/(float)ny;
             tp[2]=(iz+0.5f)/(float)nz;
             atoms.tag[iatm]=(byte)Const.VOLUME_DATA_TAG;
-            atoms.r[iatm]=Tool.mulH( atoms.h, tp);
+            atoms.r[iatm]=MDMath.mulH( atoms.h, tp);
             atoms.data[iatm][0]=tmp;
             inc++;
             iatm++;
@@ -221,7 +221,7 @@ public class CHGCAR{
             tp[1]=(iy+0.5f)/(float)ny;
             tp[2]=(iz+0.5f)/(float)nz;
             atoms.tag[iatm]=(byte)Const.VOLUME_DATA_TAG;
-            atoms.r[iatm]=Tool.mulH( atoms.h, tp);
+            atoms.r[iatm]=MDMath.mulH( atoms.h, tp);
             atoms.data[iatm][0]=tmp;
             inc++;
             iatm++;

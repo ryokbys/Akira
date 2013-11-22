@@ -142,7 +142,7 @@ public class AkiraBinary{
         tp[0]=bb.getFloat(8);
         tp[1]=bb.getFloat(12);
         tp[2]=bb.getFloat(16);
-        ra =  Tool.mulH( atoms.h, tp );
+        ra =  MDMath.mulH( atoms.h, tp );
 
         float[] data=new float[Const.DATA];
         for( int k=0; k<atoms.nData; k++ )data[k] = bb.getFloat(20+4*k);
@@ -307,7 +307,7 @@ public class AkiraBinary{
               tp[2]=(ivz+0.5f)/(float)nvz;
               //add
               atoms.tag[atoms.n]=(byte)Const.VOLUME_DATA_TAG;
-              atoms.r[atoms.n]=Tool.mulH( hv, tp);
+              atoms.r[atoms.n]=MDMath.mulH( hv, tp);
               atoms.r[atoms.n][0]+=vorg[0];
               atoms.r[atoms.n][1]+=vorg[1];
               atoms.r[atoms.n][2]+=vorg[2];

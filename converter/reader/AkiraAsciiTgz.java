@@ -118,7 +118,7 @@ public class AkiraAsciiTgz{
             epnum.setString( elem[k+1] );
             tp[k] = (float)epnum.getNumber();
           }
-          ra =  Tool.mulH( atoms.hmat, tp );
+          ra =  MDMath.mulH( atoms.hmat, tp );
 
           float[] data=new float[ndata];
           for( int k=0; k<ndata; k++ ){
@@ -260,7 +260,7 @@ public class AkiraAsciiTgz{
                 tp[2]=(ivz+0.5f)/(float)nvz;
                 //add
                 atoms.tag[atoms.n]=(byte)Const.VOLUME_DATA_TAG;
-                atoms.r[atoms.n]=Tool.mulH( hv, tp);
+                atoms.r[atoms.n]=MDMath.mulH( hv, tp);
                 atoms.r[atoms.n][0]+=vorg[0];
                 atoms.r[atoms.n][1]+=vorg[1];
                 atoms.r[atoms.n][2]+=vorg[2];

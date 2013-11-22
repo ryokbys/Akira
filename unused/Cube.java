@@ -148,7 +148,7 @@ public class Cube{
             tp[0]=(ix+0.5f)/(float)nx;
             tp[1]=(iy+0.5f)/(float)ny;
             tp[2]=(iz+0.5f)/(float)nz;
-            atoms.r[ir+natm]=Tool.mulH( atoms.h, tp);
+            atoms.r[ir+natm]=MDMath.mulH( atoms.h, tp);
             inc++;
           }
           if(inc==nvoxel)continue;

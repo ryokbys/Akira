@@ -140,7 +140,8 @@ public class Volume{
             gl.glColor4fv(color, 0);
             gl.glMaterialfv( GL2.GL_FRONT_AND_BACK,GL2.GL_AMBIENT_AND_DIFFUSE,color, 0);
 
-            float[] tp=mulH(atoms.hmat,dx*ix,dy*iy,dz*(iz+0.5f));
+            
+            float[] tp= mulH(atoms.hmat,dx*ix,dy*iy,dz*(iz+0.5f));
             gl.glVertex3fv(tp,0);
             tp=mulH(atoms.hmat,dx*ix,dy*(iy+1),dz*(iz+0.5f));
             gl.glVertex3fv(tp,0);

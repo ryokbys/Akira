@@ -1,5 +1,6 @@
 package converter;
 
+import tools.*;
 
 public class Tool{
 
@@ -39,7 +40,7 @@ public class Tool{
     float r2 = r*r;
 
     //inputed center is not scaled.
-    float[] center=mulH(h, cent);
+    float[] center=MDMath.mulH(h, cent);
 
     if( r > 0.0 ){
       //delete outside
@@ -54,13 +55,6 @@ public class Tool{
       if( d2 < r2 ) return - Math.abs(tag);
       else return tag;
     }
-  }
-  public static float[] mulH( float[][] h,float[] in ){
-    float[] out = new float[3];
-    for(int k=0; k<3; k++)
-      out[k] = (h[k][0]*in[0] +h[k][1]*in[1] +h[k][2]*in[2]);
-
-    return out;
   }
 
 }
