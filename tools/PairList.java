@@ -12,13 +12,6 @@ import tools.*;
 
 public class PairList{
 
-  private static float[] mulH( float[][] h,float[] in ){
-    float[] out = new float[3];
-    for(int k=0; k<3; k++)
-      out[k] = (h[k][0]*in[0] +h[k][1]*in[1] +h[k][2]*in[2]);
-    return out;
-  }
-
   /**
    * makeKthNearestPairListの為の内部クラス
    */
@@ -35,8 +28,8 @@ public class PairList{
    * 距離が小さい方からkth番目までのペアリストを作る．
    */
   public static ArrayList makeKthNearestPairList(Atoms atoms, float rcut,int kth,
-                                                 boolean deleteVoxel,boolean isConsiderPBC){
-    ArrayList<ArrayList<Integer>> lspr= PairList.makePairList(atoms,rcut,deleteVoxel,isConsiderPBC);
+                                                 boolean deleteVoxel,boolean pbcOn){
+    ArrayList<ArrayList<Integer>> lspr= PairList.makePairList(atoms,rcut,deleteVoxel,pbcOn);
 
     ArrayList<ArrayList<Integer>> kthNeighbors= new ArrayList<ArrayList<Integer>>();
     int natm= atoms.getNumAtoms();
@@ -88,7 +81,7 @@ public class PairList{
   /**
    * ペアリスト生成
    */
-  public static ArrayList makePairList(Atoms atoms, float rcut, boolean deleteVoxel,boolean isConsiderPBC){
+  public static ArrayList makePairList(Atoms atoms, float rcut, boolean deleteVoxel,boolean pbcOn){
     //--- decide cell size for linked-list
     //int nx= (int)(atoms.h[0][0]/rcut)+1; // num of cells along x-direction
     //int ny= (int)(atoms.h[1][1]/rcut)+1;
@@ -112,7 +105,7 @@ public class PairList{
 
     if(nx < 3 || ny < 3 || nz < 3 ){
       // linked-list may not be necessary, because the system is small
-      return makePairListDirectly( atoms,rcut,deleteVoxel,isConsiderPBC );
+      return makePairListDirectly( atoms,rcut,deleteVoxel,pbcOn );
     }else{ // enough large system
       int nlist= atoms.getNumAtoms() +nx*ny*nz; // size of the list
       int[] llist= new int[nlist];
@@ -120,7 +113,7 @@ public class PairList{
       makeLinkedList( nx,ny,nz,nlist,llist,atoms,deleteVoxel );
 
       //--- make pair-list using linked-list
-      return makePairListUsingLinkedList( rcut,nx,ny,nz,nlist,llist,atoms,deleteVoxel,isConsiderPBC );
+      return makePairListUsingLinkedList( rcut,nx,ny,nz,nlist,llist,atoms,deleteVoxel,pbcOn );
     }
 
   }
@@ -141,7 +134,7 @@ public class PairList{
       int itag = ai.tag;
       if( itag < 0 ) continue;
       if( deleteVoxel &&  itag==Const.VOLUME_DATA_TAG ) break;//原子，volumedataの順で格納されているのを仮定
-      float[] tp=mulH( atoms.hmati, ai.pos );
+      float[] tp=MDMath.mulH( atoms.hmati, ai.pos );
       int ix= (int)(tp[0]/dx);
       if(ix<0)ix=0;
       if(ix>=nx)ix=nx-1;
@@ -161,7 +154,7 @@ public class PairList{
 
   // make pair list (Verlet list) using linked-list
   static ArrayList makePairListUsingLinkedList(float rcut,int nx, int ny, int nz,
-                                               int nlist,int[] llist,Atoms atoms, boolean deleteVoxel,boolean isConsiderPBC){
+                                               int nlist,int[] llist,Atoms atoms, boolean deleteVoxel,boolean pbcOn){
 
     float rc2= rcut*rcut;
     ArrayList<ArrayList<Integer>> lspr= new ArrayList<ArrayList<Integer>>();
@@ -174,13 +167,13 @@ public class PairList{
       if( itag < 0 )continue;
       //if( itag==Const.VOLUME_DATA_TAG)break;//原子，volumedataの順で格納されているのを仮定
       ArrayList<Integer> iList = new ArrayList<Integer>();
-      float[] xi=mulH(atoms.hmati, ai.pos);
+      float[] xi=MDMath.mulH(atoms.hmati, ai.pos);
       int ix= (int)(xi[0]*nx);
       int iy= (int)(xi[1]*ny);
       int iz= (int)(xi[2]*nz);
       for(int idx=-1;idx<=1;idx++){
         int jx=ix+idx;
-        if(isConsiderPBC){
+        if(pbcOn){
           if(jx<0)jx=nx-1;
           if(jx>=nx)jx=0;;
         }else{
@@ -188,7 +181,7 @@ public class PairList{
         }
         for(int idy=-1;idy<=1;idy++){
           int jy=iy+idy;
-          if(isConsiderPBC){
+          if(pbcOn){
             if(jy<0)jy=ny-1;
             if(jy>=ny)jy=0;;
           }else{
@@ -196,7 +189,7 @@ public class PairList{
           }
           for(int idz=-1;idz<=1;idz++){
             int jz=iz+idz;
-            if(isConsiderPBC){
+            if(pbcOn){
               if(jz<0)jz=nz-1;
               if(jz>=nz)jz=0;;
             }else{
@@ -210,18 +203,18 @@ public class PairList{
               Atom aj= atoms.getAtom(j);
               int jtag = aj.tag;
               if( j!=i && jtag > 0 && jtag!=Const.VOLUME_DATA_TAG){
-                float[] xj=mulH( atoms.hmati, aj.pos );
+                float[] xj=MDMath.mulH( atoms.hmati, aj.pos );
                 for(int k=0;k<3;k++)
                   ds[k]= (xj[k]-xi[k]);
                 //consider PBC
-                if(isConsiderPBC){
+                if(pbcOn){
                   for(int k=0;k<3;k++){
-                    if(ds[k]>0.5) ds[k]=ds[k]-1.0f;
-                    if(ds[k]<-0.5) ds[k]=ds[k]+1.0f;
+                    if(ds[k] > 0.5f) ds[k]=ds[k]-1.0f;
+                    if(ds[k] <-0.5f) ds[k]=ds[k]+1.0f;
                   }
                 }
 
-                float[] d=mulH( atoms.hmat,ds );
+                float[] d=MDMath.mulH( atoms.hmat,ds );
                 float r2= d[0]*d[0] +d[1]*d[1] +d[2]*d[2];
                 if(r2 < rc2)iList.add(j);
               }
@@ -239,7 +232,7 @@ public class PairList{
 
 
   // make pair-list directly, brute-force O(N^2) method
-  private static ArrayList makePairListDirectly(Atoms atoms,float rcut, boolean deleteVoxel,boolean isConsiderPBC){
+  private static ArrayList makePairListDirectly(Atoms atoms,float rcut, boolean deleteVoxel,boolean pbcOn){
     float rc2 = rcut*rcut;
     float ds[]  = new float[3];
 
@@ -252,22 +245,22 @@ public class PairList{
       if( itag < 0 )continue;
       if( deleteVoxel && itag==Const.VOLUME_DATA_TAG ) break;//原子，volumedataの順で格納されているのを仮定
       ArrayList<Integer> iList = new ArrayList<Integer>();
-      float[] xi=mulH(atoms.hmati, ai.pos );
+      float[] xi=MDMath.mulH(atoms.hmati, ai.pos );
       for(int j=0; j<natm; j++){
         Atom aj= atoms.getAtom(j);
         if(i==j)continue;
-        float[] xj=mulH( atoms.hmati, aj.pos );
+        float[] xj=MDMath.mulH( atoms.hmati, aj.pos );
         for(int k=0;k<3;k++)
           ds[k]= (xj[k]-xi[k]);
-        //consider PBC
-        if(isConsiderPBC){
+        // PBC
+        if(pbcOn){
           for(int k=0;k<3;k++){
-            if(ds[k]>0.5)ds[k]=ds[k]-1.0f;
-            if(ds[k]<-0.5)ds[k]=ds[k]+1.0f;
+            if(ds[k]> 0.5f) ds[k]=ds[k]-1.0f;
+            if(ds[k]<-0.5f) ds[k]=ds[k]+1.0f;
           }
         }
 
-        float[] d=mulH(atoms.hmat,ds);
+        float[] d=MDMath.mulH(atoms.hmat,ds);
         float r2= d[0]*d[0] +d[1]*d[1] +d[2]*d[2];
         if(r2 < rc2)iList.add(j);
       }
@@ -320,4 +313,5 @@ public class PairList{
 
     return lspr;
   }
+
 }

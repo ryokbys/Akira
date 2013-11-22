@@ -15,6 +15,8 @@ public class BondCreator{
   static final int maxBondSpecies=100;
   int[] numBonds=new int[maxBondSpecies];//# of bonds in each species
 
+  final boolean PBC_ON= true;
+
   //bond info
   public ArrayList<Integer> atom1List;
   public ArrayList<Integer> atom2List;
@@ -36,6 +38,7 @@ public class BondCreator{
     System.out.print("\r");
     System.out.print("creating bonds starts");
 
+    float[] dh = new float[3];
     float[] dr = new float[3];
     int a1, a2;
     float len, len2;
@@ -47,7 +50,7 @@ public class BondCreator{
     float lmax2= maxLength*maxLength;
 
     // make pair-list
-    ArrayList<ArrayList<Integer>> lspr= PairList.makePairList(atoms,maxLength,true,false);
+    ArrayList<ArrayList<Integer>> lspr= PairList.makePairList(atoms,maxLength,true,PBC_ON);
 
 
     int inc=0;
@@ -61,6 +64,7 @@ public class BondCreator{
       ArrayList<Integer> iList = lspr.get(i);
       //System.out.println(String.format("ilist: %d",iList.size()));
       //System.exit(0);
+      float[] xi= MDMath.mulH( atoms.hmati, atomi.pos );
 
       for(int k=0; k<iList.size(); k++){
         int j= iList.get(k);  // obtain neighbor from lspr
@@ -69,12 +73,17 @@ public class BondCreator{
         //int jtag = atoms.tag[j];
         int jtag = (int)(atomj.tag);
         if( jtag < 0 || jtag==Const.VOLUME_DATA_TAG ) continue;
-        dr[0]= atomj.pos[0] -atomi.pos[0];
-        dr[1]= atomj.pos[1] -atomi.pos[1];
-        dr[2]= atomj.pos[2] -atomi.pos[2];
-        //dr[0] = atoms.r[j][0] -atoms.r[i][0];
-        //dr[1] = atoms.r[j][1] -atoms.r[i][1];
-        //dr[2] = atoms.r[j][2] -atoms.r[i][2];
+        float[] xj= MDMath.mulH( atoms.hmati, atomj.pos );
+        dh[0]= xj[0] -xi[0];
+        dh[1]= xj[1] -xi[1];
+        dh[2]= xj[2] -xi[2];
+        if( PBC_ON ){
+          for(int l=0; l<3; l++){
+            if(dh[l] > 0.5f) dh[l]=dh[l]-1.0f;
+            if(dh[l] <-0.5f) dh[l]=dh[l]+1.0f;
+          }
+        }
+        dr= MDMath.mulH( atoms.hmat, dh );
         float dr2 =dr[0]*dr[0] +dr[1]*dr[1] +dr[2]*dr[2];
 
         if( dr2 > lmax2 ) continue;
@@ -148,6 +157,7 @@ public class BondCreator{
   }
 
   public void createWithBondList( Atoms atoms, ConvConfig cconf,int itarget, int ifrm ){
+    float[] dh = new float[3];
     float[] dr = new float[3];
     int a1, a2;
     float len, len2;
@@ -169,6 +179,7 @@ public class BondCreator{
       int itag = (int)(atomi.tag);
       if( itag < 0 || itag==Const.VOLUME_DATA_TAG)continue;
       ArrayList<Integer> iList = lspr.get(i);
+      float[] xi= MDMath.mulH( atoms.hmati, atomi.pos );
 
       for(int jj=0; jj<iList.size(); jj++){
         int j= iList.get(jj);// obtain neighbor from lspr
@@ -178,12 +189,17 @@ public class BondCreator{
 
         int jtag = (int)(atomj.tag);
         if( jtag < 0 || jtag==Const.VOLUME_DATA_TAG)continue;
-        dr[0]= atomj.pos[0] -atomi.pos[0];
-        dr[1]= atomj.pos[1] -atomi.pos[1];
-        dr[2]= atomj.pos[2] -atomi.pos[2];
-        //dr[0] = atoms.r[j][0] -atoms.r[i][0];
-        //dr[1] = atoms.r[j][1] -atoms.r[i][1];
-        //dr[2] = atoms.r[j][2] -atoms.r[i][2];
+        float[] xj= MDMath.mulH( atoms.hmati, atomj.pos );
+        dh[0]= xj[0] -xi[0];
+        dh[1]= xj[1] -xi[1];
+        dh[2]= xj[2] -xi[2];
+        if( PBC_ON ){
+          for(int l=0; l<3; l++){
+            if(dh[l] > 0.5f) dh[l]=dh[l]-1.0f;
+            if(dh[l] <-0.5f) dh[l]=dh[l]+1.0f;
+          }
+        }
+        dr= MDMath.mulH( atoms.hmat, dh );
 
         float[] v = Coordinate.xyz2rtp(dr[0],dr[1],dr[2]);
         atomi.listBond.add(new Bond(v[0],v[1],v[2]));
