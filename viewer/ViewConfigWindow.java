@@ -115,6 +115,7 @@ public class ViewConfigWindow extends JFrame implements ItemListener{
     jcPanelNameList.setSelectedIndex(0);
     jcPanelNameList.setFocusable(false);
     jcPanelNameList.addItemListener(this);
+    jcPanelNameList.setMaximumRowCount(20);
   }
   
   void createPanels(){

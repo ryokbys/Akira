@@ -588,7 +588,7 @@ public class Plane {
       }
 
     }else{
-      System.out.println("ordinary");
+      //System.out.println("ordinary");
       tmpV.add(tp[0]);
       tmpV.add(tp[1]);
       tmpV.add(tp[2]);

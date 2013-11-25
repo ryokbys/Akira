@@ -34,6 +34,7 @@ public class PlanePanel extends JPanel implements ActionListener{
 
 
   }
+
   void setVars(){
     for(int i=0;i<Const.PLANE;i++){
       vconf.isPlaneVisible[i]=false;
@@ -55,7 +56,7 @@ public class PlanePanel extends JPanel implements ActionListener{
   private JSpinner spTetraSpecies;
   private JSpinner spRcut;
   private JButton singlePlaneColorButton;
-
+  private JSpinner sx1,sx2,sx3,sy1,sy2,sy3,sz1,sz2,sz3;
 
   public void createPanel(){
     this.addKeyListener(ctrl.keyCtrl);
@@ -124,6 +125,44 @@ public class PlanePanel extends JPanel implements ActionListener{
                                           vconf.singlePlaneColor[2],
                                           vconf.singlePlaneColor[3]));
 
+    //.....definition of each axis
+    String defAxisTitle= "Definition of each axis:";
+    JPanel defAxisPanel= new JPanel();
+    JLabel daX= new JLabel("x: ",JLabel.RIGHT);
+    JLabel daY= new JLabel("y: ",JLabel.RIGHT);
+    JLabel daZ= new JLabel("z: ",JLabel.RIGHT);
+    JLabel daA= new JLabel("a",JLabel.CENTER);
+    JLabel daB= new JLabel("b",JLabel.CENTER);
+    JLabel daC= new JLabel("c",JLabel.CENTER);
+    JLabel daSpace= new JLabel(" ");
+    sx1 =new JSpinner( new SpinnerNumberModel( 1.0,null,null,1.0 ) );
+    sx2 =new JSpinner( new SpinnerNumberModel( 0.0,null,null,1.0 ) );
+    sx3 =new JSpinner( new SpinnerNumberModel( 0.0,null,null,1.0 ) );
+    sy1 =new JSpinner( new SpinnerNumberModel( 0.0,null,null,1.0 ) );
+    sy2 =new JSpinner( new SpinnerNumberModel( 1.0,null,null,1.0 ) );
+    sy3 =new JSpinner( new SpinnerNumberModel( 0.0,null,null,1.0 ) );
+    sz1 =new JSpinner( new SpinnerNumberModel( 0.0,null,null,1.0 ) );
+    sz2 =new JSpinner( new SpinnerNumberModel( 0.0,null,null,1.0 ) );
+    sz3 =new JSpinner( new SpinnerNumberModel( 1.0,null,null,1.0 ) );
+    defAxisPanel.setLayout(new GridLayout(4,4));
+    defAxisPanel.add(daSpace);
+    defAxisPanel.add(daA);
+    defAxisPanel.add(daB);
+    defAxisPanel.add(daC);
+    defAxisPanel.add(daX);
+    defAxisPanel.add(sx1);
+    defAxisPanel.add(sx2);
+    defAxisPanel.add(sx3);
+    defAxisPanel.add(daY);
+    defAxisPanel.add(sy1);
+    defAxisPanel.add(sy2);
+    defAxisPanel.add(sy3);
+    defAxisPanel.add(daZ);
+    defAxisPanel.add(sz1);
+    defAxisPanel.add(sz2);
+    defAxisPanel.add(sz3);
+    defAxisPanel.setBorder(BorderFactory.createTitledBorder(defAxisTitle));
+    defAxisPanel.setPreferredSize(new Dimension(100,150));
 
     SpringLayout layout = new SpringLayout();
     setLayout( layout );
@@ -150,10 +189,14 @@ public class PlanePanel extends JPanel implements ActionListener{
 
     //table
     layout.putConstraint( SpringLayout.NORTH, sp, 10, SpringLayout.SOUTH, spRcut );
-    layout.putConstraint( SpringLayout.SOUTH, sp, -10, SpringLayout.NORTH, applyButton );
     layout.putConstraint( SpringLayout.WEST, sp, 10, SpringLayout.WEST, this );
     layout.putConstraint( SpringLayout.EAST, sp, -10, SpringLayout.EAST, this );
+    layout.putConstraint( SpringLayout.SOUTH, sp, -10, SpringLayout.NORTH, defAxisPanel );
 
+    //defAxisPanel
+    layout.putConstraint( SpringLayout.WEST, defAxisPanel, 0, SpringLayout.WEST, sp );
+    layout.putConstraint( SpringLayout.EAST, defAxisPanel, -10, SpringLayout.EAST, this );
+    layout.putConstraint( SpringLayout.SOUTH, defAxisPanel, -10, SpringLayout.NORTH, applyButton );
 
     //reset
     layout.putConstraint( SpringLayout.SOUTH, applyButton, -10, SpringLayout.SOUTH, this);
@@ -174,6 +217,7 @@ public class PlanePanel extends JPanel implements ActionListener{
     add(singlePlaneColorButton);
     add(tetraSpeciesLabel);
     add(rcutLabel);
+    add(defAxisPanel);
   }
 
   boolean visiblePlane=false;
