@@ -135,15 +135,15 @@ public class PlanePanel extends JPanel implements ActionListener{
     JLabel daB= new JLabel("b",JLabel.CENTER);
     JLabel daC= new JLabel("c",JLabel.CENTER);
     JLabel daSpace= new JLabel(" ");
-    sx1 =new JSpinner( new SpinnerNumberModel( 1.0,null,null,1.0 ) );
-    sx2 =new JSpinner( new SpinnerNumberModel( 0.0,null,null,1.0 ) );
-    sx3 =new JSpinner( new SpinnerNumberModel( 0.0,null,null,1.0 ) );
-    sy1 =new JSpinner( new SpinnerNumberModel( 0.0,null,null,1.0 ) );
-    sy2 =new JSpinner( new SpinnerNumberModel( 1.0,null,null,1.0 ) );
-    sy3 =new JSpinner( new SpinnerNumberModel( 0.0,null,null,1.0 ) );
-    sz1 =new JSpinner( new SpinnerNumberModel( 0.0,null,null,1.0 ) );
-    sz2 =new JSpinner( new SpinnerNumberModel( 0.0,null,null,1.0 ) );
-    sz3 =new JSpinner( new SpinnerNumberModel( 1.0,null,null,1.0 ) );
+    sx1 =new JSpinner( new SpinnerNumberModel( vconf.b2aMat[0][0],null,null,1.0 ) );
+    sx2 =new JSpinner( new SpinnerNumberModel( vconf.b2aMat[0][1],null,null,1.0 ) );
+    sx3 =new JSpinner( new SpinnerNumberModel( vconf.b2aMat[0][2],null,null,1.0 ) );
+    sy1 =new JSpinner( new SpinnerNumberModel( vconf.b2aMat[1][0],null,null,1.0 ) );
+    sy2 =new JSpinner( new SpinnerNumberModel( vconf.b2aMat[1][1],null,null,1.0 ) );
+    sy3 =new JSpinner( new SpinnerNumberModel( vconf.b2aMat[1][2],null,null,1.0 ) );
+    sz1 =new JSpinner( new SpinnerNumberModel( vconf.b2aMat[2][0],null,null,1.0 ) );
+    sz2 =new JSpinner( new SpinnerNumberModel( vconf.b2aMat[2][1],null,null,1.0 ) );
+    sz3 =new JSpinner( new SpinnerNumberModel( vconf.b2aMat[2][2],null,null,1.0 ) );
     defAxisPanel.setLayout(new GridLayout(4,4));
     defAxisPanel.add(daSpace);
     defAxisPanel.add(daA);
@@ -318,7 +318,42 @@ public class PlanePanel extends JPanel implements ActionListener{
       vconf.planeColor[i][2]=tmp[2];
       vconf.planeColor[i][3]=alpha;
     }
+
+    //.....basis transformation from Blavais to Akira
+    vconf.b2aMat[0][0]= ((Float)sx1.getValue()).floatValue();
+    vconf.b2aMat[0][1]= ((Float)sx2.getValue()).floatValue();
+    vconf.b2aMat[0][2]= ((Float)sx3.getValue()).floatValue();
+    vconf.b2aMat[1][0]= ((Float)sy1.getValue()).floatValue();
+    vconf.b2aMat[1][1]= ((Float)sy2.getValue()).floatValue();
+    vconf.b2aMat[1][2]= ((Float)sy3.getValue()).floatValue();
+    vconf.b2aMat[2][0]= ((Float)sz1.getValue()).floatValue();
+    vconf.b2aMat[2][1]= ((Float)sz2.getValue()).floatValue();
+    vconf.b2aMat[2][2]= ((Float)sz3.getValue()).floatValue();
+    float mati[][]= new float[3][3];
+    Matrix.inv(vconf.b2aMat,mati);
+    for( int i=0; i< Const.PLANE; i++ ){
+      float v0[]= vconf.planeNormal[i];
+      float v1[]= new float[3];
+      for( int j=0; j<3; j++ ){
+        v1[0] += v0[0]*mati[j][0];
+        v1[1] += v0[1]*mati[j][1];
+        v1[2] += v0[2]*mati[j][2];
+      }
+      /* 
+       * System.out.printf("v0:\n");
+       * System.out.printf(" %7.2f %7.2f %7.2f\n"
+       *                   ,v0[0],v0[1],v0[2]);
+       * System.out.printf("v1:\n");
+       * System.out.printf(" %7.2f %7.2f %7.2f\n"
+       *                   ,v1[0],v1[1],v1[2]);
+       */
+      for( int j=0; j<3; j++ ){
+        vconf.planeNormal[i][j]= v1[j];
+      }
+    }
+    
   }
+
   class MyTableModel extends DefaultTableModel {
     MyTableModel( String[] columnNames, int rowNum ){
       super( columnNames, rowNum );

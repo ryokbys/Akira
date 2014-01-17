@@ -83,6 +83,8 @@ public class ViewConfigWindowMenuController implements ActionListener {
         }
       }
 
+    }else if( ae.getSource() == miClust ){ // Cluster Analysis...
+      // curretly do nothing...
     }else{
       //if 'Window' menu
       for(int i=0; i<ctrl.MAX_RWIN; i++){
@@ -133,18 +135,28 @@ public class ViewConfigWindowMenuController implements ActionListener {
     JMenuBar menuBar  = new JMenuBar();
     menuBar.add(getFileMenu());
     menuBar.add(getWindowMenu());
+    menuBar.add(getAnalysisMenu());
     menuBar.add(getMiscMenu());
 
     return menuBar;
   }
 
+  private JMenuItem miClust;
+  private JMenu getAnalysisMenu(){
+    JMenu menu= new JMenu("Analysis");
+    miClust= new JMenuItem("Cluster Analysis...");
+    miClust.addActionListener(this);
 
+    menu.add(miClust);
+
+    return menu;
+  }
+
+  private JMenuItem miAbout;
   private JMenuItem miKeyHelp;
   private JMenuItem miManual;
   //private JMenuItem miLF;
-
   private JMenuItem miUpdate;
-
   private JMenu getMiscMenu(){
     JMenu menu = new JMenu( "Misc." );
 
@@ -199,7 +211,6 @@ public class ViewConfigWindowMenuController implements ActionListener {
 
 
   //file menu
-  private JMenuItem miAbout;
   private JMenuItem miOpen;
   public static final int MAX_RECENT=10;
   public JMenuItem[] miRecent=new JMenuItem[MAX_RECENT];

@@ -124,35 +124,26 @@ public class AtomRenderer implements Renderer{
       // tmp[0:2]: atom position scaled by h-matrix, value range=[0:1]
       float[] tmp=MDMath.mulH( hi, ai.pos );
       float[] posi= new float[3];
-      posi[0]= tmp[0]+sft[0];
-      posi[1]= tmp[1]+sft[1];
-      posi[2]= tmp[2]+sft[2];
-      posi[0]= MDMath.pbc(posi[0]);
-      posi[1]= MDMath.pbc(posi[1]);
-      posi[2]= MDMath.pbc(posi[2]);
-      posi= MDMath.mulH(h,posi);
+      tmp[0]= tmp[0]+sft[0];
+      tmp[1]= tmp[1]+sft[1];
+      tmp[2]= tmp[2]+sft[2];
+      tmp[0]= MDMath.pbc(tmp[0]);
+      tmp[1]= MDMath.pbc(tmp[1]);
+      tmp[2]= MDMath.pbc(tmp[2]);
+      posi= MDMath.mulH(h,tmp);
 
       for(int ix=extendNx1;ix<=extendNx2;ix++){
-        if(!(ext[0][0]<=ix+tmp[0] && ix+tmp[0]<ext[1][0])){
-          //vtag[i]=-Math.abs(vtag[i]);
-          continue;
-        }
+        if(!(ext[0][0]<=ix+tmp[0] && ix+tmp[0]<ext[1][0])) continue;
 
         rw.gl.glPushMatrix();
         rw.gl.glTranslatef( ix*h[0][0], ix*h[1][0], ix*h[2][0]);
         for(int iy=extendNy1;iy<=extendNy2;iy++){
-          if(!(ext[0][1]<=iy+tmp[1] && iy+tmp[1]<ext[1][1])){
-            //vtag[i]=-Math.abs(vtag[i]);
-            continue;
-          }
+          if(!(ext[0][1]<=iy+tmp[1] && iy+tmp[1]<ext[1][1])) continue;
 
           rw.gl.glPushMatrix();
           rw.gl.glTranslatef(iy*h[0][1],iy*h[1][1],iy*h[2][1]);
           for(int iz=extendNz1;iz<=extendNz2;iz++){
-            if(!(ext[0][2]<=iz+tmp[2] && iz+tmp[2]<ext[1][2])){
-              //vtag[i]=-Math.abs(vtag[i]);
-              continue;
-            }
+            if(!(ext[0][2]<=iz+tmp[2] && iz+tmp[2]<ext[1][2])) continue;
 
             rw.gl.glPushMatrix();
             rw.gl.glTranslatef(iz*h[0][2],iz*h[1][2],iz*h[2][2]);

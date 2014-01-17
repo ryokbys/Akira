@@ -141,6 +141,7 @@ public class ViewConfig implements Serializable{
   public int tetrahedronCenter=1;
   public float planeRcut=4.f;
   public float   singlePlaneColor[]   = new float[4];
+  public float b2aMat[][] = new float[3][3]; // Blavais to Akira trasformation matrix
 
   //light
   public boolean isLightPosAuto;
@@ -1300,6 +1301,12 @@ public class ViewConfig implements Serializable{
     singlePlaneColor[1]=0.0f;
     singlePlaneColor[2]=0.0f;
     singlePlaneColor[3]=0.7f;
+    for( int i=0; i<3; i++ )
+      for( int j=0; j<3; j++ )
+        b2aMat[i][j]= 0.0f;
+    b2aMat[0][0]= 1.0f;
+    b2aMat[1][1]= 1.0f;
+    b2aMat[2][2]= 1.0f;
   }
 
   //light

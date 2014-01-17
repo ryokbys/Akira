@@ -84,19 +84,18 @@ public class BondRenderer implements Renderer{
         if( !ai.isVisible ) continue;
         float[] pos= MDMath.mulH( hi, ai.pos );
 
-        if( !(ext[0][0]<=pos[0] && pos[0]<ext[1][0]) )
-          continue;
-        if( !(ext[0][1]<=pos[1] && pos[1]<ext[1][1]) )
-          continue;
-        if( !(ext[0][2]<=pos[2] && pos[2]<ext[1][2]) )
-          continue;
-
         pos[0]= pos[0] +sft[0];
         pos[1]= pos[1] +sft[1];
         pos[2]= pos[2] +sft[2];
         pos[0]= MDMath.pbc(pos[0]);
         pos[1]= MDMath.pbc(pos[1]);
         pos[2]= MDMath.pbc(pos[2]);
+        if( !(ext[0][0]<=pos[0] && pos[0]<ext[1][0]) )
+          continue;
+        if( !(ext[0][1]<=pos[1] && pos[1]<ext[1][1]) )
+          continue;
+        if( !(ext[0][2]<=pos[2] && pos[2]<ext[1][2]) )
+          continue;
         pos= MDMath.mulH(h,pos);
 
         int nbnd= ai.getNumBonds();
@@ -144,12 +143,6 @@ public class BondRenderer implements Renderer{
         if( !ai.isVisible ) continue;
         float[] pos= MDMath.mulH( hi, ai.pos );
 
-        if( !(ext[0][0]<=pos[0] && pos[0]<ext[1][0]) )
-          continue;
-        if( !(ext[0][1]<=pos[1] && pos[1]<ext[1][1]) )
-          continue;
-        if( !(ext[0][2]<=pos[2] && pos[2]<ext[1][2]) )
-          continue;
 
         pos[0]= pos[0] +sft[0];
         pos[1]= pos[1] +sft[1];
@@ -157,6 +150,12 @@ public class BondRenderer implements Renderer{
         pos[0]= MDMath.pbc(pos[0]);
         pos[1]= MDMath.pbc(pos[1]);
         pos[2]= MDMath.pbc(pos[2]);
+        if( !(ext[0][0]<=pos[0] && pos[0]<ext[1][0]) )
+          continue;
+        if( !(ext[0][1]<=pos[1] && pos[1]<ext[1][1]) )
+          continue;
+        if( !(ext[0][2]<=pos[2] && pos[2]<ext[1][2]) )
+          continue;
         pos= MDMath.mulH(h,pos);
 
         int nbnd= ai.getNumBonds();

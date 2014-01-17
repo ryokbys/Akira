@@ -158,7 +158,7 @@ public class Plane {
     ArrayList<Float> tmpV= new ArrayList<Float>();
     float sp[] = new float[3];
     float tp[] = new float[3];
-    sp[i0] = 0f;
+    sp[i0] = 0.f;
     sp[i1] = 0.f;
     sp[i2] = 0.f;
     tp = chgScale( h,sp );
@@ -178,7 +178,6 @@ public class Plane {
     sp[i2] = 0.f;
     tp = chgScale( h,sp );
     getPoint(normalvec, tp, pointvec,tmpV);
-
 
     return deleteDuplicationAndSortPoints(tmpV);
   }
@@ -329,84 +328,6 @@ public class Plane {
     return sortedV;
   }
 
-
-  /*
-   * public void getPoint0( float[] normal, float[] tp, float[] point,ArrayList<Float> tmpV){
-   *   tp[i2] = (ip(normal,point) -normal[i0]*tp[i0]-normal[i1]*tp[i1])/normal[i2];
-   *   tmpV.add(tp[0]);
-   *   tmpV.add(tp[1]);
-   *   tmpV.add(tp[2]);
-   * }
-   * public void getPoint1( float[] normal, float[] tp, float[] point,ArrayList<Float> tmpV){
-   *   tp[i2] = (normal[0]*point[0]+normal[1]*point[1]+normal[2]*point[2]
-   *             -normal[i0]*tp[i0]-normal[i1]*tp[i1])/normal[i2];
-   *
-   *   if(tp[i2]>atoms.h[i2][i2]){
-   *     tp[i2] = atoms.h[i2][i2]+atoms.h[i2][i1];
-   *     tp[i1] = atoms.h[i1][i2]+atoms.h[i1][i1];
-   *     tp[i0] = (normal[0]*point[0]+normal[1]*point[1]+normal[2]*point[2]
-   *               -normal[i2]*tp[i2]-normal[i1]*tp[i1])/normal[i0];
-   *     if(tp[i0]<atoms.h[i0][i0] && tp[i0]>0.f){
-   *       tmpV.add(tp[0]);tmpV.add(tp[1]);tmpV.add(tp[2]);
-   *     }
-   *
-   *     tp[i2] = atoms.h[i2][i2];
-   *     tp[i1] = atoms.h[i1][i2];
-   *     tp[i0] = (normal[0]*point[0]+normal[1]*point[1]+normal[2]*point[2]
-   *               -normal[i2]*tp[i2]-normal[i1]*tp[i1])/normal[i0];
-   *     if(tp[i0]<atoms.h[i0][i0] && tp[i0]>0.f){
-   *       tmpV.add(tp[0]);tmpV.add(tp[1]);tmpV.add(tp[2]);
-   *     }
-   *
-   *     tp[i2] = atoms.h[i2][i2]+atoms.h[i2][i0];
-   *     tp[i0] = atoms.h[i0][i2]+atoms.h[i0][i0];
-   *     tp[i1] = (normal[0]*point[0]+normal[2]*point[2]+normal[1]*point[1]
-   *               -normal[i0]*tp[i0]-normal[i2]*tp[i2])/normal[i1];
-   *     if(tp[i1]<atoms.h[i1][i1] && tp[i1]>0.f){
-   *       tmpV.add(tp[0]);tmpV.add(tp[1]);tmpV.add(tp[2]);
-   *     }
-   *     tp[i2] = atoms.h[i2][i2];
-   *     tp[i0] = atoms.h[i0][i2];
-   *     tp[i1] = (normal[0]*point[0]+normal[2]*point[2]+normal[1]*point[1]
-   *               -normal[i0]*tp[i0]-normal[i2]*tp[i2])/normal[i1];
-   *     if(tp[i1]<atoms.h[i1][i1] && tp[i1]>0.f){
-   *       tmpV.add(tp[0]);tmpV.add(tp[1]);tmpV.add(tp[2]);
-   *     }
-   *   }else if(tp[i2]<0.f){
-   *     tp[i2] = 0.f;
-   *     tp[i1] = atoms.h[i1][i1];
-   *     tp[i0] = (normal[0]*point[0]+normal[1]*point[1]+normal[2]*point[2]
-   *               -normal[i2]*tp[i2]-normal[i1]*tp[i1])/normal[i0];
-   *     if(tp[i0]<atoms.h[i0][i0] && tp[i0]>0.f){
-   *       tmpV.add(tp[0]); tmpV.add(tp[1]); tmpV.add(tp[2]);
-   *     }
-   *     tp[i2] = 0.f;
-   *     tp[i1] = 0.f;
-   *     tp[i0] = (normal[0]*point[0]+normal[1]*point[1]+normal[2]*point[2]
-   *               -normal[i2]*tp[i2]-normal[i1]*tp[i1])/normal[i0];
-   *     if(tp[i0]<atoms.h[i0][i0] && tp[i0]>0.f){
-   *       tmpV.add(tp[0]); tmpV.add(tp[1]); tmpV.add(tp[2]);
-   *     }
-   *     tp[i2] = 0.f;
-   *     tp[i0] = atoms.h[i0][i0];
-   *     tp[i1] = (normal[0]*point[0]+normal[2]*point[2]+normal[1]*point[1]
-   *               -normal[i0]*tp[i0]-normal[i2]*tp[i2])/normal[i1];
-   *     if(tp[i1]<atoms.h[i1][i1] && tp[i1]>0.f){
-   *       tmpV.add(tp[0]); tmpV.add(tp[1]); tmpV.add(tp[2]);
-   *     }
-   *     tp[i2] = 0.f;
-   *     tp[i0] = 0.f;
-   *     tp[i1] = (normal[0]*point[0]+normal[2]*point[2]+normal[1]*point[1]
-   *               -normal[i0]*tp[i0]-normal[i2]*tp[i2])/normal[i1];
-   *     if(tp[i1]<atoms.h[i1][i1] && tp[i1]>0.f){
-   *       tmpV.add(tp[0]); tmpV.add(tp[1]); tmpV.add(tp[2]);
-   *     }
-   *   }else{
-   *     tmpV.add(tp[0]); tmpV.add(tp[1]); tmpV.add(tp[2]);
-   *   }
-   * }
-   */
-
   /**
    * inner product
    */
@@ -421,6 +342,7 @@ public class Plane {
 
     float[][] h= atoms.hmat;
 
+    // adjust tp vector length so that tp-vector-end is on the plane (because n*p=n*tp)
     tp[i2] = (ip(normal,point) -normal[i0]*tp[i0]-normal[i1]*tp[i1])/normal[i2];
 
     float[] v1=new float[3];
